@@ -1,0 +1,97 @@
+:root {
+  --bg: #1e1f22;
+  --panel: #232428;
+  --border: #33353a;
+  --hover: #2e3035;
+  --text: #dcdde0;
+  --muted: #8b8f98;
+  --accent: #8ab4f8;
+  --accent-bg: #2a3445;
+  --reader-bg: #2b2b2b;
+  --code-bg: rgba(255, 255, 255, 0.04);
+  --scroll-thumb: #4a4d55;
+  --page-bg: #282c34;
+  --heading: #e06c75;
+  --link: #61afef;
+  --warn: #f0b429;
+  --warn-bg: #4a3b10;
+  --error: #ff8a8a;
+  --error-bg: #4a1717;
+  --mono: 'JetBrainsMono Nerd Font', 'JetBrains Mono', ui-monospace, monospace;
+  --editor-font: 'EB Garamond', Garamond, Georgia, serif;
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+  color: var(--text);
+  background: var(--bg);
+}
+
+/* "Papel": bege quente em vez de branco, tinta marrom. */
+:root[data-theme='light'] {
+  --bg: #e9e0cd;
+  --panel: #e0d6c1;
+  --border: #cfc2a7;
+  --hover: #d8ccb3;
+  --text: #332e26;
+  --muted: #8a8170;
+  --accent: #9a5b2e;
+  --accent-bg: #d9c6a3;
+  --reader-bg: #d6cab2;
+  --code-bg: rgba(107, 79, 58, 0.06);
+  --scroll-thumb: #b9a888;
+  --page-bg: #f2eadb;
+  --heading: #8b4a2b;
+  --link: #4b6a88;
+  --warn: #9a6a00;
+  --warn-bg: #f3e2b3;
+  --error: #b3261e;
+  --error-bg: #f2d2cc;
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+  /* Barras de rolagem finas, com as cores do tema (editor, árvore, PDF). */
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) transparent;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+  font-size: 13px;
+  color: inherit;
+  background: var(--hover);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 3px 8px;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:hover {
+  border-color: var(--muted);
+}
+
+button.active {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+kbd {
+  font-family: var(--mono);
+  font-size: 12px;
+  padding: 1px 5px;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  background: var(--panel);
+}
+
+.muted {
+  color: var(--muted);
+}

@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>Prévia de fontes — notas</title>
+<!-- Fontes não instaladas vêm do Google Fonts (precisa de internet só para esta prévia). -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Courier+Prime:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital@0;1&family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=Literata:ital,opsz@0,7..72;1,7..72&family=Newsreader:ital,opsz@0,6..72;1,6..72&family=Source+Serif+4:ital,opsz@0,8..60;1,8..60&family=Recursive:slnt,wght,CASL,MONO@-15..0,300..1000,0..1,0..1&display=swap">
+<style>
+  /* O pacote do Arch marca todos os pesos da Quattro S como regular; aponta os arquivos direto. */
+  @font-face { font-family:'Quattro'; src:url(file:///usr/share/fonts/ttf-ia-writer/iAWriterQuattroS-Regular.ttf) }
+  @font-face { font-family:'Quattro'; font-weight:700; src:url(file:///usr/share/fonts/ttf-ia-writer/iAWriterQuattroS-Bold.ttf) }
+  @font-face { font-family:'Quattro'; font-style:italic; src:url(file:///usr/share/fonts/ttf-ia-writer/iAWriterQuattroS-Italic.ttf) }
+  :root { --bg:#e9e0cd; --card:#f2eadb; --text:#332e26; --muted:#8a8170; --accent:#9a5b2e; --link:#4b6a88; --border:#e2d9c5 }
+  body { margin:0; padding:32px; background:var(--bg); color:var(--text); font-family:system-ui,sans-serif }
+  h1 { font-weight:500; margin:0 0 4px } .sub { color:var(--muted); margin:0 0 24px }
+  .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(440px,1fr)); gap:18px }
+  .card { background:var(--card); border:1px solid var(--border); border-radius:8px; padding:16px 20px }
+  .name { font:600 13px system-ui; display:flex; justify-content:space-between; gap:8px }
+  .tag { font-weight:400; color:var(--muted) } .kind { font:12px system-ui; color:var(--accent); margin:2px 0 10px }
+  .sample { font-size:16px; line-height:1.65; white-space:pre-wrap }
+  .h { color:var(--accent); font-weight:700 } .em { font-style:italic } .b { font-weight:700 }
+  .lk { color:var(--link) } .mk { color:var(--muted) }
+  section h2 { font:600 14px system-ui; text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:28px 0 10px }
+</style>
+</head>
+<body>
+<h1>Fontes para o editor</h1>
+<p class="sub">Fundo “papel” (#e9e0cd) — o tema claro proposto. Cartões marcados “instalar” usam Google Fonts nesta prévia.</p>
+<div id="root"></div>
+<script>
+const sample = `<span class="h"># Capítulo 3 — Análise léxica</span>
+
+O <span class="b">lexer</span> transforma o fluxo de caracteres em <span class="em">tokens</span>;
+é a primeira etapa do compilador. Ação, coração, pássaro.
+
+<span class="mk">-</span> Ver exemplo em <span class="lk">[[Livros/Dragon Book.pdf#page=112]]</span>
+<span class="mk">-</span> <span class="mk">\`</span>regex → AFN → AFD<span class="mk">\`</span>  0123456789 {} [] () =>`
+const groups = [
+  ['Já instaladas', [
+    ['iA Writer Duo S', 'duospace · feita para escrever', 'instalada'],
+    ['iA Writer Quattro S', 'quase proporcional · feita para escrever', 'instalada'],
+    ['iA Writer Mono S', 'mono · feita para escrever', 'instalada'],
+    ['VictorMono Nerd Font', 'mono · itálico cursivo', 'instalada'],
+    ['P052', 'serifada · clone da Palatino', 'instalada'],
+    ['C059', 'serifada · clone da Century Schoolbook', 'instalada'],
+    ['JetBrainsMono Nerd Font', 'mono · a atual', 'instalada'],
+  ]],
+  ['Para instalar — repositório oficial (pacman)', [
+    ['Monaspace Radon', 'mono · traço de caligrafia — instale e recarregue para ver', 'otf-monaspace'],
+    ['IBM Plex Mono', 'mono · itálico elegante', 'ttf-ibm-plex'],
+    ['Recursive Casual', 'mono casual · pincel', 'ttf-recursive-nerd', '', "'MONO' 1, 'CASL' 1"],
+    ['Fantasque Sans Mono', 'mono · ar manuscrito — instale e recarregue para ver', 'otf-fantasque-sans-mono'],
+    ['Source Serif 4', 'serifada · leitura longa', 'adobe-source-serif-fonts'],
+  ]],
+  ['Para instalar — Google Fonts (eu posso embutir no app)', [
+    ['Courier Prime', 'máquina de escrever', 'Google Fonts'],
+    ['Literata', 'serifada · feita para e-books', 'Google Fonts'],
+    ['Newsreader', 'serifada · editorial', 'Google Fonts'],
+    ['EB Garamond', 'serifada · livro clássico', 'Google Fonts'],
+  ]],
+]
+const root = document.getElementById('root')
+for (const [title, fonts] of groups) {
+  root.insertAdjacentHTML('beforeend', `<section><h2>${title}</h2><div class="grid">${fonts.map(([f, kind, pkg, , vars]) => {
+    const family = { 'Recursive Casual': 'Recursive', 'iA Writer Quattro S': 'Quattro' }[f] ?? f
+    const ok = pkg === 'instalada' || pkg === 'Google Fonts' || f === 'IBM Plex Mono' || f === 'Recursive Casual' || document.fonts.check(`16px "${family}"`)
+    return `<div class="card"><div class="name"><span>${f}</span><span class="tag">${pkg === 'instalada' ? 'instalada' : pkg === 'Google Fonts' ? 'Google Fonts' : 'pacman -S ' + pkg}</span></div>
+      <div class="kind">${kind}</div>
+      <div class="sample" style="font-family:'${family}',monospace;${vars ? `font-variation-settings:${vars}` : ''}">${sample}</div></div>`
+  }).join('')}</div></section>`)
+}
+</script>
+</body>
+</html>

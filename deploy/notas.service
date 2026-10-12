@@ -1,0 +1,15 @@
+[Unit]
+Description=Notas — vault de notas via web
+After=network-online.target
+
+[Service]
+ExecStart=%h/.local/bin/notas
+# Para acessar pela VPN, troque pelo IP do notebook na rede (ex.: `netbird status`).
+Environment=NOTAS_ADDR=127.0.0.1:8080
+Environment=NOTAS_VAULT=%h/Documents/NotasObsidian/Notas
+# Se o IP da VPN ainda não existir no boot, tenta de novo.
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target
