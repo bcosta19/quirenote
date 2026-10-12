@@ -14,6 +14,9 @@ fi
 # A janela de app do Chromium tem a classe chrome-<host>__-Default (sem a porta).
 host=${url#*//}
 host=${host%%[:/]*}
-# Perfil próprio do Chromium: sem as extensões do perfil padrão (menos RAM).
+# Perfil próprio do Chromium, sem extensões, um renderer só e sem tarefas em segundo plano (menos RAM).
+# O app só abre páginas do próprio servidor, então o isolamento entre sites não protege nada aqui.
 profile=${XDG_DATA_HOME:-$HOME/.local/share}/notas/chromium
-exec omarchy-launch-or-focus-webapp "chrome-${host}__" "$url" --user-data-dir="$profile" --disable-extensions --no-first-run --no-default-browser-check
+exec omarchy-launch-or-focus-webapp "chrome-${host}__" "$url" --user-data-dir="$profile" --disable-extensions --no-first-run --no-default-browser-check \
+  --disable-features=SpareRendererForSitePerProcess --renderer-process-limit=1 --disable-site-isolation-trials \
+  --disable-background-networking --disable-component-update
