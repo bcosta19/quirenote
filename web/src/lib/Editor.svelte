@@ -38,6 +38,7 @@
     theme = 'light',
     oncontent,
     linkTargets = () => [],
+    reveal,
   }: {
     path: string
     onlink: (target: string, page?: number) => void
@@ -48,6 +49,8 @@
     oncontent?: (text: string) => void
     /** Arquivos do vault sugeridos ao digitar "[[" (lido na hora, sempre atualizado). */
     linkTargets?: () => string[]
+    /** Posiciona o cursor numa linha (resultado de busca); n muda a cada pedido. */
+    reveal?: { path: string; line: number; n: number } | null
   } = $props()
 
   // Compartimento: troca o tema sem recriar o estado (mantém undo, cursor, modo vim).
@@ -164,6 +167,7 @@
       oncontent?.(note.content)
       status = 'saved'
       view?.focus()
+      if (reveal?.path === p) revealLine(reveal)
     } catch (e) {
       errorMsg = (e as Error).message
       status = 'error'
@@ -199,6 +203,22 @@
     status = 'dirty'
     save()
   }
+
+  // Cada pedido de posicionamento vale uma vez: voltar à nota depois não pula de novo.
+  let revealed = 0
+  function revealLine(r: { line: number; n: number }) {
+    if (!view || r.n === revealed) return
+    revealed = r.n
+    const line = view.state.doc.line(Math.min(Math.max(r.line, 1), view.state.doc.lines))
+    view.dispatch({ selection: { anchor: line.from }, effects: EditorView.scrollIntoView(line.from, { y: 'center' }) })
+    view.focus()
+  }
+
+  // Pedido de posicionar numa nota já aberta (se for outra nota, o load aplica ao carregar).
+  $effect(() => {
+    const r = reveal
+    if (r) untrack(() => base?.path === r.path && status !== 'loading' && revealLine(r))
+  })
 
   export function focus() {
     view?.focus()

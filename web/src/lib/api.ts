@@ -76,6 +76,16 @@ export async function createDir(path: string): Promise<{ path: string }> {
   )
 }
 
+export interface SearchResult {
+  path: string
+  line: number
+  parts: { text: string; hit?: boolean }[]
+}
+
+export async function searchNotes(q: string, signal?: AbortSignal): Promise<SearchResult[]> {
+  return json(await fetch(`/api/search?q=${encodeURIComponent(q)}`, { signal }))
+}
+
 export function subscribe(onEvent: (e: VaultEvent) => void): () => void {
   const es = new EventSource('/api/events')
   es.onmessage = (m) => onEvent(JSON.parse(m.data))

@@ -12,6 +12,7 @@ import (
 	"strings"
 	"time"
 
+	"notas/internal/search"
 	"notas/internal/vault"
 	"notas/internal/watch"
 )
@@ -35,6 +36,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/dirs/{path...}", s.mkdir)
 	mux.HandleFunc("POST /api/notes/{path...}", s.createNote)
 	mux.HandleFunc("GET /api/events", s.events)
+	mux.HandleFunc("GET /api/search", s.search)
 	if s.static != nil {
 		mux.Handle("GET /", spa(s.static))
 	}
@@ -145,6 +147,24 @@ func (s *Server) file(w http.ResponseWriter, r *http.Request) {
 	}
 	// ServeContent cuida de Range (PDF.js carrega por partes), ETag e cache.
 	http.ServeContent(w, r, info.Name(), info.ModTime(), f)
+}
+
+func (s *Server) search(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query().Get("q")
+	if len(q) > 200 {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "busca longa demais"})
+		return
+	}
+	res, err := search.Search(r.Context(), s.vault.Dir(), q)
+	if errors.Is(err, search.ErrNoRipgrep) {
+		writeJSON(w, http.StatusServiceUnavailable, map[string]string{"error": err.Error()})
+		return
+	}
+	if err != nil {
+		writeErr(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, res)
 }
 
 // events mantém uma conexão SSE e envia as mudanças do vault.

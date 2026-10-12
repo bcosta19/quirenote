@@ -8,6 +8,7 @@
   import QuickSwitcher from './lib/QuickSwitcher.svelte'
   import PromptDialog from './lib/PromptDialog.svelte'
   import { IMAGE } from './lib/markdown'
+  import SearchPanel from './lib/SearchPanel.svelte'
   import Tree from './lib/Tree.svelte'
   import type { Theme } from './lib/theme'
 
@@ -93,6 +94,7 @@
 
   // Voltar/Avançar do navegador (ou Alt+←/→) restaura nota, PDF e página.
   function onPopState() {
+    reveal = null
     const params = new URLSearchParams(location.hash.slice(1))
     note = params.get('note')
     const nextDoc = params.get('doc')
@@ -115,6 +117,17 @@
     }
   }
   let switcherOpen = $state(false)
+  // Busca no conteúdo (Ctrl+Shift+F); guarda o último termo para reabrir com ele.
+  let searchOpen = $state(false)
+  let searchPanel: ReturnType<typeof SearchPanel> | undefined = $state()
+  let lastSearch = $state('')
+  let reveal = $state<{ path: string; line: number; n: number } | null>(null)
+  function openAtLine(path: string, line: number) {
+    preview = false
+    const n = (reveal?.n ?? 0) + 1
+    openPath(path) // limpa pedidos antigos; o novo vem logo abaixo
+    reveal = { path, line, n }
+  }
 
   // Diálogo de texto com o visual do app (no lugar do prompt() do navegador).
   let dialog = $state<{ message: string; value: string; hint: string; resolve: (v: string | null) => void } | null>(null)
@@ -205,6 +218,8 @@
   }
 
   function openPath(path: string, targetPage?: number) {
+    // Abrir por qualquer outro caminho cancela o posicionamento pedido pela busca.
+    reveal = null
     if (/\.(md|pdf)$/i.test(path)) remember(path)
     if (/\.md$/i.test(path)) {
       note = path
@@ -341,6 +356,15 @@
   // e Ctrl+O (voltar na lista de saltos).
   function onKeyCapture(e: KeyboardEvent) {
     if (dialog) return
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey && e.key.toLowerCase() === 'f') {
+      e.preventDefault()
+      e.stopPropagation()
+      switcherOpen = false
+      // Fechar pelo painel guarda o termo e devolve o foco ao editor.
+      if (searchOpen) searchPanel?.close()
+      else searchOpen = true
+      return
+    }
     if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && /^[op]$/i.test(e.key)) {
       // Com a busca aberta, Ctrl+P sobe na lista (tratado nela) e só Ctrl+O fecha.
       if (switcherOpen && e.key.toLowerCase() === 'p') return
@@ -410,6 +434,19 @@
   />
 {/if}
 
+{#if searchOpen}
+  <SearchPanel
+    bind:this={searchPanel}
+    initial={lastSearch}
+    onopen={(p, line) => openAtLine(p, line)}
+    onclose={(q) => {
+      lastSearch = q
+      searchOpen = false
+      setTimeout(() => editor?.focus())
+    }}
+  />
+{/if}
+
 {#if switcherOpen}
   <QuickSwitcher
     files={[...allPaths(tree)].filter((p) => /\.(md|pdf|epub)$/i.test(p))}
@@ -429,7 +466,7 @@
   {#if sidebarOpen}
     <aside class="sidebar">
       <div class="sidebar-head">
-        <input placeholder="Filtrar…  (Ctrl+O busca)" bind:value={filter} />
+        <input placeholder="Filtrar…" title="Filtra a árvore pelo nome · Ctrl+O busca rápida · Ctrl+Shift+F busca no conteúdo" bind:value={filter} />
         <button onclick={() => newNote()} title="Nova nota">+</button>
         <button onclick={() => newFolder()} title="Nova pasta">📁+</button>
         <button onclick={() => fileInput.click()} title="Abrir PDF deste dispositivo">📂</button>
@@ -453,6 +490,7 @@
   <main class="workspace">
     <div class="topbar">
       <button onclick={() => (sidebarOpen = !sidebarOpen)} title="Arquivos (Ctrl+Shift+\)">☰</button>
+      <button onclick={() => (searchOpen = true)} title="Buscar no conteúdo das notas (Ctrl+Shift+F)">🔍</button>
       <span class="crumb">{note ?? ''}</span>
       {#if note}
         <button onclick={togglePreview} title="Alternar preview / edição (Ctrl+E)" class:active={preview}>
@@ -514,6 +552,7 @@
               {theme}
               oncontent={(t) => (noteText = t)}
               linkTargets={() => [...allPaths(tree)]}
+              {reveal}
             />
           </div>
           {#if preview}
@@ -523,7 +562,7 @@
           <div class="empty">
             <p>Abra uma nota na barra lateral ou crie uma com <kbd>+</kbd>. Para ler um PDF deste dispositivo (fora do vault), use <kbd>📂</kbd>.</p>
             <p class="muted">
-              <kbd>Ctrl+O</kbd> busca rápida · <kbd>Ctrl+E</kbd> preview ·  <kbd>Ctrl+\</kbd> recolhe as notas · <kbd>Alt+\</kbd> recolhe o PDF · <kbd>Ctrl+Shift+\</kbd> barra lateral · <kbd>Ctrl+Shift+L</kbd> insere link da página ·
+              <kbd>Ctrl+O</kbd> busca rápida · <kbd>Ctrl+Shift+F</kbd> busca no conteúdo · <kbd>Ctrl+E</kbd> preview ·  <kbd>Ctrl+\</kbd> recolhe as notas · <kbd>Alt+\</kbd> recolhe o PDF · <kbd>Ctrl+Shift+\</kbd> barra lateral · <kbd>Ctrl+Shift+L</kbd> insere link da página ·
               <kbd>Alt+↑/↓</kbd> rola o PDF · <kbd>Alt+Shift+↑/↓</kbd> muda de página · <kbd>Ctrl+clique</kbd> ou <kbd>Ctrl+Enter</kbd> segue um <code>[[link]]</code> · <kbd>:w</kbd> salva
             </p>
           </div>
