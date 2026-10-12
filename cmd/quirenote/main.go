@@ -13,16 +13,16 @@ import (
 	"syscall"
 	"time"
 
-	"notas/internal/api"
-	"notas/internal/vault"
-	"notas/internal/watch"
-	"notas/web"
+	"quirenote/internal/api"
+	"quirenote/internal/vault"
+	"quirenote/internal/watch"
+	"quirenote/web"
 )
 
 func main() {
 	home, _ := os.UserHomeDir()
-	addr := flag.String("addr", env("NOTAS_ADDR", "127.0.0.1:8080"), "endereço HTTP (use o IP do NetBird/Tailscale para acesso remoto)")
-	dir := flag.String("vault", env("NOTAS_VAULT", filepath.Join(home, "Documents/NotasObsidian/Notas")), "diretório do vault")
+	addr := flag.String("addr", env("QUIRENOTE_ADDR", env("NOTAS_ADDR", "127.0.0.1:8080")), "endereço HTTP (use o IP do NetBird/Tailscale para acesso remoto)")
+	dir := flag.String("vault", env("QUIRENOTE_VAULT", env("NOTAS_VAULT", filepath.Join(home, "Documents/NotasObsidian/Notas"))), "diretório do vault")
 	debug := flag.Bool("debug", false, "log detalhado")
 	flag.Parse()
 
@@ -30,7 +30,7 @@ func main() {
 		slog.SetLogLoggerLevel(slog.LevelDebug)
 	}
 	if err := run(*addr, *dir); err != nil {
-		slog.Error("notas", "err", err)
+		slog.Error("quirenote", "err", err)
 		os.Exit(1)
 	}
 }
@@ -70,13 +70,14 @@ func run(addr, dir string) error {
 		_ = srv.Shutdown(shutdownCtx)
 	}()
 
-	slog.Info("notas", "addr", "http://"+addr, "vault", dir)
+	slog.Info("quirenote", "addr", "http://"+addr, "vault", dir)
 	if err := srv.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
 	return nil
 }
 
+// env lê uma variável de ambiente (NOTAS_* são os nomes antigos, ainda aceitos).
 func env(key, fallback string) string {
 	if v := os.Getenv(key); v != "" {
 		return v

@@ -23,7 +23,7 @@
   let error = $state('')
   let loadingTask: any = null
 
-  const pageKey = (p: string) => `notas:page:${p}`
+  const pageKey = (p: string) => `quirenote:page:${p}`
 
   async function open(url: string) {
     if (!viewer) return

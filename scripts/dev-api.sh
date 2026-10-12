@@ -15,8 +15,8 @@ stop() {
 trap 'stop; exit 0' INT TERM HUP
 
 while true; do
-  if go build -o bin/notas-dev ./cmd/notas; then
-    bin/notas-dev "$@" &
+  if go build -o bin/quirenote-dev ./cmd/quirenote; then
+    bin/quirenote-dev "$@" &
     pid=$!
     started=$SECONDS
   else

@@ -1,10 +1,10 @@
 #!/bin/bash
-# Abre o Notas numa janela de app (Chromium sem barra de endereço), no Omarchy.
+# Abre o Quirenote numa janela de app (Chromium sem barra de endereço), no Omarchy.
 # Se a janela já existe, só foca nela; se o servidor está parado, sobe o serviço.
-url=${NOTAS_URL:-http://127.0.0.1:8080}
+url=${QUIRENOTE_URL:-${NOTAS_URL:-http://127.0.0.1:8080}}
 
 if ! curl -fs -o /dev/null "$url/api/tree"; then
-  systemctl --user start notas
+  systemctl --user start quirenote
   for _ in $(seq 50); do
     curl -fs -o /dev/null "$url/api/tree" && break
     sleep 0.2
@@ -16,7 +16,7 @@ host=${url#*//}
 host=${host%%[:/]*}
 # Perfil próprio do Chromium, sem extensões, um renderer só e sem tarefas em segundo plano (menos RAM).
 # O app só abre páginas do próprio servidor; um renderer basta.
-profile=${XDG_DATA_HOME:-$HOME/.local/share}/notas/chromium
+profile=${XDG_DATA_HOME:-$HOME/.local/share}/quirenote/chromium
 exec omarchy-launch-or-focus-webapp "chrome-${host}__" "$url" --user-data-dir="$profile" --disable-extensions --no-first-run --no-default-browser-check \
   --disable-features=SpareRendererForSitePerProcess,Translate --lang=pt-BR --renderer-process-limit=1 \
   --disable-background-networking --disable-component-update

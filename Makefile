@@ -18,7 +18,7 @@ front:
 	@touch web/dist/.keep
 
 build: front
-	go build -trimpath -ldflags="-s -w" -o bin/notas ./cmd/notas
+	go build -trimpath -ldflags="-s -w" -o bin/quirenote ./cmd/quirenote
 
 check:
 	gofmt -l . | (! grep .)
@@ -30,14 +30,14 @@ check:
 	cd web && npm run check
 
 install: build
-	install -Dm755 bin/notas $(HOME)/.local/bin/notas
-	install -Dm644 deploy/notas.service $(HOME)/.config/systemd/user/notas.service
-	install -Dm755 deploy/notas-app $(HOME)/.local/bin/notas-app
-	install -Dm644 web/public/icon-512.png $(HOME)/.local/share/icons/hicolor/512x512/apps/notas.png
+	install -Dm755 bin/quirenote $(HOME)/.local/bin/quirenote
+	install -Dm644 deploy/quirenote.service $(HOME)/.config/systemd/user/quirenote.service
+	install -Dm755 deploy/quirenote-app $(HOME)/.local/bin/quirenote-app
+	install -Dm644 web/public/icon-512.png $(HOME)/.local/share/icons/hicolor/512x512/apps/quirenote.png
 	# Caminho absoluto no Icon=: o launcher acha mesmo sem cache de ícones.
-	sed 's|^Icon=.*|Icon=$(HOME)/.local/share/icons/hicolor/512x512/apps/notas.png|' deploy/notas.desktop > $(HOME)/.local/share/applications/notas.desktop
+	sed 's|^Icon=.*|Icon=$(HOME)/.local/share/icons/hicolor/512x512/apps/quirenote.png|' deploy/quirenote.desktop > $(HOME)/.local/share/applications/quirenote.desktop
 	systemctl --user daemon-reload
-	@echo "Pronto. Ative com: systemctl --user enable --now notas (o atalho 'Notas' já está no launcher)"
+	@echo "Pronto. Ative com: systemctl --user enable --now quirenote (o atalho 'Quirenote' já está no launcher)"
 
 clean:
 	rm -rf bin web/dist/assets web/dist/index.html web/dist/icon.svg web/dist/icon-512.png web/dist/manifest.webmanifest

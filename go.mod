@@ -1,4 +1,4 @@
-module notas
+module quirenote
 
 go 1.27.0
 

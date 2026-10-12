@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	"notas/internal/vault"
+	"quirenote/internal/vault"
 )
 
 func TestRewrite(t *testing.T) {

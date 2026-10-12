@@ -39,7 +39,7 @@
   let error = $state('')
   let ready = $state(false)
 
-  const key = () => `notas:epub:${id}`
+  const key = () => `quirenote:epub:${id}`
   const NOT_FOUND = 'posição do link não encontrada neste livro'
 
   /** A posição existe neste livro? (resolveNavigation aceita capítulos inexistentes.) */

@@ -13,7 +13,7 @@ import (
 
 	"github.com/fsnotify/fsnotify"
 
-	"notas/internal/vault"
+	"quirenote/internal/vault"
 )
 
 type Event struct {

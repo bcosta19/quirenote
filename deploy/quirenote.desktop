@@ -1,9 +1,9 @@
 [Desktop Entry]
 Version=1.0
-Name=Notas
+Name=Quirenote
 Comment=Notas em markdown com leitor de PDF e EPUB
-Exec=notas-app
-Icon=notas
+Exec=quirenote-app
+Icon=quirenote
 Terminal=false
 Type=Application
 Categories=Office;

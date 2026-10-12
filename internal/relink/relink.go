@@ -8,8 +8,8 @@ import (
 	"regexp"
 	"strings"
 
-	"notas/internal/search"
-	"notas/internal/vault"
+	"quirenote/internal/search"
+	"quirenote/internal/vault"
 )
 
 var (

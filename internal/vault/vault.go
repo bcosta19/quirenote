@@ -184,7 +184,7 @@ func (v *Vault) Save(p, content string, baseMtime int64) (Note, error) {
 			return Note{}, err
 		}
 	}
-	tmp := path.Join(dir, fmt.Sprintf(".%s.notas-%s.tmp", path.Base(p), randHex()))
+	tmp := path.Join(dir, fmt.Sprintf(".%s.quirenote-%s.tmp", path.Base(p), randHex()))
 	if err := v.root.WriteFile(tmp, []byte(content), 0o644); err != nil {
 		return Note{}, err
 	}

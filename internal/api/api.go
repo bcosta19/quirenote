@@ -13,10 +13,10 @@ import (
 	"strings"
 	"time"
 
-	"notas/internal/relink"
-	"notas/internal/search"
-	"notas/internal/vault"
-	"notas/internal/watch"
+	"quirenote/internal/relink"
+	"quirenote/internal/search"
+	"quirenote/internal/vault"
+	"quirenote/internal/watch"
 )
 
 type Server struct {

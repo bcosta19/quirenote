@@ -6,8 +6,8 @@ import (
 	"strings"
 	"testing"
 
-	"notas/internal/vault"
-	"notas/internal/watch"
+	"quirenote/internal/vault"
+	"quirenote/internal/watch"
 )
 
 func TestMutationsRequireJSON(t *testing.T) {

@@ -55,8 +55,8 @@
 
   let tree = $state<Entry[]>([])
   let filter = $state('')
-  let sidebarOpen = $state(localStorage.getItem('notas:sidebar') !== '0')
-  let notesOpen = $state(localStorage.getItem('notas:notes') !== '0')
+  let sidebarOpen = $state(localStorage.getItem('quirenote:sidebar') !== '0')
+  let notesOpen = $state(localStorage.getItem('quirenote:notes') !== '0')
   // Leitor recolhido: o PDF continua carregado (mesma página), só fica escondido.
   let readerOpen = $state(true)
   // Preview do markdown (modo leitura, como o Ctrl+E do Obsidian).
@@ -66,11 +66,11 @@
   // Tamanhos ajustáveis com o mouse (salvos por dispositivo).
   const SIDEBAR_W = 260
   const NOTES_PCT = 42
-  let sidebarW = $state(Number(localStorage.getItem('notas:sidebarW')) || SIDEBAR_W)
-  let notesPct = $state(Number(localStorage.getItem('notas:notesPct')) || NOTES_PCT)
+  let sidebarW = $state(Number(localStorage.getItem('quirenote:sidebarW')) || SIDEBAR_W)
+  let notesPct = $state(Number(localStorage.getItem('quirenote:notesPct')) || NOTES_PCT)
   let dragging = $state<null | 'sidebar' | 'split'>(null)
   let panesEl: HTMLDivElement
-  let theme = $state<Theme>(localStorage.getItem('notas:theme') === 'dark' ? 'dark' : 'light')
+  let theme = $state<Theme>(localStorage.getItem('quirenote:theme') === 'dark' ? 'dark' : 'light')
   let toast = $state('')
   let editor: ReturnType<typeof Editor> | undefined = $state()
   let fileInput: HTMLInputElement
@@ -169,7 +169,7 @@
   let recent = $state<string[]>(loadRecent())
   function loadRecent(): string[] {
     try {
-      const v = JSON.parse(localStorage.getItem('notas:recent') || '[]')
+      const v = JSON.parse(localStorage.getItem('quirenote:recent') || '[]')
       return Array.isArray(v) ? v.filter((p) => typeof p === 'string') : []
     } catch {
       return [] // valor corrompido não pode impedir o app de abrir
@@ -314,7 +314,7 @@
         if (inside(note, e)) note = remap(note, e.path, path)
         if (inside(doc, e)) doc = remap(doc, e.path, path)
         recent = recent.map((p) => (inside(p, e) ? remap(p, e.path, path) : p))
-        localStorage.setItem('notas:recent', JSON.stringify(recent))
+        localStorage.setItem('quirenote:recent', JSON.stringify(recent))
         flash(`Movido para ${path}`)
         if (!e.dir) moved = path
       } catch (err) {
@@ -382,7 +382,7 @@
         if (inside(note, e)) note = null
         if (inside(doc, e)) closeReader()
         recent = recent.filter((p) => !inside(p, e))
-        localStorage.setItem('notas:recent', JSON.stringify(recent))
+        localStorage.setItem('quirenote:recent', JSON.stringify(recent))
         flash(`“${e.name.replace(/\.md$/i, '')}” foi para a lixeira`)
       } catch (err) {
         flash((err as Error).message)
@@ -397,10 +397,10 @@
   }
   function remember(path: string) {
     recent = [path, ...recent.filter((p) => p !== path)].slice(0, 30)
-    localStorage.setItem('notas:recent', JSON.stringify(recent))
+    localStorage.setItem('quirenote:recent', JSON.stringify(recent))
   }
-  $effect(() => localStorage.setItem('notas:sidebar', sidebarOpen ? '1' : '0'))
-  $effect(() => localStorage.setItem('notas:notes', notesOpen ? '1' : '0'))
+  $effect(() => localStorage.setItem('quirenote:sidebar', sidebarOpen ? '1' : '0'))
+  $effect(() => localStorage.setItem('quirenote:notes', notesOpen ? '1' : '0'))
 
   // Nunca deixa os dois painéis recolhidos ao mesmo tempo.
   function toggleNotes() {
@@ -429,8 +429,8 @@
   }
   function endDrag() {
     if (!dragging) return
-    localStorage.setItem('notas:sidebarW', String(Math.round(sidebarW)))
-    localStorage.setItem('notas:notesPct', String(Math.round(notesPct)))
+    localStorage.setItem('quirenote:sidebarW', String(Math.round(sidebarW)))
+    localStorage.setItem('quirenote:notesPct', String(Math.round(notesPct)))
     dragging = null
   }
   function resetSize(kind: 'sidebar' | 'split') {
@@ -441,7 +441,7 @@
   }
   $effect(() => {
     document.documentElement.dataset.theme = theme
-    localStorage.setItem('notas:theme', theme)
+    localStorage.setItem('quirenote:theme', theme)
   })
 
   function filterTree(entries: Entry[], q: string): Entry[] {
