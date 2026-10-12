@@ -35,6 +35,7 @@
     "@replit/codemirror-vim": "^6.4.0",
     "codemirror": "^6.0.2",
     "dompurify": "^3.4.16",
+    "foliate-js": "^1.0.1",
     "markdown-it": "^15.0.2",
     "pdfjs-dist": "^6.4.299"
   }

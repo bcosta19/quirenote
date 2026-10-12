@@ -2,8 +2,11 @@ package vault
 
 import (
 	"errors"
+	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -144,5 +147,154 @@ func TestMkdir(t *testing.T) {
 	}
 	if _, err := os.Stat(filepath.Join(dir, "etc/x")); err != nil {
 		t.Fatal(err)
+	}
+}
+
+func TestCreateNeverOverwrites(t *testing.T) {
+	v, dir := newVault(t)
+	n, err := v.Create("novas/ideia.md", "# Ideia\n")
+	if err != nil || n.Content != "# Ideia\n" {
+		t.Fatalf("Create = %+v, %v", n, err)
+	}
+	if _, err := v.Create("a.md", "apagaria tudo"); !errors.Is(err, ErrExists) {
+		t.Fatalf("esperava ErrExists, veio %v", err)
+	}
+	if b, _ := os.ReadFile(filepath.Join(dir, "a.md")); string(b) != "# A" {
+		t.Fatalf("nota existente foi alterada: %q", b)
+	}
+	if _, err := v.Create("livros/b.pdf", "x"); !errors.Is(err, ErrNotNote) {
+		t.Fatalf("esperava ErrNotNote, veio %v", err)
+	}
+	if _, err := v.Create("../fora.md", "x"); err == nil {
+		t.Fatal("caminho fora do vault deveria falhar")
+	}
+}
+
+func TestMove(t *testing.T) {
+	v, dir := newVault(t)
+	if p, err := v.Move("a.md", "pasta nova/b.md"); err != nil || p != "pasta nova/b.md" {
+		t.Fatalf("Move = %q, %v", p, err)
+	}
+	if b, err := os.ReadFile(filepath.Join(dir, "pasta nova/b.md")); err != nil || string(b) != "# A" {
+		t.Fatalf("conteúdo após mover: %q, %v", b, err)
+	}
+	// Nunca sobrescreve.
+	if _, err := v.Move("livros/b.pdf", "pasta nova/b.md"); !errors.Is(err, ErrExists) {
+		t.Fatalf("esperava ErrExists, veio %v", err)
+	}
+	// Pasta inteira, e não para dentro dela mesma.
+	if _, err := v.Move("livros", "livros/sub"); !errors.Is(err, ErrInvalidPath) {
+		t.Fatalf("mover pasta para dentro dela mesma: %v", err)
+	}
+	if _, err := v.Move("livros", "biblioteca"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "biblioteca/b.pdf")); err != nil {
+		t.Fatal(err)
+	}
+	for _, bad := range [][2]string{{"../x", "y.md"}, {"biblioteca/b.pdf", "../fora.pdf"}, {".obsidian/x.json", "x.json"}, {"biblioteca", ".trash/b"}} {
+		if _, err := v.Move(bad[0], bad[1]); err == nil {
+			t.Errorf("Move(%q, %q) deveria falhar", bad[0], bad[1])
+		}
+	}
+	if _, err := v.Move("nao-existe.md", "x.md"); !errors.Is(err, fs.ErrNotExist) {
+		t.Fatalf("origem inexistente: %v", err)
+	}
+}
+
+func TestTrash(t *testing.T) {
+	v, dir := newVault(t)
+	p1, err := v.Trash("a.md")
+	if err != nil || p1 != ".trash/a.md" {
+		t.Fatalf("Trash = %q, %v", p1, err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "a.md")); !os.IsNotExist(err) {
+		t.Fatal("nota deveria ter saído do lugar")
+	}
+	// Mesmo nome de novo: não sobrescreve o que já está na lixeira.
+	if err := os.WriteFile(filepath.Join(dir, "a.md"), []byte("segunda"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	p2, err := v.Trash("a.md")
+	if err != nil || p2 == p1 || !strings.HasPrefix(p2, ".trash/a ") || !strings.HasSuffix(p2, ".md") {
+		t.Fatalf("segunda ida à lixeira = %q, %v", p2, err)
+	}
+	if b, _ := os.ReadFile(filepath.Join(dir, p1)); string(b) != "# A" {
+		t.Fatalf("primeira versão na lixeira foi alterada: %q", b)
+	}
+	// Pastas também vão inteiras; a lixeira em si não pode ser enviada.
+	if _, err := v.Trash("livros"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := v.Trash(".trash"); err == nil {
+		t.Fatal("a própria lixeira não pode ir para a lixeira")
+	}
+	if tree, _ := v.Tree(); len(tree) != 0 {
+		t.Fatalf("lixeira não deveria aparecer na árvore: %+v", tree)
+	}
+}
+
+// PNG mínimo válido (1x1).
+var tinyPNG = []byte{0x89, 'P', 'N', 'G', '\r', '\n', 0x1a, '\n', 0, 0, 0, 0x0d, 'I', 'H', 'D', 'R', 0, 0, 0, 1, 0, 0, 0, 1, 8, 6, 0, 0, 0, 0x1f, 0x15, 0xc4, 0x89}
+
+func TestSaveImage(t *testing.T) {
+	v, dir := newVault(t)
+	// Sem configuração: raiz do vault, nome do Obsidian, nunca sobrescreve.
+	p1, err := v.SaveImage("livros/nota.md", tinyPNG)
+	if err != nil || path.Dir(p1) != "." || !strings.HasPrefix(p1, "Pasted image ") || !strings.HasSuffix(p1, ".png") {
+		t.Fatalf("SaveImage = %q, %v", p1, err)
+	}
+	p2, err := v.SaveImage("livros/nota.md", tinyPNG)
+	if err != nil || p2 == p1 {
+		t.Fatalf("segunda imagem no mesmo segundo = %q, %v", p2, err)
+	}
+	// Conteúdo que não é imagem (ou SVG, que pode ter script) é recusado, qualquer que seja o nome.
+	for _, bad := range [][]byte{[]byte("<svg onload=alert(1)></svg>"), []byte("# nota"), {}} {
+		if _, err := v.SaveImage("a.md", bad); !errors.Is(err, ErrNotImage) {
+			t.Errorf("conteúdo %q deveria ser recusado, veio %v", bad, err)
+		}
+	}
+	// "./" = pasta da nota; "./anexos" = subpasta dela; "Anexos" = pasta fixa.
+	cases := map[string]string{"./": "livros", "./anexos": "livros/anexos", "Anexos": "Anexos", "/": "."}
+	for cfg, want := range cases {
+		if err := os.WriteFile(filepath.Join(dir, ".obsidian/app.json"), []byte(`{"attachmentFolderPath":"`+cfg+`"}`), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		p, err := v.SaveImage("livros/nota.md", tinyPNG)
+		if err != nil || path.Dir(p) != want {
+			t.Errorf("config %q: %q, %v (esperava pasta %q)", cfg, p, err, want)
+		}
+	}
+	// Configuração apontando para fora do vault não escapa.
+	if err := os.WriteFile(filepath.Join(dir, ".obsidian/app.json"), []byte(`{"attachmentFolderPath":"../fora"}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := v.SaveImage("livros/nota.md", tinyPNG); err == nil {
+		t.Fatal("pasta de anexos fora do vault deveria falhar")
+	}
+}
+
+func TestBadNames(t *testing.T) {
+	v, _ := newVault(t)
+	for _, bad := range []string{"C# notas.md", "x^y.md", "a [b].md", "a|b.md"} {
+		if _, err := v.Create(bad, "x"); !errors.Is(err, ErrBadName) {
+			t.Errorf("Create(%q) = %v", bad, err)
+		}
+		if _, err := v.Move("a.md", bad); !errors.Is(err, ErrBadName) {
+			t.Errorf("Move(a.md, %q) = %v", bad, err)
+		}
+	}
+	if _, err := v.Mkdir("Pasta #1"); !errors.Is(err, ErrBadName) {
+		t.Errorf("Mkdir com # = %v", err)
+	}
+	// Pasta antiga com # (criada fora do app) continua usável: só o nome novo é checado.
+	if err := os.Mkdir(filepath.Join(v.Dir(), "C#"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := v.Create("C#/nota.md", "x"); err != nil {
+		t.Errorf("criar dentro de pasta antiga com #: %v", err)
+	}
+	if !v.Exists("a.md") || v.Exists("nao.md") || v.Exists("../x") {
+		t.Error("Exists incorreto")
 	}
 }

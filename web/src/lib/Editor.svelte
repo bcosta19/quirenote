@@ -24,6 +24,7 @@
   import { codeBlocks } from './codeblocks'
   import { writing } from './writing'
   import { visualLineNumbers } from './visualLines'
+  import { linkCompletion, linkText } from './linkComplete'
   import { languages } from '@codemirror/language-data'
   import { editorTheme, type Theme } from './theme'
   import { vim } from '@replit/codemirror-vim'
@@ -36,18 +37,30 @@
     keys = [],
     theme = 'light',
     oncontent,
+    linkTargets = () => [],
+    reveal,
+    onimage,
   }: {
     path: string
-    onlink: (target: string, page?: number) => void
+    onlink: (target: string, page?: number, cfi?: string) => void
     /** Atalhos extras do app (ex.: rolar o PDF); têm prioridade sobre o vim. */
     keys?: KeyBinding[]
     theme?: Theme
     /** Texto atual do editor (inclui o que ainda não foi salvo); usado pelo preview. */
     oncontent?: (text: string) => void
+    /** Arquivos do vault sugeridos ao digitar "[[" (lido na hora, sempre atualizado). */
+    linkTargets?: () => string[]
+    /** Posiciona o cursor numa linha (resultado de busca); n muda a cada pedido. */
+    reveal?: { path: string; line: number; n: number } | null
+    /** Grava uma imagem colada/arrastada e devolve o caminho no vault (ou null se falhar). */
+    onimage?: (file: File) => Promise<string | null>
   } = $props()
 
   // Compartimento: troca o tema sem recriar o estado (mantém undo, cursor, modo vim).
   const themeSlot = new Compartment()
+  // Somente leitura enquanto a nota é renomeada/movida/excluída (ver setLocked).
+  const lockSlot = new Compartment()
+  let locked = false
 
   type Status = 'loading' | 'saved' | 'dirty' | 'saving' | 'conflict' | 'error'
 
@@ -67,7 +80,7 @@
     const line = view.state.doc.lineAt(pos)
     const link = linkAt(line.text, pos - line.from)
     if (!link) return false
-    onlink(link.target, link.page)
+    onlink(link.target, link.page, link.cfi)
     return true
   }
 
@@ -81,19 +94,46 @@
         codeBlocks,
         writing,
         visualLineNumbers,
+        linkCompletion(() => linkTargets()),
         themeSlot.of(editorTheme(theme)),
+        lockSlot.of(EditorState.readOnly.of(locked)),
         EditorView.lineWrapping,
         EditorView.contentAttributes.of({ spellcheck: 'true', lang: 'pt-BR' }),
+        // Mantém a quebra de linha original (CRLF de notas vindas do Windows):
+        // sem isso, qualquer edição regravaria a nota inteira em LF.
+        EditorState.lineSeparator.of(doc.includes('\r\n') ? '\r\n' : '\n'),
         // Prec.highest: senão o modo vim captura as teclas antes.
         Prec.highest(
           keymap.of([
             { key: 'Mod-s', run: () => (save(), true) },
-            // Segue o [[link]] sob o cursor.
-            { key: 'Mod-Enter', run: (v) => followLinkAt(v.state.selection.main.head) },
+            // Segue o [[link]] sob o cursor; numa linha de tarefa sem link, alterna [ ]/[x].
+            {
+              key: 'Mod-Enter',
+              run: (v) => {
+                const head = v.state.selection.main.head
+                return followLinkAt(head) || toggleTask(v.state.doc.lineAt(head).number)
+              },
+            },
             ...keys,
           ]),
         ),
         EditorView.domEventHandlers({
+          // Colar print/imagem: grava no vault e insere ![[imagem]], como o Obsidian.
+          // Se a área de transferência também tiver texto (ex.: trecho de página), cola o texto.
+          paste(e, v) {
+            const images = imageFiles(e.clipboardData)
+            if (!images.length || e.clipboardData?.getData('text/plain')) return false
+            e.preventDefault()
+            insertImages(images, v.state.selection.main.head)
+            return true
+          },
+          drop(e, v) {
+            const images = imageFiles(e.dataTransfer)
+            if (!images.length) return false
+            e.preventDefault()
+            insertImages(images, v.posAtCoords({ x: e.clientX, y: e.clientY }) ?? v.state.selection.main.head)
+            return true
+          },
           mousedown(e, v) {
             if (!(e.ctrlKey || e.metaKey)) return false
             const pos = v.posAtCoords({ x: e.clientX, y: e.clientY })
@@ -103,9 +143,9 @@
           },
         }),
         EditorView.updateListener.of((u) => {
-          if (u.docChanged) oncontent?.(u.state.doc.toString())
+          if (u.docChanged) oncontent?.(u.state.sliceDoc())
           if (!u.docChanged || !base) return
-          if (u.state.doc.toString() === base.content) {
+          if (u.state.sliceDoc() === base.content) {
             if (status === 'dirty') status = 'saved'
             return
           }
@@ -115,6 +155,29 @@
         }),
       ],
     })
+  }
+
+  function imageFiles(data: DataTransfer | null): File[] {
+    return [...(data?.files ?? [])].filter((f) => f.type.startsWith('image/'))
+  }
+
+  async function insertImages(files: File[], pos: number) {
+    if (!onimage || locked) return
+    const notePath = base?.path
+    for (const [i, file] of files.entries()) {
+      const before = view?.state.doc
+      const path = await onimage(file)
+      // Ignora se falhou ou se o usuário trocou de nota enquanto a imagem subia.
+      if (!path || !view || base?.path !== notePath) return
+      // Se o texto mudou durante o upload, a posição guardada pode ter ficado no meio
+      // de uma palavra: nesse caso a imagem entra onde o cursor está agora.
+      const at = view.state.doc === before ? Math.min(pos, view.state.doc.length) : view.state.selection.main.head
+      // Só o nome quando é único no vault, senão o caminho (como o Obsidian); várias imagens, uma por linha.
+      const insert = (i > 0 ? '\n' : '') + `![[${linkText(path, linkTargets())}]]`
+      view.dispatch({ changes: { from: at, insert }, selection: { anchor: at + insert.length }, userEvent: 'input.paste' })
+      pos = at + insert.length
+    }
+    view?.focus()
   }
 
   function setDoc(content: string) {
@@ -129,12 +192,12 @@
   async function save() {
     clearTimeout(timer)
     if (!view || !base || status === 'conflict' || status === 'saving') return
-    const content = view.state.doc.toString()
+    const content = view.state.sliceDoc()
     if (content === base.content) return
     status = 'saving'
     try {
       base = await saveNote(base.path, content, base.mtime)
-      status = view.state.doc.toString() === base.content ? 'saved' : 'dirty'
+      status = view.state.sliceDoc() === base.content ? 'saved' : 'dirty'
       if (status === 'dirty') timer = setTimeout(save, AUTOSAVE_MS)
     } catch (e) {
       if (e instanceof ConflictError) {
@@ -159,6 +222,7 @@
       oncontent?.(note.content)
       status = 'saved'
       view?.focus()
+      if (reveal?.path === p) revealLine(reveal)
     } catch (e) {
       errorMsg = (e as Error).message
       status = 'error'
@@ -195,6 +259,51 @@
     save()
   }
 
+  // Cada pedido de posicionamento vale uma vez: voltar à nota depois não pula de novo.
+  let revealed = 0
+  function revealLine(r: { line: number; n: number }) {
+    if (!view || r.n === revealed) return
+    revealed = r.n
+    const line = view.state.doc.line(Math.min(Math.max(r.line, 1), view.state.doc.lines))
+    view.dispatch({ selection: { anchor: line.from }, effects: EditorView.scrollIntoView(line.from, { y: 'center' }) })
+    view.focus()
+  }
+
+  // Pedido de posicionar numa nota já aberta (se for outra nota, o load aplica ao carregar).
+  $effect(() => {
+    const r = reveal
+    if (r) untrack(() => base?.path === r.path && status !== 'loading' && revealLine(r))
+  })
+
+  /**
+   * Trava a edição durante uma operação no arquivo: algo digitado entre gravar o
+   * pendente e a resposta do servidor seria salvo no caminho antigo, recriando-o.
+   */
+  export function setLocked(value: boolean) {
+    locked = value
+    view?.dispatch({ effects: lockSlot.reconfigure(EditorState.readOnly.of(value)) })
+  }
+
+  /** Grava o que estiver pendente (antes de renomear, mover ou excluir a nota). */
+  export async function flush(): Promise<boolean> {
+    clearTimeout(timer)
+    while (status === 'saving') await new Promise((r) => setTimeout(r, 30))
+    if (status === 'dirty' || status === 'error') await save() // só retorna depois de gravar
+    return status === 'saved'
+  }
+
+  /** Alterna "- [ ]" / "- [x]" na linha (1 = primeira). Devolve false se não for tarefa. */
+  export function toggleTask(n: number): boolean {
+    if (!view || locked || n < 1 || n > view.state.doc.lines) return false
+    const line = view.state.doc.line(n)
+    // Aceita tarefas dentro de citações ("> - [ ] x"), como o preview mostra.
+    const m = line.text.match(/^(\s*(?:>\s*)*(?:[-*+]|\d+[.)])\s+\[)([ xX])\]/)
+    if (!m) return false
+    const at = line.from + m[1].length
+    view.dispatch({ changes: { from: at, to: at + 1, insert: m[2] === ' ' ? 'x' : ' ' }, userEvent: 'input' })
+    return true
+  }
+
   export function focus() {
     view?.focus()
   }
@@ -229,6 +338,7 @@
     if (status === 'dirty') save()
     if (activeSave === save) activeSave = null
     view?.destroy()
+    view = undefined // chamadas tardias (ex.: setLocked no fim de uma exclusão) viram no-op
   })
 
   const labels: Record<Status, string> = {
@@ -283,6 +393,21 @@
   .cm :global(.cm-visualLineNumbers .cm-gutterElement) {
     padding: 0 10px 0 6px;
     text-align: right;
+  }
+  /* Lista do autocompletar de [[links]]: fonte da interface, não a do texto. */
+  .cm :global(.cm-tooltip-autocomplete > ul) {
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    max-height: 18em;
+  }
+  .cm :global(.cm-tooltip-autocomplete > ul > li) {
+    padding: 3px 10px;
+  }
+  .cm :global(.cm-completionDetail) {
+    margin-left: 1em;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--muted);
   }
   .cm :global(.cm-codeblock) {
     font-family: var(--mono);

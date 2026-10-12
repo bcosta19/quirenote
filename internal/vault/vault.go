@@ -7,19 +7,24 @@ package vault
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/fs"
+	"net/http"
 	"os"
 	"path"
 	"sort"
 	"strings"
+	"time"
 )
 
 var (
 	ErrConflict    = errors.New("arquivo foi modificado no disco")
 	ErrInvalidPath = errors.New("caminho inválido")
 	ErrNotNote     = errors.New("só arquivos .md podem ser editados")
+	ErrExists      = errors.New("já existe um arquivo com esse nome")
+	ErrBadName     = errors.New("o nome não pode conter # ^ [ ] | (o Obsidian não aceita; quebraria os links)")
 )
 
 // Extensões listadas na árvore. Imagens entram para o preview resolver ![[foto.png]]
@@ -67,6 +72,23 @@ func Hidden(p string) bool {
 		}
 	}
 	return false
+}
+
+// ValidName reporta se o nome novo (último trecho do caminho) pode ser citado num
+// [[link]]: o Obsidian recusa # ^ [ ] | em nomes, porque têm significado no link.
+// Só o nome novo é checado: pastas antigas com esses caracteres continuam usáveis.
+func ValidName(p string) bool {
+	return !strings.ContainsAny(path.Base(p), "#^[]|\r\n")
+}
+
+// Exists reporta se o caminho existe no vault.
+func (v *Vault) Exists(p string) bool {
+	p, err := clean(p)
+	if err != nil {
+		return false
+	}
+	_, err = v.root.Lstat(p)
+	return err == nil
 }
 
 func clean(p string) (string, error) {
@@ -179,10 +201,201 @@ func (v *Vault) Mkdir(p string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if !ValidName(p) {
+		return "", ErrBadName
+	}
 	if err := v.root.MkdirAll(p, 0o755); err != nil {
 		return "", err
 	}
 	return p, nil
+}
+
+// Create cria uma nota nova; falha com ErrExists se o arquivo já existir
+// (mesmo que o navegador ainda não saiba dele), sem nunca sobrescrever.
+func (v *Vault) Create(p, content string) (Note, error) {
+	p, err := clean(p)
+	if err != nil {
+		return Note{}, err
+	}
+	if strings.ToLower(path.Ext(p)) != ".md" {
+		return Note{}, ErrNotNote
+	}
+	if !ValidName(p) {
+		return Note{}, ErrBadName
+	}
+	if dir := path.Dir(p); dir != "." {
+		if err := v.root.MkdirAll(dir, 0o755); err != nil {
+			return Note{}, err
+		}
+	}
+	if err := v.createExcl(p, []byte(content)); err != nil {
+		return Note{}, err
+	}
+	return v.Read(p)
+}
+
+// createExcl grava um arquivo novo (O_EXCL: ErrExists se já houver) em p já validado.
+func (v *Vault) createExcl(p string, data []byte) error {
+	f, err := v.root.OpenFile(p, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+	if errors.Is(err, fs.ErrExist) {
+		return ErrExists
+	}
+	if err != nil {
+		return err
+	}
+	_, werr := f.Write(data)
+	if cerr := f.Close(); werr == nil {
+		werr = cerr
+	}
+	if werr != nil {
+		_ = v.root.Remove(p) // não deixa arquivo truncado que bloquearia novas tentativas
+		return werr
+	}
+	return nil
+}
+
+// ErrNotImage indica um anexo cujo conteúdo não é uma imagem aceita.
+var ErrNotImage = errors.New("o arquivo não é uma imagem PNG, JPEG, GIF, WebP ou BMP")
+
+// MaxAttachment é o tamanho máximo de uma imagem colada.
+const MaxAttachment = 20 << 20
+
+// Extensão pelo conteúdo (não pelo nome enviado). SVG fica de fora: pode conter script.
+var imageExt = map[string]string{
+	"image/png": ".png", "image/jpeg": ".jpg", "image/gif": ".gif", "image/webp": ".webp", "image/bmp": ".bmp",
+}
+
+// attachmentDir segue a configuração de anexos do Obsidian (.obsidian/app.json,
+// "attachmentFolderPath"): vazio ou "/" é a raiz do vault, "./" a pasta da nota,
+// "./sub" uma subpasta dela e outro valor uma pasta fixa do vault.
+func (v *Vault) attachmentDir(note string) string {
+	var cfg struct {
+		AttachmentFolderPath string `json:"attachmentFolderPath"`
+	}
+	if data, err := v.root.ReadFile(".obsidian/app.json"); err == nil {
+		_ = json.Unmarshal(data, &cfg)
+	}
+	dir := strings.TrimSpace(cfg.AttachmentFolderPath)
+	switch {
+	case dir == "" || dir == "/":
+		return "."
+	case dir == "." || strings.HasPrefix(dir, "./"):
+		noteDir := "."
+		if n, err := clean(note); err == nil {
+			noteDir = path.Dir(n)
+		}
+		return path.Join(noteDir, strings.TrimPrefix(dir, "."))
+	default:
+		return path.Clean(strings.Trim(dir, "/"))
+	}
+}
+
+// SaveImage grava uma imagem colada/arrastada na pasta de anexos, com o nome que o
+// Obsidian usa ("Pasted image AAAAMMDDhhmmss.png"), sem sobrescrever nada.
+func (v *Vault) SaveImage(note string, data []byte) (string, error) {
+	if len(data) == 0 || len(data) > MaxAttachment {
+		return "", ErrNotImage
+	}
+	ext, ok := imageExt[http.DetectContentType(data)]
+	if !ok {
+		return "", ErrNotImage
+	}
+	dir := v.attachmentDir(note)
+	if dir != "." {
+		d, err := clean(dir)
+		if err != nil {
+			return "", err
+		}
+		if err := v.root.MkdirAll(d, 0o755); err != nil {
+			return "", err
+		}
+		dir = d
+	}
+	base := "Pasted image " + time.Now().Format("20060102150405")
+	for i := 0; i < 100; i++ {
+		name := base + ext
+		if i > 0 {
+			name = fmt.Sprintf("%s %d%s", base, i, ext)
+		}
+		p := path.Join(dir, name)
+		err := v.createExcl(p, data)
+		if errors.Is(err, ErrExists) {
+			continue
+		}
+		return p, err
+	}
+	return "", ErrExists
+}
+
+// Move renomeia ou move um arquivo ou pasta dentro do vault, criando as pastas
+// do destino. Falha com ErrExists se o destino já existir (nunca sobrescreve).
+func (v *Vault) Move(from, to string) (string, error) {
+	from, err := clean(from)
+	if err != nil {
+		return "", err
+	}
+	to, err = clean(to)
+	if err != nil {
+		return "", err
+	}
+	if from == to {
+		return to, nil
+	}
+	if !ValidName(to) {
+		return "", ErrBadName
+	}
+	if _, err := v.root.Lstat(from); err != nil {
+		return "", err
+	}
+	// Pasta para dentro dela mesma (ex.: a -> a/b) deixaria tudo inacessível.
+	if strings.HasPrefix(to, from+"/") {
+		return "", ErrInvalidPath
+	}
+	// Limitação conhecida: entre este Lstat e o Rename há uma janela mínima em que
+	// outro programa (ex.: Syncthing) poderia criar o destino; os.Root não oferece
+	// RENAME_NOREPLACE. Aceitável num app pessoal.
+	if _, err := v.root.Lstat(to); err == nil {
+		return "", ErrExists
+	} else if !errors.Is(err, fs.ErrNotExist) {
+		return "", err
+	}
+	if dir := path.Dir(to); dir != "." {
+		if err := v.root.MkdirAll(dir, 0o755); err != nil {
+			return "", err
+		}
+	}
+	if err := v.root.Rename(from, to); err != nil {
+		return "", err
+	}
+	return to, nil
+}
+
+// TrashDir é a lixeira do vault, a mesma do Obsidian ("Mover para a lixeira do Obsidian").
+const TrashDir = ".trash"
+
+// Trash move um arquivo ou pasta para a lixeira do vault, sem apagar nada.
+// Se já houver algo com o mesmo nome na lixeira, acrescenta data e hora ao nome.
+func (v *Vault) Trash(p string) (string, error) {
+	p, err := clean(p)
+	if err != nil {
+		return "", err
+	}
+	if _, err := v.root.Lstat(p); err != nil {
+		return "", err
+	}
+	if err := v.root.MkdirAll(TrashDir, 0o755); err != nil {
+		return "", err
+	}
+	name := path.Base(p)
+	dest := path.Join(TrashDir, name)
+	if _, err := v.root.Lstat(dest); err == nil {
+		ext := path.Ext(name)
+		dest = path.Join(TrashDir, fmt.Sprintf("%s %s%s", strings.TrimSuffix(name, ext), time.Now().Format("2006-01-02 150405.000"), ext))
+	}
+	if err := v.root.Rename(p, dest); err != nil {
+		return "", err
+	}
+	return dest, nil
 }
 
 // OpenFile abre um arquivo do vault para leitura (PDF, EPUB, imagens).

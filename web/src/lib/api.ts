@@ -19,6 +19,8 @@ export interface VaultEvent {
   op: 'write' | 'create' | 'remove' | 'rename'
 }
 
+export class ExistsError extends Error {}
+
 export class ConflictError extends Error {
   constructor(public current: Note) {
     super('arquivo foi modificado no disco')
@@ -56,9 +58,74 @@ export async function saveNote(path: string, content: string, mtime: string): Pr
   return json(res)
 }
 
-export async function createDir(path: string): Promise<{ path: string }> {
-  return json(await fetch(`/api/dirs/${enc(path)}`, { method: 'POST' }))
+/** Cria uma nota nova; falha se já existir (o servidor nunca sobrescreve). */
+export async function createNote(path: string, content: string): Promise<Note> {
+  const res = await fetch(`/api/notes/${enc(path)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content }),
+  })
+  if (res.status === 409) throw new ExistsError((await res.json()).error)
+  return json(res)
 }
+
+export async function createDir(path: string): Promise<{ path: string }> {
+  // O servidor exige JSON em tudo que altera o vault (proteção contra CSRF).
+  return json(
+    await fetch(`/api/dirs/${enc(path)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }),
+  )
+}
+
+export interface SearchResult {
+  path: string
+  line: number
+  parts: { text: string; hit?: boolean }[]
+}
+
+export async function searchNotes(q: string, signal?: AbortSignal): Promise<SearchResult[]> {
+  return json(await fetch(`/api/search?q=${encodeURIComponent(q)}`, { signal }))
+}
+
+async function postJSON<T>(url: string, body: unknown): Promise<T> {
+  const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+  if (res.status === 409) throw new ExistsError((await res.json()).error)
+  return json(res)
+}
+
+/** Renomeia/move arquivo ou pasta; ExistsError se o destino já existir. */
+export const moveItem = (from: string, to: string) => postJSON<{ path: string }>('/api/move', { from, to })
+
+/** Move para a lixeira do vault (.trash); nada é apagado. */
+export const trashItem = (path: string) => postJSON<{ path: string }>('/api/trash', { path })
+
+function toBase64(file: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result).replace(/^data:[^,]*,/, ''))
+    reader.onerror = () => reject(reader.error ?? new Error('não foi possível ler a imagem'))
+    reader.readAsDataURL(file)
+  })
+}
+
+/** Grava uma imagem colada/arrastada na pasta de anexos do vault; devolve o caminho criado. */
+export async function uploadImage(note: string, file: Blob): Promise<string> {
+  const { path } = await postJSON<{ path: string }>('/api/images', { note, data: await toBase64(file) })
+  return path
+}
+
+/** Trechos de outras notas com [[link]] para a nota. */
+export async function getBacklinks(note: string, signal?: AbortSignal): Promise<SearchResult[]> {
+  return json(await fetch(`/api/backlinks?note=${encodeURIComponent(note)}`, { signal }))
+}
+
+/** Quais notas teriam os [[links]] atualizados após renomear from → to (nada é gravado). */
+export async function previewRelink(from: string, to: string): Promise<{ files: string[]; ambiguous: boolean }> {
+  return json(await fetch(`/api/relink?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`))
+}
+
+/** Atualiza os [[links]] de outras notas depois de renomear from → to. */
+export const relinkNotes = (from: string, to: string) =>
+  postJSON<{ updated: string[]; skipped: string[]; ambiguous: boolean }>('/api/relink', { from, to })
 
 export function subscribe(onEvent: (e: VaultEvent) => void): () => void {
   const es = new EventSource('/api/events')

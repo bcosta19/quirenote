@@ -4,24 +4,37 @@
   let {
     text,
     fileUrl,
+    exists,
     onlink,
+    ontoggle,
   }: {
     text: string
     fileUrl: (target: string) => string
-    onlink: (target: string, page?: number) => void
+    exists: (target: string) => boolean
+    /** Clique numa caixa de tarefa: alterna a linha na nota (via editor). */
+    ontoggle?: (line: number) => void
+    onlink: (target: string, page?: number, cfi?: string) => void
   } = $props()
 
-  const render = $derived(createRenderer({ fileUrl }))
+  const render = $derived(createRenderer({ fileUrl, exists }))
   const html = $derived(render(text))
 
   function onclick(e: MouseEvent) {
+    const box = (e.target as HTMLElement).closest<HTMLInputElement>('input.task-box')
+    if (box) {
+      // O preview é redesenhado a partir do texto; quem muda a nota é o editor.
+      e.preventDefault()
+      const line = Number(box.dataset.line)
+      if (line > 0) ontoggle?.(line)
+      return
+    }
     const a = (e.target as HTMLElement).closest('a')
     if (!a) return
     e.preventDefault()
     const target = a.dataset.target
     const href = a.getAttribute('href') ?? ''
     if (target) {
-      onlink(target, a.dataset.page ? Number(a.dataset.page) : undefined)
+      onlink(target, a.dataset.page ? Number(a.dataset.page) : undefined, a.dataset.cfi)
     } else if (/^(https?:|mailto:)/.test(href)) {
       window.open(href, '_blank', 'noopener')
     } else if (href && !href.startsWith('#')) {
@@ -78,6 +91,11 @@
     border-bottom: 1px solid color-mix(in srgb, var(--link) 35%, transparent);
     cursor: pointer;
   }
+  /* Link para nota que ainda não existe (clicar oferece criar), como no Obsidian. */
+  article :global(a.missing) {
+    opacity: 0.6;
+    border-bottom-style: dashed;
+  }
   article :global(a.embed) {
     font-style: italic;
   }
@@ -113,6 +131,10 @@
   article :global(li.task) {
     list-style: none;
     margin-left: -1.2em;
+  }
+  article :global(input.task-box) {
+    cursor: pointer;
+    accent-color: var(--accent);
   }
   article :global(li > p) {
     margin: 0;
