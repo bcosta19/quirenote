@@ -177,7 +177,7 @@ func (v *Vault) Save(p, content string, baseMtime int64) (Note, error) {
 			}
 			return current, ErrConflict
 		}
-		if err != nil && !errors.Is(err, fs.ErrNotExist) {
+		if err != nil {
 			return Note{}, err
 		}
 	}
@@ -334,6 +334,8 @@ func (v *Vault) SaveImage(note string, data []byte) (string, error) {
 // Move renames or moves a file or folder inside the vault, creating the destination
 // folders. It fails with ErrExists if the destination exists (never overwrites).
 func (v *Vault) Move(from, to string) (string, error) {
+	v.mu.Lock()
+	defer v.mu.Unlock()
 	from, err := clean(from)
 	if err != nil {
 		return "", err
@@ -380,6 +382,8 @@ const TrashDir = ".trash"
 // Trash moves a file or folder to the vault trash, deleting nothing.
 // If the trash already has something with the same name, it appends date and time.
 func (v *Vault) Trash(p string) (string, error) {
+	v.mu.Lock()
+	defer v.mu.Unlock()
 	p, err := clean(p)
 	if err != nil {
 		return "", err

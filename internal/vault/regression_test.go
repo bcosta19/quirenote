@@ -44,3 +44,32 @@ func TestConcurrentSavesRejectStaleVersions(t *testing.T) {
 		t.Fatalf("%d clients overwrote the same version; want exactly one successful save", saved)
 	}
 }
+
+func TestStaleSaveDoesNotResurrectMovedOrTrashedNotes(t *testing.T) {
+	for _, operation := range []string{"move", "trash", "move folder"} {
+		t.Run(operation, func(t *testing.T) {
+			v, dir := newVault(t)
+			base, err := v.Create("notes/draft.md", "original")
+			if err != nil {
+				t.Fatal(err)
+			}
+			switch operation {
+			case "move":
+				_, err = v.Move(base.Path, "archive/draft.md")
+			case "trash":
+				_, err = v.Trash(base.Path)
+			case "move folder":
+				_, err = v.Move("notes", "archive")
+			}
+			if err != nil {
+				t.Fatal(err)
+			}
+			if _, err := v.Save(base.Path, "stale autosave", base.Mtime); !os.IsNotExist(err) {
+				t.Fatalf("stale Save = %v; want a missing-file error", err)
+			}
+			if _, err := os.Stat(filepath.Join(dir, base.Path)); !os.IsNotExist(err) {
+				t.Fatalf("the stale save recreated the old path: %v", err)
+			}
+		})
+	}
+}
