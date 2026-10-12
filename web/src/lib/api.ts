@@ -19,6 +19,8 @@ export interface VaultEvent {
   op: 'write' | 'create' | 'remove' | 'rename'
 }
 
+export class ExistsError extends Error {}
+
 export class ConflictError extends Error {
   constructor(public current: Note) {
     super('arquivo foi modificado no disco')
@@ -56,8 +58,22 @@ export async function saveNote(path: string, content: string, mtime: string): Pr
   return json(res)
 }
 
+/** Cria uma nota nova; falha se já existir (o servidor nunca sobrescreve). */
+export async function createNote(path: string, content: string): Promise<Note> {
+  const res = await fetch(`/api/notes/${enc(path)}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ content }),
+  })
+  if (res.status === 409) throw new ExistsError((await res.json()).error)
+  return json(res)
+}
+
 export async function createDir(path: string): Promise<{ path: string }> {
-  return json(await fetch(`/api/dirs/${enc(path)}`, { method: 'POST' }))
+  // O servidor exige JSON em tudo que altera o vault (proteção contra CSRF).
+  return json(
+    await fetch(`/api/dirs/${enc(path)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }),
+  )
 }
 
 export function subscribe(onEvent: (e: VaultEvent) => void): () => void {

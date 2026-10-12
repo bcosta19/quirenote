@@ -20,6 +20,7 @@ var (
 	ErrConflict    = errors.New("arquivo foi modificado no disco")
 	ErrInvalidPath = errors.New("caminho inválido")
 	ErrNotNote     = errors.New("só arquivos .md podem ser editados")
+	ErrExists      = errors.New("já existe um arquivo com esse nome")
 )
 
 // Extensões listadas na árvore. Imagens entram para o preview resolver ![[foto.png]]
@@ -183,6 +184,39 @@ func (v *Vault) Mkdir(p string) (string, error) {
 		return "", err
 	}
 	return p, nil
+}
+
+// Create cria uma nota nova; falha com ErrExists se o arquivo já existir
+// (mesmo que o navegador ainda não saiba dele), sem nunca sobrescrever.
+func (v *Vault) Create(p, content string) (Note, error) {
+	p, err := clean(p)
+	if err != nil {
+		return Note{}, err
+	}
+	if strings.ToLower(path.Ext(p)) != ".md" {
+		return Note{}, ErrNotNote
+	}
+	if dir := path.Dir(p); dir != "." {
+		if err := v.root.MkdirAll(dir, 0o755); err != nil {
+			return Note{}, err
+		}
+	}
+	f, err := v.root.OpenFile(p, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+	if errors.Is(err, fs.ErrExist) {
+		return Note{}, ErrExists
+	}
+	if err != nil {
+		return Note{}, err
+	}
+	_, werr := f.WriteString(content)
+	if cerr := f.Close(); werr == nil {
+		werr = cerr
+	}
+	if werr != nil {
+		_ = v.root.Remove(p) // não deixa nota truncada que bloquearia novas tentativas
+		return Note{}, werr
+	}
+	return v.Read(p)
 }
 
 // OpenFile abre um arquivo do vault para leitura (PDF, EPUB, imagens).

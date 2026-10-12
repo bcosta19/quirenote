@@ -1,10 +1,12 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { createDir, fileUrl, getTree, saveNote, subscribe, type Entry } from './lib/api'
+  import { ExistsError, createDir, createNote, fileUrl, getTree, subscribe, type Entry } from './lib/api'
   import { pageLink, resolveLink } from './lib/links'
   import Editor from './lib/Editor.svelte'
   import PdfReader from './lib/PdfReader.svelte'
   import Preview from './lib/Preview.svelte'
+  import QuickSwitcher from './lib/QuickSwitcher.svelte'
+  import PromptDialog from './lib/PromptDialog.svelte'
   import Tree from './lib/Tree.svelte'
   import type { Theme } from './lib/theme'
 
@@ -80,8 +82,53 @@
       params.set('doc', doc)
       params.set('page', String(page))
     }
-    history.replaceState(null, '', `#${params}`)
+    // Trocar de nota/PDF cria uma entrada no histórico (Voltar/Avançar do navegador);
+    // mudar só a página do PDF apenas atualiza a entrada atual.
+    const current = new URLSearchParams(location.hash.slice(1))
+    const same = current.get('note') === params.get('note') && current.get('doc') === params.get('doc')
+    if (same) history.replaceState(null, '', `#${params}`)
+    else history.pushState(null, '', `#${params}`)
   })
+
+  // Voltar/Avançar do navegador (ou Alt+←/→) restaura nota, PDF e página.
+  function onPopState() {
+    const params = new URLSearchParams(location.hash.slice(1))
+    note = params.get('note')
+    const nextDoc = params.get('doc')
+    if (nextDoc) {
+      closeLocal()
+      page = Number(params.get('page') || 1)
+      readerOpen = true
+    }
+    doc = nextDoc
+  }
+
+  // Abertos recentemente, para a troca rápida (Ctrl+O / Ctrl+P).
+  let recent = $state<string[]>(loadRecent())
+  function loadRecent(): string[] {
+    try {
+      const v = JSON.parse(localStorage.getItem('notas:recent') || '[]')
+      return Array.isArray(v) ? v.filter((p) => typeof p === 'string') : []
+    } catch {
+      return [] // valor corrompido não pode impedir o app de abrir
+    }
+  }
+  let switcherOpen = $state(false)
+
+  // Diálogo de texto com o visual do app (no lugar do prompt() do navegador).
+  let dialog = $state<{ message: string; value: string; hint: string; resolve: (v: string | null) => void } | null>(null)
+  function ask(message: string, value = '', hint = ''): Promise<string | null> {
+    return new Promise((resolve) => (dialog = { message, value, hint, resolve }))
+  }
+  function closeDialog(result: string | null) {
+    dialog?.resolve(result)
+    dialog = null
+    setTimeout(() => editor?.focus())
+  }
+  function remember(path: string) {
+    recent = [path, ...recent.filter((p) => p !== path)].slice(0, 30)
+    localStorage.setItem('notas:recent', JSON.stringify(recent))
+  }
   $effect(() => localStorage.setItem('notas:sidebar', sidebarOpen ? '1' : '0'))
   $effect(() => localStorage.setItem('notas:notes', notesOpen ? '1' : '0'))
 
@@ -149,12 +196,15 @@
   }
   const visibleTree = $derived(filterTree(onlyDocs(tree), filter.trim().toLowerCase()))
 
+  let toastTimer: ReturnType<typeof setTimeout> | undefined
   function flash(msg: string) {
     toast = msg
-    setTimeout(() => (toast = ''), 2500)
+    clearTimeout(toastTimer) // um aviso novo não some antes da hora por causa do anterior
+    toastTimer = setTimeout(() => (toast = ''), 3000)
   }
 
   function openPath(path: string, targetPage?: number) {
+    if (/\.(md|pdf)$/i.test(path)) remember(path)
     if (/\.md$/i.test(path)) {
       note = path
       notesOpen = true
@@ -216,29 +266,39 @@
     const base = reader ? reader.link.split('/').pop()!.replace(/\.pdf$/i, '') : 'Nova nota'
     let path: string | undefined
     if (dir) {
-      const name = prompt(`Nova nota em "${dir}":`, base)?.trim().replace(/^\/+/, '')
+      const name = (await ask(`Nova nota em "${dir}":`, base))?.trim().replace(/^\/+/, '')
       if (!name) return
       path = `${dir}/${name}`
     } else {
       const suggestion = reader ? `Book notes/${base}.md` : `Random notes/${base}.md`
-      path = prompt('Caminho da nova nota (relativo ao vault):', suggestion)?.trim()
+      path = (await ask('Nova nota:', suggestion, 'Caminho relativo ao vault; pastas que não existem são criadas.'))?.trim()
     }
-    if (!path) return
+    if (path) await createAndOpen(path)
+  }
+
+  /**
+   * Cria a nota (com título e, se houver PDF aberto, o frontmatter source) e a abre.
+   * Se já existir, só abre: o servidor nunca sobrescreve uma nota existente.
+   */
+  async function createAndOpen(path: string) {
+    path = path.trim().replace(/^\/+/, '')
     if (!path.endsWith('.md')) path += '.md'
     if (invalidPath(path)) return flash('Nome inválido: não use "..", "." no início ou barras vazias')
-    if (allPaths(tree).has(path)) {
-      openPath(path)
-      return
-    }
+    if (allPaths(tree).has(path)) return openPath(path)
     const title = path.split('/').pop()!.replace(/\.md$/, '')
     const content = reader ? `---\nsource: "[[${reader.link}]]"\n---\n\n# ${title}\n\n` : `# ${title}\n\n`
     try {
-      await saveNote(path, content, '0')
+      await createNote(path, content)
+    } catch (e) {
+      // Já existe (Neovim/Obsidian criou antes de a árvore atualizar): abre a existente.
+      if (!(e instanceof ExistsError)) return flash((e as Error).message)
+    }
+    try {
       tree = await getTree()
-      openPath(path)
     } catch (e) {
       flash((e as Error).message)
     }
+    openPath(path)
   }
 
   /** Recusa ., .. e nomes ocultos (o servidor também recusa; aqui a mensagem fica clara). */
@@ -248,7 +308,7 @@
 
   /** parent: pasta escolhida na árvore; sem ela, cria a partir da raiz do vault. */
   async function newFolder(parent?: string) {
-    const name = prompt(parent ? `Nova subpasta em "${parent}":` : 'Nova pasta (relativa ao vault):')
+    const name = (await ask(parent ? `Nova subpasta em "${parent}":` : 'Nova pasta:', '', parent ? '' : 'Caminho relativo ao vault.'))
       ?.trim()
       .replace(/^\/+|\/+$/g, '')
     if (!name) return
@@ -266,8 +326,18 @@
     if (reader && editor) editor.insert(pageLink(reader.link, page) + ' ')
   }
 
-  // Ctrl+E na fase de captura: chega antes do editor, cujo modo vim usa Ctrl+E para rolar.
+  // Atalhos na fase de captura: chegam antes do editor, cujo modo vim usa Ctrl+E (rolar)
+  // e Ctrl+O (voltar na lista de saltos).
   function onKeyCapture(e: KeyboardEvent) {
+    if (dialog) return
+    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && /^[op]$/i.test(e.key)) {
+      // Com a busca aberta, Ctrl+P sobe na lista (tratado nela) e só Ctrl+O fecha.
+      if (switcherOpen && e.key.toLowerCase() === 'p') return
+      e.preventDefault()
+      e.stopPropagation()
+      switcherOpen = !switcherOpen
+      return
+    }
     if ((e.ctrlKey || e.metaKey) && !e.shiftKey && !e.altKey && e.key.toLowerCase() === 'e' && note) {
       e.preventDefault()
       e.stopPropagation()
@@ -317,7 +387,30 @@
   })
 </script>
 
-<svelte:window onkeydown={onKey} onkeydowncapture={onKeyCapture} />
+<svelte:window onkeydown={onKey} onkeydowncapture={onKeyCapture} onpopstate={onPopState} />
+
+{#if dialog}
+  <PromptDialog
+    message={dialog.message}
+    value={dialog.value}
+    hint={dialog.hint}
+    onsubmit={(v) => closeDialog(v)}
+    oncancel={() => closeDialog(null)}
+  />
+{/if}
+
+{#if switcherOpen}
+  <QuickSwitcher
+    files={[...allPaths(tree)].filter((p) => /\.(md|pdf|epub)$/i.test(p))}
+    {recent}
+    onopen={(p) => openPath(p)}
+    oncreate={(p) => createAndOpen(p)}
+    onclose={() => {
+      switcherOpen = false
+      setTimeout(() => editor?.focus())
+    }}
+  />
+{/if}
 
 <input type="file" accept="application/pdf,.pdf" hidden bind:this={fileInput} onchange={openLocal} />
 
@@ -325,7 +418,7 @@
   {#if sidebarOpen}
     <aside class="sidebar">
       <div class="sidebar-head">
-        <input placeholder="Filtrar…" bind:value={filter} />
+        <input placeholder="Filtrar…  (Ctrl+O busca)" bind:value={filter} />
         <button onclick={() => newNote()} title="Nova nota">+</button>
         <button onclick={() => newFolder()} title="Nova pasta">📁+</button>
         <button onclick={() => fileInput.click()} title="Abrir PDF deste dispositivo">📂</button>
@@ -411,7 +504,7 @@
           <div class="empty">
             <p>Abra uma nota na barra lateral ou crie uma com <kbd>+</kbd>. Para ler um PDF deste dispositivo (fora do vault), use <kbd>📂</kbd>.</p>
             <p class="muted">
-              <kbd>Ctrl+E</kbd> preview ·  <kbd>Ctrl+\</kbd> recolhe as notas · <kbd>Alt+\</kbd> recolhe o PDF · <kbd>Ctrl+Shift+\</kbd> barra lateral · <kbd>Ctrl+Shift+L</kbd> insere link da página ·
+              <kbd>Ctrl+O</kbd> busca rápida · <kbd>Ctrl+E</kbd> preview ·  <kbd>Ctrl+\</kbd> recolhe as notas · <kbd>Alt+\</kbd> recolhe o PDF · <kbd>Ctrl+Shift+\</kbd> barra lateral · <kbd>Ctrl+Shift+L</kbd> insere link da página ·
               <kbd>Alt+↑/↓</kbd> rola o PDF · <kbd>Alt+Shift+↑/↓</kbd> muda de página · <kbd>Ctrl+clique</kbd> ou <kbd>Ctrl+Enter</kbd> segue um <code>[[link]]</code> · <kbd>:w</kbd> salva
             </p>
           </div>
@@ -420,7 +513,7 @@
     </div>
   </main>
 
-  {#if toast}<div class="toast">{toast}</div>{/if}
+  {#if toast}<div class="toast" role="status">{toast}</div>{/if}
 </div>
 
 <style>
@@ -503,13 +596,18 @@
   }
   .toast {
     position: fixed;
-    bottom: 16px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
+    z-index: 70;
+    max-width: min(560px, 90vw);
     background: var(--panel);
     border: 1px solid var(--border);
-    padding: 8px 14px;
-    border-radius: 6px;
+    border-left: 3px solid var(--accent);
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2);
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 13px;
   }
   .resizer {
     flex: 0 0 5px;

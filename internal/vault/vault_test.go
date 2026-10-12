@@ -146,3 +146,23 @@ func TestMkdir(t *testing.T) {
 		t.Fatal(err)
 	}
 }
+
+func TestCreateNeverOverwrites(t *testing.T) {
+	v, dir := newVault(t)
+	n, err := v.Create("novas/ideia.md", "# Ideia\n")
+	if err != nil || n.Content != "# Ideia\n" {
+		t.Fatalf("Create = %+v, %v", n, err)
+	}
+	if _, err := v.Create("a.md", "apagaria tudo"); !errors.Is(err, ErrExists) {
+		t.Fatalf("esperava ErrExists, veio %v", err)
+	}
+	if b, _ := os.ReadFile(filepath.Join(dir, "a.md")); string(b) != "# A" {
+		t.Fatalf("nota existente foi alterada: %q", b)
+	}
+	if _, err := v.Create("livros/b.pdf", "x"); !errors.Is(err, ErrNotNote) {
+		t.Fatalf("esperava ErrNotNote, veio %v", err)
+	}
+	if _, err := v.Create("../fora.md", "x"); err == nil {
+		t.Fatal("caminho fora do vault deveria falhar")
+	}
+}

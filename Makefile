@@ -8,7 +8,7 @@ dev:
 	@$(MAKE) -j2 dev-api dev-web
 
 dev-api:
-	go run ./cmd/notas -vault "$(VAULT)" -addr $(ADDR) -debug
+	./scripts/dev-api.sh -vault "$(VAULT)" -addr $(ADDR) -debug
 
 dev-web:
 	cd web && npm run dev

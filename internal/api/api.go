@@ -33,11 +33,28 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("PUT /api/notes/{path...}", s.saveNote)
 	mux.HandleFunc("GET /api/files/{path...}", s.file)
 	mux.HandleFunc("POST /api/dirs/{path...}", s.mkdir)
+	mux.HandleFunc("POST /api/notes/{path...}", s.createNote)
 	mux.HandleFunc("GET /api/events", s.events)
 	if s.static != nil {
 		mux.Handle("GET /", spa(s.static))
 	}
-	return logRequests(mux)
+	return logRequests(requireJSON(mux))
+}
+
+// requireJSON recusa requisições que alteram o vault sem Content-Type JSON.
+// Formulários e fetch "no-cors" de outras páginas não conseguem enviar esse
+// cabeçalho sem preflight, então isso bloqueia CSRF a partir do navegador.
+func requireJSON(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodGet && r.Method != http.MethodHead {
+			ct := r.Header.Get("Content-Type")
+			if mt, _, _ := strings.Cut(ct, ";"); strings.TrimSpace(mt) != "application/json" {
+				writeJSON(w, http.StatusUnsupportedMediaType, map[string]string{"error": "use Content-Type: application/json"})
+				return
+			}
+		}
+		next.ServeHTTP(w, r)
+	})
 }
 
 func (s *Server) tree(w http.ResponseWriter, r *http.Request) {
@@ -80,6 +97,29 @@ func (s *Server) saveNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, note)
+}
+
+type createRequest struct {
+	Content string `json:"content"`
+}
+
+// createNote cria uma nota nova; 409 se já existir (nunca sobrescreve).
+func (s *Server) createNote(w http.ResponseWriter, r *http.Request) {
+	var req createRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 10<<20)).Decode(&req); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "JSON inválido"})
+		return
+	}
+	note, err := s.vault.Create(r.PathValue("path"), req.Content)
+	if errors.Is(err, vault.ErrExists) {
+		writeJSON(w, http.StatusConflict, map[string]string{"error": err.Error()})
+		return
+	}
+	if err != nil {
+		writeErr(w, err)
+		return
+	}
+	writeJSON(w, http.StatusCreated, note)
 }
 
 func (s *Server) mkdir(w http.ResponseWriter, r *http.Request) {
