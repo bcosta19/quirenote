@@ -349,6 +349,78 @@ test('the font settings can go back to the default fonts', async ({ page }) => {
   expect(await page.evaluate(() => localStorage.getItem('quirenote:fonts'))).toBe('{"ui":"","editor":"","mono":""}')
 })
 
+test('a dropped character never stays in the field while typing', async ({ page }) => {
+  await mockVault(page, { 'A.md': 'alpha' })
+  await page.goto('/#note=A.md')
+  await openFonts(page)
+  const field = fontField(page, 'Interface')
+  // Typed one character at a time and in the middle: the field must always show the name alone.
+  await field.click()
+  await field.pressSequentially('Fira Sans', { delay: 5 })
+  await field.press('Home')
+  await field.press('ArrowRight')
+  await field.pressSequentially('}', { delay: 5 })
+  await expect(field).toHaveValue('Fira Sans')
+  await field.pressSequentially('X', { delay: 5 })
+  await expect(field).toHaveValue('FXira Sans')
+  expect(await page.evaluate(() => document.documentElement.style.getPropertyValue('--font-ui-choice'))).toBe(
+    "'FXira Sans', var(--font-ui-tail)",
+  )
+})
+
+test('an injected font stack is ignored when the app starts too', async ({ page }) => {
+  await page.addInitScript(() =>
+    localStorage.setItem(
+      'quirenote:fonts',
+      // Passes a plain character whitelist, but is not a list the app itself would ever write.
+      JSON.stringify({
+        ui: 'expression(alert(1))',
+        editor: "'Literata', var(--font-editor-tail), serif",
+        mono: "'Fira Code', var(--font-mono-tail)",
+      }),
+    ),
+  )
+  await mockVault(page, { 'A.md': 'alpha' })
+  await page.goto('/#note=A.md')
+  await expect(page.locator('.editor .status')).toHaveText('saved')
+  // What the app itself would have written survives; the rest falls back to the default chain.
+  expect(await page.evaluate(() => document.documentElement.style.getPropertyValue('--font-mono-choice'))).toBe(
+    "'Fira Code', var(--font-mono-tail)",
+  )
+  expect(await page.evaluate(() => document.documentElement.style.getPropertyValue('--font-ui-choice'))).toBe('')
+  expect(await fontOf(page, 'html')).toContain('system-ui')
+  expect(await fontOf(page, '.cm-scroller')).toContain('EB Garamond')
+  await openFonts(page)
+  await expect(fontField(page, 'Interface')).toHaveValue('')
+  await expect(fontField(page, 'Notes')).toHaveValue('')
+  await expect(fontField(page, 'Code')).toHaveValue('Fira Code')
+})
+
+test('the fonts dialog keeps the app shortcuts from acting, and closes with Escape', async ({ page }) => {
+  await mockVault(page, { 'A.md': 'alpha' })
+  await page.goto('/#note=A.md')
+  await expect(page.locator('.editor .status')).toHaveText('saved')
+  await openFonts(page)
+  // Tab can take the focus out of the dialog; the shortcuts must not act behind it.
+  await page.locator('.tree button').first().focus()
+  await page.keyboard.press('Control+\\')
+  await page.keyboard.press('Control+e')
+  await expect(page.locator('.notes-pane')).not.toHaveClass(/hidden/)
+  await expect(page.locator('.editor-wrap')).not.toHaveClass(/hidden/)
+  await expect(page.getByRole('dialog', { name: 'Fonts' })).toBeVisible()
+})
+
+test('closing the fonts dialog gives the focus back to its button', async ({ page }) => {
+  await mockVault(page, { 'A.md': 'alpha' })
+  await page.goto('/')
+  const button = page.getByRole('button', { name: 'Fonts', exact: true })
+  await button.click()
+  await expect(page.getByRole('dialog', { name: 'Fonts' })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('dialog', { name: 'Fonts' })).toBeHidden()
+  await expect(button).toBeFocused()
+})
+
 test('a font name typed with CSS punctuation keeps only the name', async ({ page }) => {
   await mockVault(page, { 'A.md': 'alpha' })
   await page.goto('/#note=A.md')

@@ -32,9 +32,13 @@ const KEY = 'quirenote:fonts'
 
 /**
  * A saved stack is a ready-made CSS font list, applied before the first paint by
- * public/theme-init.js. Keep that script's character test in sync with this one.
+ * public/theme-init.js. Keep that script's test in sync with this one.
+ *
+ * It accepts exactly what fontStack() writes: the family (quoted, or a CSS generic keyword) and
+ * the tail of the role. Anything else is ignored on both paths, so a hand-edited value cannot
+ * reach font-family as something the app itself would never produce.
  */
-const STACK_RE = /^[\p{L}\p{N}' (),._-]{1,160}$/u
+const STACK_RE = /^(?:'[\p{L}\p{N} ._-]{1,64}'|[a-z][a-z0-9-]{0,20}), var\(--font-(?:ui|editor|mono)-tail\)$/u
 
 /** Generic families are CSS keywords: quoting one turns it into a family name that does not exist. */
 const GENERIC = new Set([
@@ -60,12 +64,15 @@ const GENERIC = new Set([
  */
 export function cleanFontName(value: unknown): string {
   if (typeof value !== 'string') return ''
-  return value
-    .replace(/[^\p{L}\p{N} ._-]+/gu, '')
-    .replace(/\s+/g, ' ')
-    .trim()
-    .slice(0, 64)
-    .trim()
+  return keepFontChars(value).replace(/\s+/g, ' ').trim().slice(0, 64).trim()
+}
+
+/**
+ * The name without the characters it cannot have, but keeping the spaces and the length: a text
+ * field uses it to tell a dropped character from a space it should let the user type.
+ */
+export function keepFontChars(value: string): string {
+  return value.replace(/[^\p{L}\p{N} ._-]+/gu, '')
 }
 
 /** The custom font as CSS: the family, then the default chain of the role (accents still render). */

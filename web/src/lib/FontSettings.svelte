@@ -6,6 +6,7 @@
     FONT_LABELS,
     FONT_ROLES,
     cleanFontName,
+    keepFontChars,
     listSystemFonts,
     type FontPrefs,
     type FontRole,
@@ -26,8 +27,12 @@
   let installed = $state<string[]>([])
   let listing = $state(true)
 
+  // The field of each role, to focus the first one when the dialog opens.
+  const fields = $state<Partial<Record<FontRole, HTMLInputElement>>>({})
+
   onMount(async () => {
-    document.getElementById('font-ui')?.focus()
+    // Typing then replaces the current name instead of appending to it.
+    fields[FONT_ROLES[0]]?.select()
     installed = await listSystemFonts()
     listing = false
   })
@@ -36,6 +41,13 @@
   function set(e: Event, role: FontRole) {
     const input = e.currentTarget as HTMLInputElement
     fonts[role] = cleanFontName(input.value)
+    // A character dropped here would stay on screen until the next keystroke: Svelte only
+    // rewrites the field when the name changes, and dropping one does not change it.
+    if (keepFontChars(input.value) !== input.value) {
+      const caret = keepFontChars(input.value.slice(0, input.selectionStart ?? 0)).length
+      input.value = cleanFontName(input.value)
+      input.setSelectionRange(caret, caret)
+    }
   }
 
   function onkeydown(e: KeyboardEvent) {
@@ -56,7 +68,8 @@
       {#if listing}
         Asking the browser for the fonts installed on this device…
       {:else if installed.length}
-        {installed.length} fonts installed on this device. Any name also works, even one the browser does not list.
+        {installed.length} font{installed.length === 1 ? '' : 's'} installed on this device. Any name also works, even one the
+        browser does not list.
       {:else}
         This browser cannot list the fonts installed on this device (or the permission was refused): type the name, as in “Inter”.
       {/if}
@@ -71,6 +84,7 @@
         <!-- The field itself uses the font it is choosing, so the choice is visible. -->
         <input
           id="font-{role}"
+          bind:this={fields[role]}
           value={fonts[role]}
           oninput={(e) => set(e, role)}
           placeholder="Default"

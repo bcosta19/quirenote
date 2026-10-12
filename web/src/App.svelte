@@ -92,6 +92,7 @@
   let fonts = $state<FontPrefs>(loadFonts())
   let fontsOpen = $state(false)
   let toast = $state('')
+  let fontsBtn: HTMLButtonElement
   let editor: ReturnType<typeof Editor> | undefined = $state()
   let fileInput: HTMLInputElement
   let pdf: ReturnType<typeof PdfReader> | undefined = $state()
@@ -774,6 +775,9 @@
   }
 
   function onKey(e: KeyboardEvent) {
+    // A Tab can take the focus out of a dialog, so this cannot rely on the dialog stopping the
+    // event: with one open the app must not act behind it (same as onKeyCapture above).
+    if (dialog || fontsOpen) return
     // Outside the editor (which handles them and sets defaultPrevented), the same PDF shortcuts.
     if (!e.defaultPrevented && e.altKey && !e.ctrlKey && !e.metaKey && activeReader && readerOpen) {
       const dir = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0
@@ -839,7 +843,8 @@
     bind:fonts
     onclose={() => {
       fontsOpen = false
-      setTimeout(() => editor?.focus())
+      // Without a note open there is no editor to go back to, and the focus would be lost.
+      setTimeout(() => (editor ?? fontsBtn).focus())
     }}
   />
 {/if}
@@ -967,7 +972,12 @@
         title={theme === 'light' ? 'Dark theme' : 'Light theme (paper)'}
         aria-label="Toggle theme">{#if theme === 'light'}<Moon size={16} />{:else}<Sun size={16} />{/if}</button
       >
-      <button onclick={() => (fontsOpen = true)} title="Fonts: interface, notes and code" aria-label="Fonts"><Type size={16} /></button>
+      <button
+        bind:this={fontsBtn}
+        onclick={() => (fontsOpen = true)}
+        title="Fonts: interface, notes and code"
+        aria-label="Fonts"><Type size={16} /></button
+      >
       <button onclick={toggleNotes} title="Notes (Ctrl+\)">
         {#if notesOpen}Collapse notes <PanelRightClose size={16} />{:else}<PanelRightOpen size={16} /> Notes{/if}
       </button>
