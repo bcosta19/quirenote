@@ -7,9 +7,11 @@ package vault
 import (
 	"crypto/rand"
 	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io/fs"
+	"net/http"
 	"os"
 	"path"
 	"sort"
@@ -202,22 +204,103 @@ func (v *Vault) Create(p, content string) (Note, error) {
 			return Note{}, err
 		}
 	}
-	f, err := v.root.OpenFile(p, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
-	if errors.Is(err, fs.ErrExist) {
-		return Note{}, ErrExists
-	}
-	if err != nil {
+	if err := v.createExcl(p, []byte(content)); err != nil {
 		return Note{}, err
 	}
-	_, werr := f.WriteString(content)
+	return v.Read(p)
+}
+
+// createExcl grava um arquivo novo (O_EXCL: ErrExists se já houver) em p já validado.
+func (v *Vault) createExcl(p string, data []byte) error {
+	f, err := v.root.OpenFile(p, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+	if errors.Is(err, fs.ErrExist) {
+		return ErrExists
+	}
+	if err != nil {
+		return err
+	}
+	_, werr := f.Write(data)
 	if cerr := f.Close(); werr == nil {
 		werr = cerr
 	}
 	if werr != nil {
-		_ = v.root.Remove(p) // não deixa nota truncada que bloquearia novas tentativas
-		return Note{}, werr
+		_ = v.root.Remove(p) // não deixa arquivo truncado que bloquearia novas tentativas
+		return werr
 	}
-	return v.Read(p)
+	return nil
+}
+
+// ErrNotImage indica um anexo cujo conteúdo não é uma imagem aceita.
+var ErrNotImage = errors.New("o arquivo não é uma imagem PNG, JPEG, GIF, WebP ou BMP")
+
+// MaxAttachment é o tamanho máximo de uma imagem colada.
+const MaxAttachment = 20 << 20
+
+// Extensão pelo conteúdo (não pelo nome enviado). SVG fica de fora: pode conter script.
+var imageExt = map[string]string{
+	"image/png": ".png", "image/jpeg": ".jpg", "image/gif": ".gif", "image/webp": ".webp", "image/bmp": ".bmp",
+}
+
+// attachmentDir segue a configuração de anexos do Obsidian (.obsidian/app.json,
+// "attachmentFolderPath"): vazio ou "/" é a raiz do vault, "./" a pasta da nota,
+// "./sub" uma subpasta dela e outro valor uma pasta fixa do vault.
+func (v *Vault) attachmentDir(note string) string {
+	var cfg struct {
+		AttachmentFolderPath string `json:"attachmentFolderPath"`
+	}
+	if data, err := v.root.ReadFile(".obsidian/app.json"); err == nil {
+		_ = json.Unmarshal(data, &cfg)
+	}
+	dir := strings.TrimSpace(cfg.AttachmentFolderPath)
+	switch {
+	case dir == "" || dir == "/":
+		return "."
+	case dir == "." || strings.HasPrefix(dir, "./"):
+		noteDir := "."
+		if n, err := clean(note); err == nil {
+			noteDir = path.Dir(n)
+		}
+		return path.Join(noteDir, strings.TrimPrefix(dir, "."))
+	default:
+		return path.Clean(strings.Trim(dir, "/"))
+	}
+}
+
+// SaveImage grava uma imagem colada/arrastada na pasta de anexos, com o nome que o
+// Obsidian usa ("Pasted image AAAAMMDDhhmmss.png"), sem sobrescrever nada.
+func (v *Vault) SaveImage(note string, data []byte) (string, error) {
+	if len(data) == 0 || len(data) > MaxAttachment {
+		return "", ErrNotImage
+	}
+	ext, ok := imageExt[http.DetectContentType(data)]
+	if !ok {
+		return "", ErrNotImage
+	}
+	dir := v.attachmentDir(note)
+	if dir != "." {
+		d, err := clean(dir)
+		if err != nil {
+			return "", err
+		}
+		if err := v.root.MkdirAll(d, 0o755); err != nil {
+			return "", err
+		}
+		dir = d
+	}
+	base := "Pasted image " + time.Now().Format("20060102150405")
+	for i := 0; i < 100; i++ {
+		name := base + ext
+		if i > 0 {
+			name = fmt.Sprintf("%s %d%s", base, i, ext)
+		}
+		p := path.Join(dir, name)
+		err := v.createExcl(p, data)
+		if errors.Is(err, ErrExists) {
+			continue
+		}
+		return p, err
+	}
+	return "", ErrExists
 }
 
 // Move renomeia ou move um arquivo ou pasta dentro do vault, criando as pastas

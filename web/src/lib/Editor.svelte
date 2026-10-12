@@ -24,7 +24,7 @@
   import { codeBlocks } from './codeblocks'
   import { writing } from './writing'
   import { visualLineNumbers } from './visualLines'
-  import { linkCompletion } from './linkComplete'
+  import { linkCompletion, linkText } from './linkComplete'
   import { languages } from '@codemirror/language-data'
   import { editorTheme, type Theme } from './theme'
   import { vim } from '@replit/codemirror-vim'
@@ -39,6 +39,7 @@
     oncontent,
     linkTargets = () => [],
     reveal,
+    onimage,
   }: {
     path: string
     onlink: (target: string, page?: number) => void
@@ -51,6 +52,8 @@
     linkTargets?: () => string[]
     /** Posiciona o cursor numa linha (resultado de busca); n muda a cada pedido. */
     reveal?: { path: string; line: number; n: number } | null
+    /** Grava uma imagem colada/arrastada e devolve o caminho no vault (ou null se falhar). */
+    onimage?: (file: File) => Promise<string | null>
   } = $props()
 
   // Compartimento: troca o tema sem recriar o estado (mantém undo, cursor, modo vim).
@@ -106,6 +109,22 @@
           ]),
         ),
         EditorView.domEventHandlers({
+          // Colar print/imagem: grava no vault e insere ![[imagem]], como o Obsidian.
+          // Se a área de transferência também tiver texto (ex.: trecho de página), cola o texto.
+          paste(e, v) {
+            const images = imageFiles(e.clipboardData)
+            if (!images.length || e.clipboardData?.getData('text/plain')) return false
+            e.preventDefault()
+            insertImages(images, v.state.selection.main.head)
+            return true
+          },
+          drop(e, v) {
+            const images = imageFiles(e.dataTransfer)
+            if (!images.length) return false
+            e.preventDefault()
+            insertImages(images, v.posAtCoords({ x: e.clientX, y: e.clientY }) ?? v.state.selection.main.head)
+            return true
+          },
           mousedown(e, v) {
             if (!(e.ctrlKey || e.metaKey)) return false
             const pos = v.posAtCoords({ x: e.clientX, y: e.clientY })
@@ -127,6 +146,29 @@
         }),
       ],
     })
+  }
+
+  function imageFiles(data: DataTransfer | null): File[] {
+    return [...(data?.files ?? [])].filter((f) => f.type.startsWith('image/'))
+  }
+
+  async function insertImages(files: File[], pos: number) {
+    if (!onimage || locked) return
+    const notePath = base?.path
+    for (const [i, file] of files.entries()) {
+      const before = view?.state.doc
+      const path = await onimage(file)
+      // Ignora se falhou ou se o usuário trocou de nota enquanto a imagem subia.
+      if (!path || !view || base?.path !== notePath) return
+      // Se o texto mudou durante o upload, a posição guardada pode ter ficado no meio
+      // de uma palavra: nesse caso a imagem entra onde o cursor está agora.
+      const at = view.state.doc === before ? Math.min(pos, view.state.doc.length) : view.state.selection.main.head
+      // Só o nome quando é único no vault, senão o caminho (como o Obsidian); várias imagens, uma por linha.
+      const insert = (i > 0 ? '\n' : '') + `![[${linkText(path, linkTargets())}]]`
+      view.dispatch({ changes: { from: at, insert }, selection: { anchor: at + insert.length }, userEvent: 'input.paste' })
+      pos = at + insert.length
+    }
+    view?.focus()
   }
 
   function setDoc(content: string) {

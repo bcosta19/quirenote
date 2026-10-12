@@ -98,6 +98,21 @@ export const moveItem = (from: string, to: string) => postJSON<{ path: string }>
 /** Move para a lixeira do vault (.trash); nada é apagado. */
 export const trashItem = (path: string) => postJSON<{ path: string }>('/api/trash', { path })
 
+function toBase64(file: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(String(reader.result).replace(/^data:[^,]*,/, ''))
+    reader.onerror = () => reject(reader.error ?? new Error('não foi possível ler a imagem'))
+    reader.readAsDataURL(file)
+  })
+}
+
+/** Grava uma imagem colada/arrastada na pasta de anexos do vault; devolve o caminho criado. */
+export async function uploadImage(note: string, file: Blob): Promise<string> {
+  const { path } = await postJSON<{ path: string }>('/api/images', { note, data: await toBase64(file) })
+  return path
+}
+
 export function subscribe(onEvent: (e: VaultEvent) => void): () => void {
   const es = new EventSource('/api/events')
   es.onmessage = (m) => onEvent(JSON.parse(m.data))

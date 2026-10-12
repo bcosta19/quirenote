@@ -2,6 +2,7 @@
 package api
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -37,6 +38,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/notes/{path...}", s.createNote)
 	mux.HandleFunc("POST /api/move", s.move)
 	mux.HandleFunc("POST /api/trash", s.trash)
+	mux.HandleFunc("POST /api/images", s.saveImage)
 	mux.HandleFunc("GET /api/events", s.events)
 	mux.HandleFunc("GET /api/search", s.search)
 	if s.static != nil {
@@ -169,6 +171,40 @@ func (s *Server) trash(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]string{"path": p})
 }
 
+type imageRequest struct {
+	Note string `json:"note"` // nota onde a imagem foi colada (define a pasta de anexos)
+	Data string `json:"data"` // base64; JSON por causa da proteção anti-CSRF
+}
+
+// saveImage grava uma imagem colada/arrastada no editor e devolve o caminho.
+func (s *Server) saveImage(w http.ResponseWriter, r *http.Request) {
+	var req imageRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, vault.MaxAttachment*4/3+4096)).Decode(&req); err != nil {
+		var tooBig *http.MaxBytesError
+		if errors.As(err, &tooBig) {
+			writeJSON(w, http.StatusRequestEntityTooLarge, map[string]string{"error": "imagem grande demais (máx. 20 MB)"})
+		} else {
+			writeJSON(w, http.StatusBadRequest, map[string]string{"error": "JSON inválido"})
+		}
+		return
+	}
+	data, err := base64.StdEncoding.DecodeString(req.Data)
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "imagem em base64 inválida"})
+		return
+	}
+	p, err := s.vault.SaveImage(req.Note, data)
+	if err != nil {
+		if errors.Is(err, vault.ErrNotImage) {
+			writeJSON(w, http.StatusUnsupportedMediaType, map[string]string{"error": err.Error()})
+		} else {
+			writeErr(w, err)
+		}
+		return
+	}
+	writeJSON(w, http.StatusCreated, map[string]string{"path": p})
+}
+
 func (s *Server) mkdir(w http.ResponseWriter, r *http.Request) {
 	p, err := s.vault.Mkdir(r.PathValue("path"))
 	if err != nil {
@@ -190,6 +226,10 @@ func (s *Server) file(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
+	// Aberto direto pela URL, um SVG/HTML do vault não roda script na origem do app.
+	// (fetch do PDF.js e <img> não são afetados por estes cabeçalhos.)
+	w.Header().Set("Content-Security-Policy", "sandbox")
+	w.Header().Set("X-Content-Type-Options", "nosniff")
 	// ServeContent cuida de Range (PDF.js carrega por partes), ETag e cache.
 	http.ServeContent(w, r, info.Name(), info.ModTime(), f)
 }

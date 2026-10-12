@@ -4,6 +4,7 @@ import (
 	"errors"
 	"io/fs"
 	"os"
+	"path"
 	"path/filepath"
 	"strings"
 	"testing"
@@ -230,5 +231,45 @@ func TestTrash(t *testing.T) {
 	}
 	if tree, _ := v.Tree(); len(tree) != 0 {
 		t.Fatalf("lixeira não deveria aparecer na árvore: %+v", tree)
+	}
+}
+
+// PNG mínimo válido (1x1).
+var tinyPNG = []byte{0x89, 'P', 'N', 'G', '\r', '\n', 0x1a, '\n', 0, 0, 0, 0x0d, 'I', 'H', 'D', 'R', 0, 0, 0, 1, 0, 0, 0, 1, 8, 6, 0, 0, 0, 0x1f, 0x15, 0xc4, 0x89}
+
+func TestSaveImage(t *testing.T) {
+	v, dir := newVault(t)
+	// Sem configuração: raiz do vault, nome do Obsidian, nunca sobrescreve.
+	p1, err := v.SaveImage("livros/nota.md", tinyPNG)
+	if err != nil || path.Dir(p1) != "." || !strings.HasPrefix(p1, "Pasted image ") || !strings.HasSuffix(p1, ".png") {
+		t.Fatalf("SaveImage = %q, %v", p1, err)
+	}
+	p2, err := v.SaveImage("livros/nota.md", tinyPNG)
+	if err != nil || p2 == p1 {
+		t.Fatalf("segunda imagem no mesmo segundo = %q, %v", p2, err)
+	}
+	// Conteúdo que não é imagem (ou SVG, que pode ter script) é recusado, qualquer que seja o nome.
+	for _, bad := range [][]byte{[]byte("<svg onload=alert(1)></svg>"), []byte("# nota"), {}} {
+		if _, err := v.SaveImage("a.md", bad); !errors.Is(err, ErrNotImage) {
+			t.Errorf("conteúdo %q deveria ser recusado, veio %v", bad, err)
+		}
+	}
+	// "./" = pasta da nota; "./anexos" = subpasta dela; "Anexos" = pasta fixa.
+	cases := map[string]string{"./": "livros", "./anexos": "livros/anexos", "Anexos": "Anexos", "/": "."}
+	for cfg, want := range cases {
+		if err := os.WriteFile(filepath.Join(dir, ".obsidian/app.json"), []byte(`{"attachmentFolderPath":"`+cfg+`"}`), 0o644); err != nil {
+			t.Fatal(err)
+		}
+		p, err := v.SaveImage("livros/nota.md", tinyPNG)
+		if err != nil || path.Dir(p) != want {
+			t.Errorf("config %q: %q, %v (esperava pasta %q)", cfg, p, err, want)
+		}
+	}
+	// Configuração apontando para fora do vault não escapa.
+	if err := os.WriteFile(filepath.Join(dir, ".obsidian/app.json"), []byte(`{"attachmentFolderPath":"../fora"}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := v.SaveImage("livros/nota.md", tinyPNG); err == nil {
+		t.Fatal("pasta de anexos fora do vault deveria falhar")
 	}
 }

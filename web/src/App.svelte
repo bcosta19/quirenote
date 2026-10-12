@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { ExistsError, createDir, createNote, fileUrl, getTree, moveItem, subscribe, trashItem, type Entry } from './lib/api'
+  import { ExistsError, createDir, createNote, fileUrl, getTree, moveItem, subscribe, trashItem, uploadImage, type Entry } from './lib/api'
   import { pageLink, resolveLink } from './lib/links'
   import Editor from './lib/Editor.svelte'
   import PdfReader from './lib/PdfReader.svelte'
@@ -186,6 +186,18 @@
       await op()
     } finally {
       ed?.setLocked(false)
+    }
+  }
+
+  async function pasteImage(file: File): Promise<string | null> {
+    if (!note) return null
+    try {
+      const path = await uploadImage(note, file)
+      await refreshTree() // o preview resolve ![[imagem]] pela árvore
+      return path
+    } catch (err) {
+      flash((err as Error).message)
+      return null
     }
   }
 
@@ -669,6 +681,7 @@
               oncontent={(t) => (noteText = t)}
               linkTargets={() => [...allPaths(tree)]}
               {reveal}
+              onimage={pasteImage}
             />
           </div>
           {#if preview}

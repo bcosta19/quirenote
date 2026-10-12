@@ -39,6 +39,9 @@ nota ou subpasta direto nela);
 **📂** abre um PDF do dispositivo em que você está, sem enviar nada para o servidor.
 Links para esse PDF são gravados só com o nome (`[[livro.pdf#page=N]]`) e funcionam enquanto ele estiver aberto.
 
+Colar um print (`Ctrl+V` no modo insert) ou arrastar uma imagem para o editor grava o arquivo na pasta de
+anexos do Obsidian (`.obsidian/app.json`; padrão: raiz do vault) e insere `![[Pasted image ….png]]`.
+
 Clique direito num item da árvore: renomear/mover, mover para a lixeira (`.trash` do vault, a mesma do
 Obsidian — nada é apagado) e, em pastas, criar nota ou subpasta. Renomear nunca sobrescreve outro arquivo.
 
