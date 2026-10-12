@@ -131,6 +131,7 @@
   let localPdf = $state<{ name: string; size: number; url: string; file: File } | null>(null)
   // Device file from the last session that the browser needs a click to reopen.
   let pendingLocal = $state<{ name: string; handle: FileSystemFileHandle } | null>(null)
+  let localVersion = 0
 
   // The device file is not in the URL: it comes from the saved session even after an F5.
   // Read before the session effect below rewrites it, and kept there until restored.
@@ -145,11 +146,13 @@
 
   // Reopens the device file of the last session (vault documents come back through `doc`).
   async function restoreLocal(wanted: string | null) {
+    const version = localVersion
     try {
       if (!wanted || doc) return
       const handle = await loadLocalHandle()
-      if (!handle || handle.name !== wanted || localPdf || doc) return
+      if (!handle || handle.name !== wanted || localPdf || doc || version !== localVersion) return
       const file = await readLocalHandle(handle, false)
+      if (localPdf || doc || version !== localVersion) return
       if (file) showLocal(file)
       else pendingLocal = { name: handle.name, handle }
     } finally {
@@ -159,7 +162,9 @@
   async function reopenPending() {
     const p = pendingLocal
     if (!p) return
+    const version = localVersion
     const file = await readLocalHandle(p.handle, true)
+    if (pendingLocal !== p || localPdf || doc || version !== localVersion) return
     if (file) showLocal(file)
     else {
       pendingLocal = null
@@ -598,6 +603,7 @@
   }
 
   function showLocal(file: File) {
+    localVersion++
     if (localPdf) URL.revokeObjectURL(localPdf.url)
     pendingLocal = null
     localPdf = { name: file.name, size: file.size, url: URL.createObjectURL(file), file }
@@ -608,6 +614,7 @@
   }
 
   function closeLocal() {
+    localVersion++
     if (localPdf) URL.revokeObjectURL(localPdf.url)
     if (localPdf || pendingLocal) void clearLocalHandle()
     localPdf = null

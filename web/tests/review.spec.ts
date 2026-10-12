@@ -77,6 +77,64 @@ function deferred() {
   return { promise, resolve }
 }
 
+async function rememberLocalPdf(page: Page, pdf: string) {
+  return page.evaluate(async (pdf) => {
+    const root = await navigator.storage.getDirectory()
+    const handle = await root.getFileHandle('local.pdf', { create: true })
+    const writer = await handle.createWritable()
+    await writer.write(pdf)
+    await writer.close()
+    const file = await handle.getFile()
+    await new Promise<void>((resolve, reject) => {
+      const open = indexedDB.open('quirenote', 1)
+      open.onupgradeneeded = () => open.result.createObjectStore('files')
+      open.onerror = () => reject(open.error)
+      open.onsuccess = () => {
+        const db = open.result
+        const tx = db.transaction('files', 'readwrite')
+        tx.objectStore('files').put(handle, 'local')
+        tx.oncomplete = () => { db.close(); resolve() }
+        tx.onerror = () => { db.close(); reject(tx.error) }
+      }
+    })
+    localStorage.setItem('quirenote:session', JSON.stringify({ note: 'A.md', doc: null, local: file.name, page: 3 }))
+    localStorage.setItem(`quirenote:page:local:${file.name}:${file.size}`, '3')
+  }, pdf)
+}
+
+test('a saved device PDF and its page survive refresh', async ({ page }) => {
+  await mockVault(page, { 'A.md': 'alpha' })
+  await page.goto('/#note=A.md')
+  await expect(page.locator('.editor .status')).toHaveText('saved')
+  await rememberLocalPdf(page, pdfDocument())
+  await page.reload()
+  await expect(page.locator('.reader .toolbar .title')).toHaveText('local.pdf')
+  await expect(page.locator('.reader .toolbar .muted')).toHaveText('/ 4')
+  await expect(page.getByRole('spinbutton', { name: 'Page', exact: true })).toHaveValue('3')
+})
+
+test('a late device-file restore cannot replace the document the user just opened', async ({ page }) => {
+  await mockVault(page, { 'A.md': 'alpha', 'book.pdf': '' })
+  await page.goto('/#note=A.md')
+  await expect(page.locator('.editor .status')).toHaveText('saved')
+  await rememberLocalPdf(page, pdfDocument())
+  await page.addInitScript(() => {
+    const getFile = FileSystemFileHandle.prototype.getFile
+    FileSystemFileHandle.prototype.getFile = async function () {
+      ;(window as any).localReadStarted = true
+      await new Promise<void>((resolve) => { (window as any).releaseLocal = resolve })
+      return getFile.call(this)
+    }
+  })
+  await page.reload()
+  await page.waitForFunction(() => (window as any).localReadStarted)
+  await page.getByTitle('book.pdf', { exact: true }).click()
+  await expect(page.locator('.reader .toolbar .muted')).toHaveText('/ 4')
+  await page.evaluate(() => (window as any).releaseLocal())
+  await expect.poll(() => page.evaluate(() => JSON.parse(localStorage.getItem('quirenote:session')!).local)).toBeNull()
+  await expect(page.locator('.reader .toolbar .title')).toHaveText('book.pdf')
+})
+
 test('an explicit first-page PDF link takes precedence over the remembered page', async ({ page }) => {
   await mockVault(page, { 'A.md': '[[book.pdf#page=1]]', 'book.pdf': '' })
   await page.addInitScript(() => localStorage.setItem('quirenote:page:book.pdf', '3'))
