@@ -5,6 +5,7 @@ package setup
 import (
 	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path/filepath"
 	"strings"
@@ -35,12 +36,34 @@ func Resolve(path, home string) (string, error) {
 	if !filepath.IsAbs(path) {
 		return "", errors.New("use an absolute path (or one starting with ~/)")
 	}
-	dir := filepath.Clean(path)
-	home = filepath.Clean(home)
+	dir, err := canonical(filepath.Clean(path))
+	if err != nil {
+		return "", err
+	}
+	home, err = canonical(filepath.Clean(home))
+	if err != nil {
+		return "", err
+	}
 	if dir == "/" || dir == home || strings.HasPrefix(home, dir+"/") {
 		return "", fmt.Errorf("%s is too broad for a vault; pick a folder inside it", dir)
 	}
 	return dir, nil
+}
+
+func canonical(dir string) (string, error) {
+	resolved, err := filepath.EvalSymlinks(dir)
+	if err == nil || !errors.Is(err, fs.ErrNotExist) {
+		return resolved, err
+	}
+	parent := filepath.Dir(dir)
+	if parent == dir {
+		return "", err
+	}
+	resolved, err = canonical(parent)
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(resolved, filepath.Base(dir)), nil
 }
 
 // Prepare validates (and for New, creates) the vault folder. It does not save the config.

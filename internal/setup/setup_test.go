@@ -21,6 +21,31 @@ func TestResolve(t *testing.T) {
 	}
 }
 
+func TestResolveRejectsSymlinkAliasesOfBroadFolders(t *testing.T) {
+	base := t.TempDir()
+	home := filepath.Join(base, "home")
+	if err := os.Mkdir(home, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for name, target := range map[string]string{"home-link": home, "parent-link": base, "root-link": "/"} {
+		alias := filepath.Join(base, name)
+		if err := os.Symlink(target, alias); err != nil {
+			t.Fatal(err)
+		}
+		if got, err := Resolve(alias, home); err == nil {
+			t.Errorf("Resolve(%q) = %q; must reject aliases of broad folders", alias, got)
+		}
+	}
+	alias := filepath.Join(base, "home-link")
+	if _, err := Resolve(home, alias); err == nil {
+		t.Error("a symlinked home must not bypass the home-folder restriction")
+	}
+	want := filepath.Join(home, "new", "notes")
+	if got, err := Resolve(filepath.Join(alias, "new", "notes"), home); err != nil || got != want {
+		t.Fatalf("a safe folder below a symlink = %q, %v; want %q", got, err, want)
+	}
+}
+
 func TestPrepare(t *testing.T) {
 	home := t.TempDir()
 	// New: creates the folder with the welcome note.
