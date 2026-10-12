@@ -86,6 +86,30 @@ test('switching notes waits for an in-flight save and keeps each note separate',
   expect(vault.notes.get('A.md')?.content).not.toContain('beta')
 })
 
+test('a delayed external-change response cannot replace a different note', async ({ page }) => {
+  const vault = await mockVault(page, { 'A.md': 'alpha', 'B.md': 'beta' })
+  await page.goto('/#note=A.md')
+  await expect(page.locator('.editor .status')).toHaveText('saved')
+  const started = deferred()
+  const release = deferred()
+  vault.onRead(async (route, path) => {
+    if (path === 'A.md') {
+      started.resolve()
+      await release.promise
+      await route.fulfill({ json: { path, content: 'external alpha', mtime: '2' } })
+    } else await route.fulfill({ json: vault.notes.get(path) })
+  })
+  await page.evaluate(() => (window as any).vaultEvent('A.md'))
+  await started.promise
+  await page.getByTitle('B.md', { exact: true }).click()
+  await expect(page.locator('.cm-content')).toHaveText('beta')
+  const response = page.waitForResponse('**/api/notes/A.md')
+  release.resolve()
+  await (await response).finished()
+  await page.evaluate(() => new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve))))
+  await expect(page.locator('.cm-content')).toHaveText('beta')
+})
+
 for (const status of [409, 503]) {
   test(`a failed save (${status}) keeps unsaved text when switching notes or using Back`, async ({ page }) => {
     const vault = await mockVault(page, { 'A.md': 'alpha', 'B.md': 'beta' })

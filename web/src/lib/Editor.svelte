@@ -232,7 +232,10 @@
   /** Called when the file changes on disk (Neovim, Obsidian, Syncthing). */
   export async function externalChange() {
     if (!view || !base) return
-    const note = await getNote(base.path).catch(() => null)
+    const current = base
+    const currentView = view
+    const note = await getNote(current.path).catch(() => null)
+    if (base !== current || view !== currentView || path !== current.path) return
     if (!note || note.mtime === base.mtime) return // our own save
     if (status === 'saved') {
       base = note
