@@ -46,12 +46,25 @@
   import ContextMenu, { type MenuItem } from './lib/ContextMenu.svelte'
   import Tree from './lib/Tree.svelte'
   import type { Theme } from './lib/theme'
+  import {
+    canKeepFiles,
+    clearLocalHandle,
+    loadLocalHandle,
+    loadSession,
+    pickFile,
+    readLocalHandle,
+    saveLocalHandle,
+    saveSession,
+  } from './lib/session'
 
   // Screen state, mirrored in the URL (#note=...&doc=...&page=...) to survive reloads.
-  const initial = new URLSearchParams(location.hash.slice(1))
-  let note = $state<string | null>(initial.get('note'))
-  let doc = $state<string | null>(initial.get('doc'))
-  let page = $state(Number(initial.get('page') || 1))
+  // Without it in the URL (e.g. opened from the launcher), resume the last session.
+  const hash = new URLSearchParams(location.hash.slice(1))
+  const fromUrl = hash.has('note') || hash.has('doc')
+  const session = fromUrl ? null : loadSession()
+  let note = $state<string | null>(fromUrl ? hash.get('note') : (session?.note ?? null))
+  let doc = $state<string | null>(fromUrl ? hash.get('doc') : (session?.doc ?? null))
+  let page = $state(fromUrl ? Number(hash.get('page') || 1) : (session?.page ?? 1))
 
   let tree = $state<Entry[]>([])
   let filter = $state('')
@@ -115,6 +128,44 @@
   // PDF picked from the device: read directly by the browser, no upload.
   // Not stored in the URL because the blob: is gone after a reload.
   let localPdf = $state<{ name: string; size: number; url: string; file: File } | null>(null)
+  // Device file from the last session that the browser needs a click to reopen.
+  let pendingLocal = $state<{ name: string; handle: FileSystemFileHandle } | null>(null)
+
+  // The device file is not in the URL: it comes from the saved session even after an F5.
+  // Read before the session effect below rewrites it, and kept there until restored.
+  const savedLocal = fromUrl && hash.has('doc') ? null : (loadSession()?.local ?? null)
+  let restoring = $state(!!savedLocal)
+
+  // Saves where the user is, to resume after a reload or the next time the app opens.
+  $effect(() => {
+    const local = localPdf?.name ?? pendingLocal?.name ?? (restoring ? savedLocal : null)
+    saveSession({ note, doc, page, local })
+  })
+
+  // Reopens the device file of the last session (vault documents come back through `doc`).
+  async function restoreLocal(wanted: string | null) {
+    try {
+      if (!wanted || doc) return
+      const handle = await loadLocalHandle()
+      if (!handle || handle.name !== wanted || localPdf || doc) return
+      const file = await readLocalHandle(handle, false)
+      if (file) showLocal(file)
+      else pendingLocal = { name: handle.name, handle }
+    } finally {
+      restoring = false
+    }
+  }
+  async function reopenPending() {
+    const p = pendingLocal
+    if (!p) return
+    const file = await readLocalHandle(p.handle, true)
+    if (file) showLocal(file)
+    else {
+      pendingLocal = null
+      void clearLocalHandle()
+      flash(`Could not reopen ${p.name}; open it again with the open file button.`)
+    }
+  }
 
   // What the reader shows: a vault PDF or a local PDF.
   const kindOf = (name: string) => (/\.epub$/i.test(name) ? ('epub' as const) : ('pdf' as const))
@@ -498,12 +549,30 @@
     }
   }
 
+  /** Opens a PDF/EPUB from the device; where supported, remembers it to reopen after a reload. */
+  async function pickLocal() {
+    if (!canKeepFiles) return fileInput.click()
+    try {
+      const picked = await pickFile()
+      if (!picked) return
+      showLocal(picked.file)
+      void saveLocalHandle(picked.handle)
+    } catch {
+      fileInput.click() // picker unavailable (e.g. not a secure context): plain file input
+    }
+  }
+
   function openLocal(e: Event) {
     const input = e.target as HTMLInputElement
     const file = input.files?.[0]
     input.value = '' // allows picking the same file again
     if (!file) return
-    closeLocal()
+    showLocal(file)
+  }
+
+  function showLocal(file: File) {
+    if (localPdf) URL.revokeObjectURL(localPdf.url)
+    pendingLocal = null
     localPdf = { name: file.name, size: file.size, url: URL.createObjectURL(file), file }
     doc = null
     page = 1
@@ -513,7 +582,9 @@
 
   function closeLocal() {
     if (localPdf) URL.revokeObjectURL(localPdf.url)
+    if (localPdf || pendingLocal) void clearLocalHandle()
     localPdf = null
+    pendingLocal = null
   }
 
   function closeReader() {
@@ -691,6 +762,7 @@
   }
 
   onMount(() => {
+    void restoreLocal(savedLocal)
     getTree().then((t) => (tree = t))
     let refresh: ReturnType<typeof setTimeout> | undefined
     return subscribe((ev) => {
@@ -783,7 +855,7 @@
         <input placeholder="Filter…" title="Filter the tree by name · Ctrl+O quick switcher · Ctrl+Shift+F full-text search" bind:value={filter} />
         <button onclick={() => newNote()} title="New note" aria-label="New note"><FilePlus size={16} /></button>
         <button onclick={() => newFolder()} title="New folder" aria-label="New folder"><FolderPlus size={16} /></button>
-        <button onclick={() => fileInput.click()} title="Open a PDF or EPUB from this device" aria-label="Open PDF or EPUB"><FolderOpen size={16} /></button>
+        <button onclick={pickLocal} title="Open a PDF or EPUB from this device" aria-label="Open PDF or EPUB"><FolderOpen size={16} /></button>
       </div>
       <div class="tree">
         <Tree entries={visibleTree} active={[note, doc]} onopen={(e) => openPath(e.path)} onnew={newNote} onnewdir={newFolder} oncontext={openMenu} expandAll={!!filter} />
@@ -826,13 +898,18 @@
         </button>
       {/if}
       {#if !sidebarOpen}
-        <button onclick={() => fileInput.click()} title="Open a PDF or EPUB from this device" aria-label="Open PDF or EPUB"><FolderOpen size={16} /></button>
+        <button onclick={pickLocal} title="Open a PDF or EPUB from this device" aria-label="Open PDF or EPUB"><FolderOpen size={16} /></button>
       {/if}
       {#if reader}
         <button onclick={toggleReader} title="Collapse/show the reader without closing it (Alt+\)">
           {#if readerOpen}<PanelLeftClose size={16} /> Collapse reader{:else}Reader <PanelLeftOpen size={16} />{/if}
         </button>
         <button onclick={closeReader} title="Close reader" aria-label="Close reader"><X size={16} /></button>
+      {/if}
+      {#if pendingLocal && !reader}
+        <button onclick={reopenPending} title="Reopen the file from your last session">
+          <FolderOpen size={16} /> Reopen {pendingLocal.name}
+        </button>
       {/if}
       <button
         onclick={() => (theme = theme === 'light' ? 'dark' : 'light')}
