@@ -85,6 +85,28 @@
     view?.prev()
   }
 
+  // Continuous scrolling, like the PDF: the mouse wheel scrolls within a chapter natively.
+  // At the end (or start) of a chapter, a bit more wheel in the same direction moves to the
+  // next (or previous) one. The threshold keeps trackpad inertia from skipping chapters.
+  const EDGE_PUSH = 240
+  let push = 0
+  let turning = false
+  function onWheel(e: WheelEvent) {
+    const r = view?.renderer
+    if (!r || turning || e.ctrlKey || !e.deltaY) return
+    const atEnd = e.deltaY > 0 && r.viewSize - r.end <= 2
+    const atStart = e.deltaY < 0 && r.start <= 0
+    if (!atEnd && !atStart) {
+      push = 0
+      return
+    }
+    push += Math.abs(e.deltaY)
+    if (push < EDGE_PUSH) return
+    push = 0
+    turning = true
+    Promise.resolve(atEnd ? view.next() : view.prev()).finally(() => setTimeout(() => (turning = false), 300))
+  }
+
   function onKey(e: KeyboardEvent) {
     if (!view || e.ctrlKey || e.metaKey || e.altKey) return
     if (e.key === 'ArrowRight' || e.key === 'PageDown' || e.key === ' ') next()
@@ -106,7 +128,7 @@
         await el.open(src)
         if (disposed) return
         const r = el.renderer
-        r.setAttribute('flow', 'paginated')
+        r.setAttribute('flow', 'scrolled')
         r.setAttribute('margin', '36px')
         r.setAttribute('gap', '6%')
         r.setAttribute('max-inline-size', '760px')
@@ -118,7 +140,10 @@
           if (d.cfi) localStorage.setItem(key(), d.cfi)
         })
         // Arrow keys inside the book also turn the page.
-        el.addEventListener('load', (e: CustomEvent) => e.detail.doc.addEventListener('keydown', onKey))
+        el.addEventListener('load', (e: CustomEvent) => {
+          e.detail.doc.addEventListener('keydown', onKey)
+          e.detail.doc.addEventListener('wheel', onWheel, { passive: true })
+        })
         // External links in the book: only http(s)/mailto and without window.opener (like the preview).
         el.addEventListener('external-link', (e: CustomEvent) => {
           e.preventDefault()
@@ -199,7 +224,7 @@
   </div>
   {#if error}<div class="error">EPUB error: {error}</div>{/if}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div class="viewport" bind:this={host} onkeydown={onKey}></div>
+  <div class="viewport" bind:this={host} onkeydown={onKey} onwheel={onWheel}></div>
 </div>
 
 <style>
