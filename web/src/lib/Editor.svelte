@@ -407,7 +407,7 @@
   }
   /* [[link]] autocompletion list: the UI font, not the text font. */
   .cm :global(.cm-tooltip-autocomplete > ul) {
-    font-family: system-ui, sans-serif;
+    font-family: var(--ui-font);
     font-size: 14px;
     max-height: 18em;
   }

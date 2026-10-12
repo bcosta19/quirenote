@@ -77,6 +77,21 @@ function deferred() {
   return { promise, resolve }
 }
 
+/** The font actually in use by an element, with every fallback of the stack. */
+function fontOf(page: Page, selector: string) {
+  return page.evaluate((sel) => getComputedStyle(document.querySelector(sel)!).fontFamily, selector)
+}
+
+/** The text field of a role in the fonts dialog (the reset button next to it has a similar name). */
+function fontField(page: Page, label: 'Interface' | 'Notes' | 'Code') {
+  return page.getByRole('combobox', { name: new RegExp(`^${label}`) })
+}
+
+async function openFonts(page: Page) {
+  await page.getByRole('button', { name: 'Fonts', exact: true }).click()
+  await expect(page.getByRole('dialog', { name: 'Fonts' })).toBeVisible()
+}
+
 async function rememberLocalPdf(page: Page, pdf: string) {
   return page.evaluate(async (pdf) => {
     const root = await navigator.storage.getDirectory()
@@ -253,3 +268,97 @@ for (const status of [409, 503]) {
     expect(vault.notes.get('A.md')?.content).toBe('alpha')
   })
 }
+
+test('custom fonts follow the interface, the notes and the code, and survive a reload', async ({ page }) => {
+  await mockVault(page, { 'A.md': 'alpha' })
+  await page.goto('/#note=A.md')
+  await expect(page.locator('.editor .status')).toHaveText('saved')
+  await openFonts(page)
+  await fontField(page, 'Interface').fill('Fira Sans')
+  await fontField(page, 'Notes').fill('Literata')
+  await fontField(page, 'Code').fill('Fira Code')
+  await page.getByRole('button', { name: 'Done' }).click()
+  for (const [selector, family] of [['html', 'Fira Sans'], ['.cm-scroller', 'Literata'], ['.cm-gutters', 'Fira Code']]) {
+    expect(await fontOf(page, selector)).toContain(family)
+  }
+  await page.reload()
+  await expect(page.locator('.editor .status')).toHaveText('saved')
+  for (const [selector, family] of [['html', 'Fira Sans'], ['.cm-scroller', 'Literata'], ['.cm-gutters', 'Fira Code']]) {
+    expect(await fontOf(page, selector)).toContain(family)
+  }
+  await page.getByRole('button', { name: 'Preview', exact: true }).click()
+  expect(await fontOf(page, '.preview article')).toContain('Literata')
+})
+
+test('the saved fonts are applied before the app starts, and an injected stack is ignored', async ({ page }) => {
+  await page.addInitScript(() => {
+    localStorage.setItem(
+      'quirenote:fonts',
+      JSON.stringify({ ui: "'Fira Sans', var(--font-ui-tail)", editor: 'url(https://evil.example/x)', mono: 7 }),
+    )
+  })
+  // Without the app bundle (it brings the CSS and the dialog) only theme-init.js has run.
+  await page.route((url) => url.pathname === '/src/main.ts', (route) => route.abort())
+  await page.goto('/')
+  const choices = await page.evaluate(() => ({
+    ui: document.documentElement.style.getPropertyValue('--font-ui-choice'),
+    editor: document.documentElement.style.getPropertyValue('--font-editor-choice'),
+    mono: document.documentElement.style.getPropertyValue('--font-mono-choice'),
+  }))
+  expect(choices).toEqual({ ui: "'Fira Sans', var(--font-ui-tail)", editor: '', mono: '' })
+  await expect(page.locator('#app')).toBeEmpty()
+})
+
+test('the font settings suggest the fonts installed on this device', async ({ page }) => {
+  await page.addInitScript(() => {
+    ;(window as any).queryLocalFonts = async () => [{ family: 'Fira Code' }, { family: 'Fira Sans' }, { family: 'Fira Sans' }]
+  })
+  await mockVault(page, { 'A.md': 'alpha' })
+  await page.goto('/#note=A.md')
+  await openFonts(page)
+  const options = page.locator('datalist#system-fonts option')
+  await expect(options).toHaveCount(2)
+  await expect(options).toHaveText(['Fira Code', 'Fira Sans'])
+})
+
+test('without the font access API the settings still take a typed name', async ({ page }) => {
+  await page.addInitScript(() => {
+    ;(window as any).queryLocalFonts = undefined
+  })
+  await mockVault(page, { 'A.md': 'alpha' })
+  await page.goto('/#note=A.md')
+  await openFonts(page)
+  await expect(page.getByText('type the name, as in “Inter”')).toBeVisible()
+  await fontField(page, 'Notes').fill('Georgia')
+  expect(await fontOf(page, '.cm-scroller')).toContain('Georgia')
+})
+
+test('the font settings can go back to the default fonts', async ({ page }) => {
+  await mockVault(page, { 'A.md': 'alpha' })
+  await page.goto('/#note=A.md')
+  await openFonts(page)
+  await fontField(page, 'Notes').fill('Literata')
+  await fontField(page, 'Code').fill('Fira Code')
+  expect(await fontOf(page, '.cm-scroller')).toContain('Literata')
+  await page.getByRole('button', { name: 'Default font for the code' }).click()
+  expect(await fontOf(page, '.cm-gutters')).not.toContain('Fira Code')
+  await page.getByRole('button', { name: 'Reset all' }).click()
+  expect(await fontOf(page, '.cm-scroller')).toContain('EB Garamond')
+  expect(await fontOf(page, '.cm-gutters')).toContain('ui-monospace')
+  await page.getByRole('button', { name: 'Done' }).click()
+  expect(await page.evaluate(() => localStorage.getItem('quirenote:fonts'))).toBe('{"ui":"","editor":"","mono":""}')
+})
+
+test('a font name typed with CSS punctuation keeps only the name', async ({ page }) => {
+  await mockVault(page, { 'A.md': 'alpha' })
+  await page.goto('/#note=A.md')
+  await openFonts(page)
+  const field = fontField(page, 'Interface')
+  await field.fill('Inter; } body { display: none }')
+  await expect(field).toHaveValue('Inter body display none')
+  expect(await page.evaluate(() => document.documentElement.style.getPropertyValue('--font-ui-choice'))).toBe(
+    "'Inter body display none', var(--font-ui-tail)",
+  )
+  expect(await fontOf(page, 'html')).toContain('Inter body display none')
+  expect(await page.evaluate(() => getComputedStyle(document.body).display)).not.toBe('none')
+})

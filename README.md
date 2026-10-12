@@ -95,6 +95,11 @@ It can also be installed as a PWA.
 "Paper" light theme (the moon/sun button switches to dark) and embedded EB Garamond.
 Colors: `web/src/lib/theme.ts` and `web/src/app.css`.
 
+The `A` button next to the theme picks the fonts: one for the interface, one for the notes
+(editor and preview) and one for the code. It lists the fonts installed on the device
+(Chromium asks for permission; other browsers accept a typed name), each field shows the font
+it is choosing, and the choice is kept per device.
+
 ## Structure
 
 Go (`net/http`, `os.Root` confines access to the vault, atomic writes, mtime-based conflict detection,

@@ -8,4 +8,4 @@
 - Alternatively, install Playwright's matching browser with `cd web && npx playwright install chromium` before `npm test`.
 - Repeat browser checks with `npm test -- --repeat-each=3`. Run these separately from static analysis/build jobs; concurrent verification produced PDF loading timeouts in this environment.
 - Stress save/trash regressions with `go test ./internal/vault -run 'TestConcurrentSavesRejectStaleVersions|TestTrashKeepsEveryVersionWithTheSameName' -count=30`.
-- The browser suite covers delayed saves, save errors/conflicts, stale external-change responses, failed note loads, escaped wikilinks, explicit PDF page links, and IndexedDB-backed local PDF restoration.
+- The browser suite covers delayed saves, save errors/conflicts, stale external-change responses, failed note loads, escaped wikilinks, explicit PDF page links, IndexedDB-backed local PDF restoration, and the custom fonts (applying per role and surviving a reload, applied before the app starts, the installed-fonts list, the typed-name fallback, the reset, and a name typed with CSS punctuation).

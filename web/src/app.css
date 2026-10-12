@@ -17,10 +17,17 @@
   --warn-bg: #4a3b10;
   --error: #ff8a8a;
   --error-bg: #4a1717;
-  --mono: 'JetBrainsMono Nerd Font', 'JetBrains Mono', ui-monospace, monospace;
-  --editor-font: 'EB Garamond', Garamond, Georgia, serif;
+  /* Fonts. Each role has a default chain (--font-<role>-tail) and an optional custom choice
+     (--font-<role>-choice, written by lib/fonts.ts as `'My Font', var(--font-<role>-tail)`).
+     Without a choice the default chain applies; with one it comes first. */
+  --font-ui-tail: system-ui, sans-serif;
+  --font-editor-tail: Garamond, Georgia, serif;
+  --font-mono-tail: 'JetBrains Mono', ui-monospace, monospace;
+  --ui-font: var(--font-ui-choice, var(--font-ui-tail));
+  --mono: var(--font-mono-choice, 'JetBrainsMono Nerd Font', var(--font-mono-tail));
+  --editor-font: var(--font-editor-choice, 'EB Garamond', var(--font-editor-tail));
   color-scheme: dark;
-  font-family: system-ui, sans-serif;
+  font-family: var(--ui-font);
   color: var(--text);
   background: var(--bg);
 }

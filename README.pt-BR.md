@@ -94,6 +94,11 @@ existir, só foca nela. No Hyprland: `SUPER+SHIFT+L` (em `~/.config/hypr/binding
 
 Tema claro "papel" (o botão lua/sol alterna para o escuro) e EB Garamond embutida. Cores: `web/src/lib/theme.ts` e `web/src/app.css`.
 
+O botão `A` ao lado do tema escolhe as fontes: uma para a interface, uma para as notas (editor
+e preview) e uma para o código. Ele lista as fontes instaladas no aparelho (o Chromium pede
+permissão; nos outros navegadores basta digitar o nome), cada campo mostra a fonte que está
+escolhendo e a escolha fica salva por aparelho.
+
 ## Estrutura
 
 Go (`net/http`, `os.Root` confina o acesso ao vault, escrita atômica, conflito por mtime, fsnotify + SSE) em

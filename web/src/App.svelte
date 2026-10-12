@@ -15,6 +15,7 @@
   import X from '@lucide/svelte/icons/x'
   import Moon from '@lucide/svelte/icons/moon'
   import Sun from '@lucide/svelte/icons/sun'
+  import Type from '@lucide/svelte/icons/type'
   import { onMount, untrack } from 'svelte'
   import {
     ExistsError,
@@ -46,6 +47,8 @@
   import ContextMenu, { type MenuItem } from './lib/ContextMenu.svelte'
   import Tree from './lib/Tree.svelte'
   import type { Theme } from './lib/theme'
+  import FontSettings from './lib/FontSettings.svelte'
+  import { applyFonts, loadFonts, type FontPrefs } from './lib/fonts'
   import {
     canKeepFiles,
     clearLocalHandle,
@@ -85,6 +88,9 @@
   let dragging = $state<null | 'sidebar' | 'split'>(null)
   let panesEl: HTMLDivElement
   let theme = $state<Theme>(localStorage.getItem('quirenote:theme') === 'dark' ? 'dark' : 'light')
+  // Fonts of the interface, of the notes and of the code (per device, like the theme).
+  let fonts = $state<FontPrefs>(loadFonts())
+  let fontsOpen = $state(false)
   let toast = $state('')
   let editor: ReturnType<typeof Editor> | undefined = $state()
   let fileInput: HTMLInputElement
@@ -511,6 +517,7 @@
     document.documentElement.dataset.theme = theme
     localStorage.setItem('quirenote:theme', theme)
   })
+  $effect(() => applyFonts(fonts))
 
   function filterTree(entries: Entry[], q: string): Entry[] {
     if (!q) return entries
@@ -734,7 +741,7 @@
   // Shortcuts in the capture phase: they arrive before the editor, whose vim mode uses Ctrl+E (scroll)
   // and Ctrl+O (jump list back).
   function onKeyCapture(e: KeyboardEvent) {
-    if (dialog) return
+    if (dialog || fontsOpen) return
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey && e.key.toLowerCase() === 'o' && note) {
       e.preventDefault()
       e.stopPropagation()
@@ -824,6 +831,16 @@
     danger={dialog.danger}
     onsubmit={(v) => closeDialog(v)}
     oncancel={() => closeDialog(null)}
+  />
+{/if}
+
+{#if fontsOpen}
+  <FontSettings
+    bind:fonts
+    onclose={() => {
+      fontsOpen = false
+      setTimeout(() => editor?.focus())
+    }}
   />
 {/if}
 
@@ -950,6 +967,7 @@
         title={theme === 'light' ? 'Dark theme' : 'Light theme (paper)'}
         aria-label="Toggle theme">{#if theme === 'light'}<Moon size={16} />{:else}<Sun size={16} />{/if}</button
       >
+      <button onclick={() => (fontsOpen = true)} title="Fonts: interface, notes and code" aria-label="Fonts"><Type size={16} /></button>
       <button onclick={toggleNotes} title="Notes (Ctrl+\)">
         {#if notesOpen}Collapse notes <PanelRightClose size={16} />{:else}<PanelRightOpen size={16} /> Notes{/if}
       </button>
