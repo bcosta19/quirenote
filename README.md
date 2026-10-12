@@ -1,7 +1,7 @@
 # notas
 
-Leitor de PDF + editor de notas (vim mode) sobre um vault markdown do Obsidian, servido por um binário Go.
-Veja o [MVP.md](MVP.md) para escopo e decisões.
+Leitor de PDF/EPUB + editor de notas (modo vim) sobre o vault markdown do Obsidian, servido por um binário Go.
+Os `.md` do vault são a fonte da verdade (sem banco): Neovim, Obsidian e o navegador editam os mesmos arquivos.
 
 ## Uso
 
@@ -14,53 +14,38 @@ make check      # gofmt, vet, staticcheck, errcheck, nilaway, testes -race, svel
 ```
 
 Flags/variáveis: `-vault` / `NOTAS_VAULT` (padrão `~/Documents/NotasObsidian/Notas`),
-`-addr` / `NOTAS_ADDR` (padrão `127.0.0.1:8080`).
+`-addr` / `NOTAS_ADDR` (padrão `127.0.0.1:8080`). Para acesso remoto, ponha o IP do NetBird em `NOTAS_ADDR`
+no unit; quem está na rede acessa sem login.
 
 ## Atalhos
 
 | Atalho | Ação |
 |---|---|
-| `Ctrl+\` | recolher/mostrar notas |
-| `Ctrl+E` | alternar preview do markdown / edição (como no Obsidian) |
-| `Alt+\` | recolher/mostrar o PDF (sem fechar; volta na mesma página) |
-| `Ctrl+Shift+\` | barra lateral |
-| `Tab` / `Shift+Tab` | indentar / desindentar (inclusive itens de lista) |
-| `Ctrl+Shift+L` | inserir link da posição atual (PDF: `#page=N`; EPUB: `#cfi=…`) |
-| `Alt+↑` / `Alt+↓` | rolar o PDF sem sair do editor |
-| `Alt+Shift+↑` / `Alt+Shift+↓` | página anterior / próxima do PDF |
-| `Ctrl+clique` / `Ctrl+Enter` | seguir `[[link]]` (se a nota não existir, oferece criar) |
-| `[[` | autocompletar links (Enter ou Tab aceita) |
+| `Ctrl+\` / `Alt+\` / `Ctrl+Shift+\` | recolher notas / leitor / barra lateral |
+| `Ctrl+E` | alternar preview / edição |
 | `Ctrl+O` / `Ctrl+P` | busca rápida de notas e PDFs (Shift+Enter cria) |
-| `Ctrl+Shift+O` | sumário da nota (ir para um título) |
-| `Ctrl+Enter` numa tarefa | alterna `[ ]`/`[x]` (no preview, basta clicar na caixa) |
-| `↩ N` (barra superior) | notas que apontam para a nota aberta (backlinks) |
-| `Ctrl+Shift+F` | busca no conteúdo de todas as notas (sem diferenciar acentos; requer ripgrep) |
+| `Ctrl+Shift+F` | busca no conteúdo (requer ripgrep) |
+| `Ctrl+Shift+O` | sumário da nota |
+| `[[` | autocompletar links |
+| `Ctrl+clique` / `Ctrl+Enter` | seguir `[[link]]`; numa tarefa, alterna `[ ]`/`[x]` |
+| `Ctrl+Shift+L` | inserir link da posição atual do leitor (`#page=N` ou `#cfi=…`) |
+| `Alt+↑/↓` · `Alt+Shift+↑/↓` | rolar · virar página do leitor sem sair do editor |
+| `Tab` / `Shift+Tab` | indentar / desindentar |
 | `:w` / `Ctrl+S` | salvar (também salva sozinho após 1 s) |
 
-Na barra lateral: **+** cria uma nota e **📁+** cria uma pasta (passe o mouse numa pasta para criar
-nota ou subpasta direto nela);
-**📂** abre um PDF ou EPUB do dispositivo em que você está, sem enviar nada para o servidor.
-Links para esse PDF são gravados só com o nome (`[[livro.pdf#page=N]]`) e funcionam enquanto ele estiver aberto.
-
-Colar um print (`Ctrl+V` no modo insert) ou arrastar uma imagem para o editor grava o arquivo na pasta de
-anexos do Obsidian (`.obsidian/app.json`; padrão: raiz do vault) e insere `![[Pasted image ….png]]`.
-
-Clique direito num item da árvore: renomear/mover, mover para a lixeira (`.trash` do vault, a mesma do
-Obsidian — nada é apagado) e, em pastas, criar nota ou subpasta. Renomear nunca sobrescreve outro arquivo e, se outras notas
-citavam o arquivo, oferece atualizar os `[[links]]` delas. Nomes com `# ^ [ ] |` são recusados (como no Obsidian).
-
-Arraste as divisórias (entre barra lateral, PDF e notas) para redimensionar; duplo clique restaura.
-Enter numa lista continua com `- `, `1.` ou `- [ ]`; Enter num item vazio sai da lista. Indentação com TAB, como no Obsidian.
+- Barra lateral: **+** nota, **📁+** pasta (também dentro de cada pasta), **📂** abre PDF/EPUB do
+  dispositivo sem enviar nada ao servidor. Clique direito: renomear/mover (atualiza os `[[links]]`) e lixeira
+  (`.trash` do vault; nada é apagado).
+- Colar ou arrastar uma imagem a grava na pasta de anexos do Obsidian e insere `![[…]]`.
+- **↩ N** na barra superior lista os backlinks. Divisórias arrastáveis; duplo clique restaura.
 
 ## Aparência
 
-Tema claro "papel" por padrão (☾/☀ no topo alterna para o escuro; a escolha fica salva por dispositivo).
-O editor usa **EB Garamond**, embutida no binário (igual em qualquer dispositivo); código fica em mono.
-Cores do editor: `web/src/lib/theme.ts`; cores da interface: `web/src/app.css`.
-`docs/fontes.html` é a prévia usada para escolher a fonte.
+Tema claro "papel" (☾/☀ alterna para o escuro) e EB Garamond embutida. Cores: `web/src/lib/theme.ts` e `web/src/app.css`.
 
-## Leitor
+## Estrutura
 
-PDF (PDF.js) e EPUB (foliate-js) no mesmo painel: recolher (`Alt+\`), redimensionar, lembrar a última
-posição e virar páginas sem sair do editor (`Alt+↑/↓`). A página tem uma Content Security Policy
-(`script-src 'self'`) que também bloqueia JavaScript embutido em EPUBs.
+Go (`net/http`, `os.Root` confina o acesso ao vault, escrita atômica, conflito por mtime, fsnotify + SSE) em
+`cmd/` e `internal/`; front Svelte 5 + CodeMirror 6 + PDF.js + foliate-js em `web/`. O `mtime` vai como string
+no JSON porque em nanossegundos perde precisão no `Number` do JS. A página tem CSP `script-src 'self'`, que
+também bloqueia JavaScript embutido em EPUBs.
