@@ -38,6 +38,8 @@ const paper = [
       '.cm-searchMatch': { backgroundColor: '#e9d190' },
       '.cm-matchingBracket': { backgroundColor: '#dfd0b2', outline: 'none' },
       '.cm-panels': { backgroundColor: '#e0d6c1', color: '#332e26' },
+      '.cm-tooltip': { backgroundColor: '#e0d6c1', border: '1px solid #cfc2a7', color: '#332e26' },
+      '.cm-tooltip-autocomplete > ul > li[aria-selected]': { backgroundColor: '#d9c6a3', color: '#332e26' },
     },
     { dark: false },
   ),

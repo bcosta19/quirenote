@@ -7,6 +7,7 @@
   import Preview from './lib/Preview.svelte'
   import QuickSwitcher from './lib/QuickSwitcher.svelte'
   import PromptDialog from './lib/PromptDialog.svelte'
+  import { IMAGE } from './lib/markdown'
   import Tree from './lib/Tree.svelte'
   import type { Theme } from './lib/theme'
 
@@ -241,13 +242,23 @@
     doc = null
   }
 
-  function openLink(target: string, targetPage?: number) {
+  async function openLink(target: string, targetPage?: number) {
     const path = resolveLink(tree, target)
     if (path) return openPath(path, targetPage)
     // Link para o PDF local aberto (gravado só com o nome do arquivo).
-    const name = target.split('/').pop()
+    const name = target.split('/').pop()!
     if (localPdf && name === localPdf.name) {
       if (targetPage) page = targetPage
+      return
+    }
+    // Link para nota que ainda não existe: oferece criar (como no Obsidian),
+    // na pasta da nota atual quando o link não tem caminho.
+    // PDFs, EPUBs e imagens não viram nota; nomes com ponto (ex.: [[2024.10.12]]) sim.
+    if (!/\.(pdf|epub)$/i.test(name) && !IMAGE.test(name)) {
+      const dir = !target.includes('/') && note?.includes('/') ? note.slice(0, note.lastIndexOf('/') + 1) : ''
+      const suggestion = (dir + target).replace(/\.md$/i, '') + '.md'
+      const chosen = await ask(`Criar a nota “${name.replace(/\.md$/i, '')}”?`, suggestion, 'O link ainda não aponta para nenhuma nota. Ajuste o caminho se quiser.')
+      if (chosen?.trim()) await createAndOpen(chosen)
       return
     }
     flash(`Não encontrado: ${target}${/\.pdf$/i.test(target) ? ' (se for um PDF local, abra-o com 📂)' : ''}`)
@@ -495,10 +506,18 @@
       <section class="notes-pane" class:hidden={!notesOpen}>
         {#if note}
           <div class="editor-wrap" class:hidden={preview}>
-            <Editor bind:this={editor} path={note} onlink={openLink} keys={pdfKeys} {theme} oncontent={(t) => (noteText = t)} />
+            <Editor
+              bind:this={editor}
+              path={note}
+              onlink={openLink}
+              keys={pdfKeys}
+              {theme}
+              oncontent={(t) => (noteText = t)}
+              linkTargets={() => [...allPaths(tree)]}
+            />
           </div>
           {#if preview}
-            <Preview text={noteText} fileUrl={previewFileUrl} onlink={openLink} />
+            <Preview text={noteText} fileUrl={previewFileUrl} exists={(t) => !!resolveLink(tree, t)} onlink={openLink} />
           {/if}
         {:else}
           <div class="empty">

@@ -24,6 +24,7 @@
   import { codeBlocks } from './codeblocks'
   import { writing } from './writing'
   import { visualLineNumbers } from './visualLines'
+  import { linkCompletion } from './linkComplete'
   import { languages } from '@codemirror/language-data'
   import { editorTheme, type Theme } from './theme'
   import { vim } from '@replit/codemirror-vim'
@@ -36,6 +37,7 @@
     keys = [],
     theme = 'light',
     oncontent,
+    linkTargets = () => [],
   }: {
     path: string
     onlink: (target: string, page?: number) => void
@@ -44,6 +46,8 @@
     theme?: Theme
     /** Texto atual do editor (inclui o que ainda não foi salvo); usado pelo preview. */
     oncontent?: (text: string) => void
+    /** Arquivos do vault sugeridos ao digitar "[[" (lido na hora, sempre atualizado). */
+    linkTargets?: () => string[]
   } = $props()
 
   // Compartimento: troca o tema sem recriar o estado (mantém undo, cursor, modo vim).
@@ -81,6 +85,7 @@
         codeBlocks,
         writing,
         visualLineNumbers,
+        linkCompletion(() => linkTargets()),
         themeSlot.of(editorTheme(theme)),
         EditorView.lineWrapping,
         EditorView.contentAttributes.of({ spellcheck: 'true', lang: 'pt-BR' }),
@@ -283,6 +288,21 @@
   .cm :global(.cm-visualLineNumbers .cm-gutterElement) {
     padding: 0 10px 0 6px;
     text-align: right;
+  }
+  /* Lista do autocompletar de [[links]]: fonte da interface, não a do texto. */
+  .cm :global(.cm-tooltip-autocomplete > ul) {
+    font-family: system-ui, sans-serif;
+    font-size: 14px;
+    max-height: 18em;
+  }
+  .cm :global(.cm-tooltip-autocomplete > ul > li) {
+    padding: 3px 10px;
+  }
+  .cm :global(.cm-completionDetail) {
+    margin-left: 1em;
+    font-style: normal;
+    font-size: 12px;
+    color: var(--muted);
   }
   .cm :global(.cm-codeblock) {
     font-family: var(--mono);

@@ -28,7 +28,9 @@ Flags/variáveis: `-vault` / `NOTAS_VAULT` (padrão `~/Documents/NotasObsidian/N
 | `Ctrl+Shift+L` | inserir link da página atual do PDF |
 | `Alt+↑` / `Alt+↓` | rolar o PDF sem sair do editor |
 | `Alt+Shift+↑` / `Alt+Shift+↓` | página anterior / próxima do PDF |
-| `Ctrl+clique` / `Ctrl+Enter` | seguir `[[link]]` |
+| `Ctrl+clique` / `Ctrl+Enter` | seguir `[[link]]` (se a nota não existir, oferece criar) |
+| `[[` | autocompletar links (Enter ou Tab aceita) |
+| `Ctrl+O` / `Ctrl+P` | busca rápida de notas e PDFs (Shift+Enter cria) |
 | `:w` / `Ctrl+S` | salvar (também salva sozinho após 1 s) |
 
 Na barra lateral: **+** cria uma nota e **📁+** cria uma pasta (passe o mouse numa pasta para criar

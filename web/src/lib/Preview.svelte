@@ -4,14 +4,16 @@
   let {
     text,
     fileUrl,
+    exists,
     onlink,
   }: {
     text: string
     fileUrl: (target: string) => string
+    exists: (target: string) => boolean
     onlink: (target: string, page?: number) => void
   } = $props()
 
-  const render = $derived(createRenderer({ fileUrl }))
+  const render = $derived(createRenderer({ fileUrl, exists }))
   const html = $derived(render(text))
 
   function onclick(e: MouseEvent) {
@@ -77,6 +79,11 @@
     text-decoration: none;
     border-bottom: 1px solid color-mix(in srgb, var(--link) 35%, transparent);
     cursor: pointer;
+  }
+  /* Link para nota que ainda não existe (clicar oferece criar), como no Obsidian. */
+  article :global(a.missing) {
+    opacity: 0.6;
+    border-bottom-style: dashed;
   }
   article :global(a.embed) {
     font-style: italic;

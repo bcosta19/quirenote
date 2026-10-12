@@ -7,9 +7,11 @@ import DOMPurify from 'dompurify'
 export interface RenderContext {
   /** Resolve um alvo do vault ([[alvo]] ou caminho relativo) para uma URL de arquivo. */
   fileUrl: (target: string) => string
+  /** Se o alvo de um [[link]] existe no vault (links inexistentes ficam esmaecidos). */
+  exists?: (target: string) => boolean
 }
 
-const IMAGE = /\.(png|jpe?g|gif|webp|svg|avif|bmp)$/i
+export const IMAGE = /\.(png|jpe?g|gif|webp|svg|avif|bmp)$/i
 const escapeHtml = (s: string) =>
   s.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]!)
 
@@ -35,7 +37,8 @@ function wikilinks(md: MD, ctx: RenderContext) {
         const open = state.push('link_open', 'a', 1)
         open.attrs = [
           ['href', '#'],
-          ['class', embed ? 'wikilink embed' : 'wikilink'],
+          // [[#seção]] (alvo vazio) aponta para a própria nota: nunca é "inexistente".
+          ['class', ['wikilink', embed && 'embed', target && ctx.exists && !ctx.exists(target) && 'missing'].filter(Boolean).join(' ')],
           ['data-target', target],
         ]
         if (page) open.attrs.push(['data-page', page])
