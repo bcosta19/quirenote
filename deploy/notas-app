@@ -14,4 +14,6 @@ fi
 # A janela de app do Chromium tem a classe chrome-<host>__-Default (sem a porta).
 host=${url#*//}
 host=${host%%[:/]*}
-exec omarchy-launch-or-focus-webapp "chrome-${host}__" "$url"
+# Perfil próprio do Chromium: sem as extensões do perfil padrão (menos RAM).
+profile=${XDG_DATA_HOME:-$HOME/.local/share}/notas/chromium
+exec omarchy-launch-or-focus-webapp "chrome-${host}__" "$url" --user-data-dir="$profile" --disable-extensions --no-first-run --no-default-browser-check
