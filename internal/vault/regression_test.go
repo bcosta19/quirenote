@@ -45,6 +45,31 @@ func TestConcurrentSavesRejectStaleVersions(t *testing.T) {
 	}
 }
 
+func TestTrashKeepsEveryVersionWithTheSameName(t *testing.T) {
+	v, dir := newVault(t)
+	versions := map[string]string{}
+	for i := range 100 {
+		content := fmt.Sprintf("version %d", i)
+		if _, err := v.Create(fmt.Sprintf("batch/%d/note.md", i), content); err != nil {
+			t.Fatal(err)
+		}
+		p, err := v.Trash(fmt.Sprintf("batch/%d/note.md", i))
+		if err != nil {
+			t.Fatal(err)
+		}
+		if _, exists := versions[p]; exists {
+			t.Fatalf("trash destination %q was reused and overwrote an earlier version", p)
+		}
+		versions[p] = content
+	}
+	for p, want := range versions {
+		data, err := os.ReadFile(filepath.Join(dir, p))
+		if err != nil || string(data) != want {
+			t.Fatalf("trash version %s = %q, %v; want %q", p, data, err, want)
+		}
+	}
+}
+
 func TestSavePreservesExistingPermissions(t *testing.T) {
 	for _, mode := range []os.FileMode{0o600, 0o640, 0o660} {
 		for _, force := range []bool{false, true} {

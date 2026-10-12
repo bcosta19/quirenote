@@ -407,9 +407,21 @@ func (v *Vault) Trash(p string) (string, error) {
 	}
 	name := path.Base(p)
 	dest := path.Join(TrashDir, name)
-	if _, err := v.root.Lstat(dest); err == nil {
-		ext := path.Ext(name)
-		dest = path.Join(TrashDir, fmt.Sprintf("%s %s%s", strings.TrimSuffix(name, ext), time.Now().Format("2006-01-02 150405.000"), ext))
+	stamp := time.Now().Format("2006-01-02 150405.000")
+	ext := path.Ext(name)
+	for i := 0; ; i++ {
+		if i > 0 {
+			suffix := stamp
+			if i > 1 {
+				suffix += fmt.Sprintf(" %d", i-1)
+			}
+			dest = path.Join(TrashDir, fmt.Sprintf("%s %s%s", strings.TrimSuffix(name, ext), suffix, ext))
+		}
+		if _, err := v.root.Lstat(dest); errors.Is(err, fs.ErrNotExist) {
+			break
+		} else if err != nil {
+			return "", err
+		}
 	}
 	if err := v.root.Rename(p, dest); err != nil {
 		return "", err
