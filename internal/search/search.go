@@ -101,6 +101,44 @@ func Search(ctx context.Context, dir, q string) ([]Result, error) {
 	if q == "" {
 		return []Result{}, nil
 	}
+	return run(ctx, dir, Pattern(q))
+}
+
+// BacklinkPattern casa [[links]] para a nota (caminho relativo ao vault, com .md):
+// pelo nome ou pelo caminho, com ou sem .md, seguidos de #seção, |apelido (ou \|
+// dentro de tabelas) ou ]]. É aproximado: não resolve caminhos parciais/relativos e
+// conta [[Nome]] para todas as notas com esse nome, em qualquer pasta.
+func BacklinkPattern(note string) string {
+	noExt := strings.TrimSuffix(note, filepath.Ext(note))
+	name := filepath.Base(noExt)
+	alts := regexp.QuoteMeta(name)
+	if noExt != name {
+		alts += "|" + regexp.QuoteMeta(noExt)
+	}
+	return `\[\[(?:` + alts + `)(?:\.md)?(?:\\?[#|][^\]]*)?\]\]`
+}
+
+// Backlinks lista os trechos de outras notas que apontam para note.
+func Backlinks(ctx context.Context, dir, note string) ([]Result, error) {
+	note = filepath.ToSlash(strings.TrimPrefix(note, "/"))
+	if note == "" || strings.HasPrefix(note, "../") {
+		return []Result{}, nil
+	}
+	res, err := run(ctx, dir, BacklinkPattern(note))
+	if err != nil {
+		return nil, err
+	}
+	out := res[:0]
+	for _, r := range res {
+		if r.Path != note { // links da nota para ela mesma não contam
+			out = append(out, r)
+		}
+	}
+	return out, nil
+}
+
+// run executa o ripgrep com o padrão nas notas .md do vault e monta os trechos.
+func run(ctx context.Context, dir, pattern string) ([]Result, error) {
 	rg, err := exec.LookPath("rg")
 	if err != nil {
 		return nil, ErrNoRipgrep
@@ -111,7 +149,7 @@ func Search(ctx context.Context, dir, q string) ([]Result, error) {
 	// Sem shell: o termo vai como argumento depois de "-e", nunca é interpretado.
 	// --no-ignore: um .gitignore no vault não deve esconder notas (ocultos seguem de fora).
 	cmd := exec.CommandContext(ctx, rg, "--json", "--ignore-case", "--no-ignore", "--max-count", "5",
-		"--iglob", "*.md", "--max-filesize", "2M", "-e", Pattern(q), "--", ".")
+		"--iglob", "*.md", "--max-filesize", "2M", "-e", pattern, "--", ".")
 	cmd.Dir = dir
 	out, err := cmd.StdoutPipe()
 	if err != nil {

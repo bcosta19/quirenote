@@ -1,6 +1,19 @@
 <script lang="ts">
-  import { onMount } from 'svelte'
-  import { ExistsError, createDir, createNote, fileUrl, getTree, moveItem, subscribe, trashItem, uploadImage, type Entry } from './lib/api'
+  import { onMount, untrack } from 'svelte'
+  import {
+    ExistsError,
+    createDir,
+    createNote,
+    fileUrl,
+    getBacklinks,
+    getTree,
+    moveItem,
+    subscribe,
+    trashItem,
+    uploadImage,
+    type Entry,
+    type SearchResult,
+  } from './lib/api'
   import { pageLink, resolveLink } from './lib/links'
   import Editor from './lib/Editor.svelte'
   import PdfReader from './lib/PdfReader.svelte'
@@ -10,6 +23,7 @@
   import { IMAGE } from './lib/markdown'
   import SearchPanel from './lib/SearchPanel.svelte'
   import Outline from './lib/Outline.svelte'
+  import BacklinksPanel from './lib/BacklinksPanel.svelte'
   import ContextMenu, { type MenuItem } from './lib/ContextMenu.svelte'
   import Tree from './lib/Tree.svelte'
   import type { Theme } from './lib/theme'
@@ -122,6 +136,35 @@
   // Busca no conteúdo (Ctrl+Shift+F); guarda o último termo para reabrir com ele.
   let searchOpen = $state(false)
   let outlineOpen = $state(false) // sumário da nota (Ctrl+Shift+O)
+
+  // Backlinks da nota aberta: recarrega ao trocar de nota e quando o vault muda.
+  let backlinks = $state<SearchResult[] | null>(null)
+  let backlinksOpen = $state(false)
+  let backlinksTimer: ReturnType<typeof setTimeout> | undefined
+  let backlinksReq: AbortController | undefined
+  function loadBacklinks(delay = 0) {
+    clearTimeout(backlinksTimer)
+    backlinksTimer = setTimeout(async () => {
+      backlinksReq?.abort()
+      const current = note
+      if (!current) return (backlinks = null)
+      backlinksReq = new AbortController()
+      try {
+        const res = await getBacklinks(current, backlinksReq.signal)
+        if (current === note) backlinks = res
+      } catch {
+        // Falha passageira (ex.: rg lento): mantém a contagem anterior desta nota.
+      }
+    }, delay)
+  }
+  $effect(() => {
+    note // dependência
+    untrack(() => {
+      backlinks = null
+      backlinksOpen = false // o painel era da nota anterior; não reabre sozinho
+      loadBacklinks()
+    })
+  })
   let searchPanel: ReturnType<typeof SearchPanel> | undefined = $state()
   let lastSearch = $state('')
   let reveal = $state<{ path: string; line: number; n: number } | null>(null)
@@ -544,6 +587,9 @@
     let refresh: ReturnType<typeof setTimeout> | undefined
     return subscribe((ev) => {
       if (ev.path === note) editor?.externalChange()
+      // Outra nota mudou: um link para a nota aberta pode ter surgido ou sumido.
+      // (O autosave da própria nota não altera os backlinks dela.)
+      if (/\.md$/i.test(ev.path) && ev.path !== note) loadBacklinks(800)
       if (ev.op !== 'write') {
         clearTimeout(refresh)
         refresh = setTimeout(async () => (tree = await getTree()), 300)
@@ -569,6 +615,18 @@
 
 {#if menu}
   <ContextMenu x={menu.x} y={menu.y} items={menu.items} onclose={() => (menu = null)} />
+{/if}
+
+{#if backlinksOpen && note && backlinks}
+  <BacklinksPanel
+    {note}
+    results={backlinks}
+    onopen={(p, line) => openAtLine(p, line)}
+    onclose={() => {
+      backlinksOpen = false
+      setTimeout(() => editor?.focus())
+    }}
+  />
 {/if}
 
 {#if outlineOpen && note}
@@ -640,6 +698,11 @@
       <button onclick={() => (sidebarOpen = !sidebarOpen)} title="Arquivos (Ctrl+Shift+\)">☰</button>
       <button onclick={() => (searchOpen = true)} title="Buscar no conteúdo das notas (Ctrl+Shift+F)">🔍</button>
       <span class="crumb">{note ?? ''}</span>
+      {#if note && backlinks}
+        <button onclick={() => (backlinksOpen = true)} title="Notas que apontam para esta (backlinks)" disabled={!backlinks.length}>
+          ↩ {new Set(backlinks.map((b) => b.path)).size}
+        </button>
+      {/if}
       {#if note}
         <button onclick={togglePreview} title="Alternar preview / edição (Ctrl+E)" class:active={preview}>
           {preview ? '✎ Editar' : '👁 Preview'}

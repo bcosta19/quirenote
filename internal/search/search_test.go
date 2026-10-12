@@ -98,3 +98,43 @@ func TestSearch(t *testing.T) {
 		t.Fatalf("consulta vazia deveria dar zero resultados: %+v", res)
 	}
 }
+
+func TestBacklinks(t *testing.T) {
+	if _, err := exec.LookPath("rg"); err != nil {
+		t.Skip("ripgrep não instalado")
+	}
+	dir := t.TempDir()
+	write := func(name, body string) {
+		t.Helper()
+		p := filepath.Join(dir, name)
+		if err := os.MkdirAll(filepath.Dir(p), 0o755); err != nil {
+			t.Fatal(err)
+		}
+		if err := os.WriteFile(p, []byte(body), 0o644); err != nil {
+			t.Fatal(err)
+		}
+	}
+	write("Estudos/Análise léxica.md", "# Análise léxica\nVer [[Análise léxica#Tokens]] (auto)\n")
+	write("a.md", "Leia [[Análise léxica]] hoje.\n")
+	write("b.md", "Com apelido: [[Estudos/Análise léxica|o lexer]] e seção [[análise léxica#x]].\n")
+	write("c.md", "Com extensão [[Análise léxica.md]].\n")
+	write("tabela.md", "| col |\n|---|\n| [[Análise léxica\\|apelido]] |\n")
+	write("falsos.md", "[[Análise léxica avançada]] e [[Outra]] e Análise léxica sem link [Análise léxica]\n")
+	write("regex.md", "[[a.b]] não pode casar com [[aXb]]\n")
+
+	res, err := Backlinks(context.Background(), dir, "Estudos/Análise léxica.md")
+	if err != nil {
+		t.Fatal(err)
+	}
+	got := map[string]bool{}
+	for _, r := range res {
+		got[r.Path] = true
+	}
+	if len(got) != 4 || !got["a.md"] || !got["b.md"] || !got["c.md"] || !got["tabela.md"] {
+		t.Fatalf("backlinks inesperados: %+v", res)
+	}
+	// Ponto no nome é literal (regex escapada).
+	if res, _ := Backlinks(context.Background(), dir, "a.b.md"); len(res) != 1 || res[0].Path != "regex.md" {
+		t.Fatalf("nome com ponto: %+v", res)
+	}
+}

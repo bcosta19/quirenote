@@ -113,6 +113,11 @@ export async function uploadImage(note: string, file: Blob): Promise<string> {
   return path
 }
 
+/** Trechos de outras notas com [[link]] para a nota. */
+export async function getBacklinks(note: string, signal?: AbortSignal): Promise<SearchResult[]> {
+  return json(await fetch(`/api/backlinks?note=${encodeURIComponent(note)}`, { signal }))
+}
+
 export function subscribe(onEvent: (e: VaultEvent) => void): () => void {
   const es = new EventSource('/api/events')
   es.onmessage = (m) => onEvent(JSON.parse(m.data))

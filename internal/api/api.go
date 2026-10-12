@@ -41,6 +41,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/images", s.saveImage)
 	mux.HandleFunc("GET /api/events", s.events)
 	mux.HandleFunc("GET /api/search", s.search)
+	mux.HandleFunc("GET /api/backlinks", s.backlinks)
 	if s.static != nil {
 		mux.Handle("GET /", spa(s.static))
 	}
@@ -241,6 +242,20 @@ func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	res, err := search.Search(r.Context(), s.vault.Dir(), q)
+	if errors.Is(err, search.ErrNoRipgrep) {
+		writeJSON(w, http.StatusServiceUnavailable, map[string]string{"error": err.Error()})
+		return
+	}
+	if err != nil {
+		writeErr(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, res)
+}
+
+// backlinks lista os trechos de outras notas com [[link]] para ?note=.
+func (s *Server) backlinks(w http.ResponseWriter, r *http.Request) {
+	res, err := search.Backlinks(r.Context(), s.vault.Dir(), r.URL.Query().Get("note"))
 	if errors.Is(err, search.ErrNoRipgrep) {
 		writeJSON(w, http.StatusServiceUnavailable, map[string]string{"error": err.Error()})
 		return
