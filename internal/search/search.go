@@ -151,7 +151,7 @@ func Files(ctx context.Context, dir, pattern string) ([]string, error) {
 	}
 	ctx, cancel := context.WithTimeout(ctx, 3*searchFor)
 	defer cancel()
-	cmd := exec.CommandContext(ctx, rg, "--files-with-matches", "--ignore-case", "--no-ignore",
+	cmd := exec.CommandContext(ctx, rg, "--files-with-matches", "--null", "--ignore-case", "--no-ignore",
 		"--iglob", "*.md", "-e", pattern, "--", ".")
 	cmd.Dir = dir
 	out, err := cmd.Output()
@@ -166,7 +166,7 @@ func Files(ctx context.Context, dir, pattern string) ([]string, error) {
 		return nil, err
 	}
 	files := []string{}
-	for _, l := range strings.Split(strings.TrimSpace(string(out)), "\n") {
+	for _, l := range strings.Split(string(out), "\x00") {
 		if l != "" {
 			files = append(files, filepath.ToSlash(strings.TrimPrefix(l, "./")))
 		}

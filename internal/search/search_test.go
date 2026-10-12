@@ -99,6 +99,24 @@ func TestSearch(t *testing.T) {
 	}
 }
 
+func TestFilesPreservesNewlinesInImportedNoteNames(t *testing.T) {
+	if _, err := exec.LookPath("rg"); err != nil {
+		t.Skip("ripgrep not installed")
+	}
+	dir := t.TempDir()
+	name := "imported\nreference.md"
+	if err := os.WriteFile(filepath.Join(dir, name), []byte("[[Old note]]\n"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	files, err := Files(context.Background(), dir, BacklinkPattern("Old note.md"))
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(files) != 1 || files[0] != name {
+		t.Fatalf("Files = %q; want the intact filename %q", files, name)
+	}
+}
+
 func TestBacklinks(t *testing.T) {
 	if _, err := exec.LookPath("rg"); err != nil {
 		t.Skip("ripgrep not installed")
