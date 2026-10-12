@@ -3,6 +3,29 @@
 Leitor de PDF/EPUB + editor de notas (modo vim) sobre o vault markdown do Obsidian, servido por um binário Go.
 Os `.md` do vault são a fonte da verdade (sem banco): Neovim, Obsidian e o navegador editam os mesmos arquivos.
 
+![Editor com o leitor de PDF ao lado](docs/img/editor-e-leitor.png)
+
+## Funcionalidades
+
+**Leitor e notas lado a lado.** O PDF (ou EPUB) fica à esquerda e a nota à direita; os dois painéis recolhem e
+redimensionam. `Ctrl+Shift+L` insere um link para a página atual, e clicar nele volta exatamente lá.
+
+**Preview do markdown** (`Ctrl+E`): títulos, `[[links]]`, imagens, propriedades e tarefas clicáveis.
+
+![Preview da nota](docs/img/preview.png)
+
+**Busca rápida** (`Ctrl+O`) por nome, sem diferenciar acentos, e **busca no conteúdo** (`Ctrl+Shift+F`) com trechos destacados.
+
+![Busca rápida](docs/img/busca-rapida.png) ![Busca no conteúdo](docs/img/busca-conteudo.png)
+
+**Backlinks** (botão ↩ N): quais notas apontam para a nota aberta.
+
+![Backlinks](docs/img/backlinks.png)
+
+**Tema escuro** (☾/☀ no topo):
+
+![Tema escuro](docs/img/tema-escuro.png)
+
 ## Uso
 
 ```sh
