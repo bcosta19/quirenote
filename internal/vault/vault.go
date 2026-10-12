@@ -176,14 +176,12 @@ func (v *Vault) Save(p, content string, baseMtime int64) (Note, error) {
 	if info != nil {
 		mode = info.Mode().Perm()
 	}
-	if baseMtime != 0 {
-		if info.ModTime().UnixNano() != baseMtime {
-			current, rerr := v.Read(p)
-			if rerr != nil {
-				return Note{}, rerr
-			}
-			return current, ErrConflict
+	if info != nil && baseMtime != 0 && info.ModTime().UnixNano() != baseMtime {
+		current, rerr := v.Read(p)
+		if rerr != nil {
+			return Note{}, rerr
 		}
+		return current, ErrConflict
 	}
 
 	dir := path.Dir(p)
