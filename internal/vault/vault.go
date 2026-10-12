@@ -16,6 +16,7 @@ import (
 	"path"
 	"sort"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -37,6 +38,7 @@ var visibleExt = map[string]bool{
 type Vault struct {
 	dir  string
 	root *os.Root
+	mu   sync.Mutex
 }
 
 type Entry struct {
@@ -157,6 +159,8 @@ func (v *Vault) Read(p string) (Note, error) {
 // (Neovim, Obsidian, Syncthing...), it returns ErrConflict along with the
 // current version on disk. baseMtime == 0 forces the write.
 func (v *Vault) Save(p, content string, baseMtime int64) (Note, error) {
+	v.mu.Lock()
+	defer v.mu.Unlock()
 	p, err := clean(p)
 	if err != nil {
 		return Note{}, err
