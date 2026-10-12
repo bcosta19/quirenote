@@ -67,7 +67,7 @@
               oncontext(e, ev)
             }}
           >
-            {#if open[e.path] || expandAll}<ChevronDown size={14} />{:else}<ChevronRight size={14} />{/if} {e.name}
+            {#if open[e.path] || expandAll}<ChevronDown size={14} />{:else}<ChevronRight size={14} />{/if}<span class="label">{e.name}</span>
           </button>
           <button
             class="new"
@@ -101,7 +101,7 @@
             oncontext(e, ev)
           }}
         >
-          <FileIcon name={e.name} /> {e.name.replace(/\.md$/, '')}
+          <FileIcon name={e.name} /><span class="label">{e.name.replace(/\.md$/, '')}</span>
         </button>
       {/if}
     </li>
@@ -115,7 +115,9 @@
     padding: 0;
   }
   .item {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 5px;
     width: 100%;
     text-align: left;
     background: none;
@@ -129,9 +131,10 @@
     cursor: pointer;
     border-radius: 4px;
   }
-  .item :global(svg) {
-    vertical-align: -2px;
-    margin-right: 3px;
+  .label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
   .item:hover {
     background: var(--hover);
