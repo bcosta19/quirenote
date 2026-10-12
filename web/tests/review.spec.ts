@@ -1,5 +1,23 @@
 import { expect, test, type Page, type Route } from '@playwright/test'
 
+function pdfDocument(pages = 4) {
+  const objects = [
+    '<< /Type /Catalog /Pages 2 0 R >>',
+    `<< /Type /Pages /Kids [${Array.from({ length: pages }, (_, i) => `${i + 3} 0 R`).join(' ')}] /Count ${pages} >>`,
+    ...Array.from({ length: pages }, () => '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 300 400] /Resources << >> >>'),
+  ]
+  let pdf = '%PDF-1.4\n'
+  const offsets = [0]
+  for (const [i, object] of objects.entries()) {
+    offsets.push(pdf.length)
+    pdf += `${i + 1} 0 obj\n${object}\nendobj\n`
+  }
+  const xref = pdf.length
+  pdf += `xref\n0 ${offsets.length}\n0000000000 65535 f \n`
+  pdf += offsets.slice(1).map((offset) => `${String(offset).padStart(10, '0')} 00000 n \n`).join('')
+  return pdf + `trailer\n<< /Size ${offsets.length} /Root 1 0 R >>\nstartxref\n${xref}\n%%EOF\n`
+}
+
 async function mockVault(page: Page, initial: Record<string, string>) {
   const notes = new Map(Object.entries(initial).map(([path, content]) => [path, { path, content, mtime: '1' }]))
   let save: ((route: Route, path: string) => Promise<void>) | undefined
@@ -22,6 +40,9 @@ async function mockVault(page: Page, initial: Record<string, string>) {
       return route.fulfill({ json: [...notes.keys()].map((path) => ({ name: path, path, dir: false })) })
     }
     if (url.pathname === '/api/backlinks') return route.fulfill({ json: [] })
+    if (url.pathname.startsWith('/api/files/') && url.pathname.endsWith('.pdf')) {
+      return route.fulfill({ body: pdfDocument(), contentType: 'application/pdf' })
+    }
     const path = decodeURIComponent(url.pathname.slice('/api/notes/'.length))
     if (url.pathname.startsWith('/api/notes/')) {
       if (req.method() === 'GET') {
@@ -55,6 +76,17 @@ function deferred() {
   const promise = new Promise<void>((r) => { resolve = r })
   return { promise, resolve }
 }
+
+test('an explicit first-page PDF link takes precedence over the remembered page', async ({ page }) => {
+  await mockVault(page, { 'A.md': '[[book.pdf#page=1]]', 'book.pdf': '' })
+  await page.addInitScript(() => localStorage.setItem('quirenote:page:book.pdf', '3'))
+  await page.goto('/#note=A.md')
+  await expect(page.locator('.editor .status')).toHaveText('saved')
+  await page.getByRole('button', { name: 'Preview', exact: true }).click()
+  await page.getByRole('link', { name: 'book.pdf · p.1', exact: true }).click()
+  await expect(page.locator('.reader .toolbar .muted')).toHaveText('/ 4')
+  await expect(page.getByRole('spinbutton', { name: 'Page', exact: true })).toHaveValue('1')
+})
 
 test('switching notes waits for an in-flight save and keeps each note separate', async ({ page }) => {
   const vault = await mockVault(page, { 'A.md': 'alpha', 'B.md': 'beta' })

@@ -10,11 +10,13 @@
     id,
     title,
     page = $bindable(1),
+    target = null,
   }: {
     src: string // PDF URL: /api/files/... (vault) or blob: (local file)
     id: string // identifies the PDF to remember the last page read
     title: string
     page?: number
+    target?: { id: string; page: number } | null
   } = $props()
 
   let container: HTMLDivElement
@@ -22,6 +24,7 @@
   let total = $state(0)
   let error = $state('')
   let loadingTask: any = null
+  let startPage = 1
 
   const pageKey = (p: string) => `quirenote:page:${p}`
 
@@ -29,6 +32,8 @@
     if (!viewer) return
     error = ''
     total = 0
+    startPage = target?.id === id ? target.page : page > 1 ? page : Number(localStorage.getItem(pageKey(id)) || 1)
+    if (!Number.isFinite(startPage)) startPage = 1
     loadingTask?.destroy()
     loadingTask = pdfjsLib.getDocument({ url })
     try {
@@ -52,9 +57,7 @@
       eventBus.on('pagesinit', () => {
         v.currentScaleValue = 'page-width'
         // Page requested by the link, otherwise the last one read in this PDF.
-        const saved = Number(localStorage.getItem(pageKey(id)) || 1)
-        const target = page > 1 ? page : saved
-        if (target > 1) v.currentPageNumber = target
+        v.currentPageNumber = Math.min(Math.max(Math.trunc(startPage), 1), v.pagesCount)
       })
       eventBus.on('pagechanging', (e: { pageNumber: number }) => {
         page = e.pageNumber

@@ -65,6 +65,7 @@
   let note = $state<string | null>(fromUrl ? hash.get('note') : (session?.note ?? null))
   let doc = $state<string | null>(fromUrl ? hash.get('doc') : (session?.doc ?? null))
   let page = $state(fromUrl ? Number(hash.get('page') || 1) : (session?.page ?? 1))
+  let pdfTarget = $state<{ id: string; page: number } | null>(hash.get('doc') && hash.has('page') ? { id: hash.get('doc')!, page: Number(hash.get('page')) } : null)
 
   let tree = $state<Entry[]>([])
   let filter = $state('')
@@ -221,6 +222,7 @@
     if (nextDoc) {
       closeLocal()
       page = Number(params.get('page') || 1)
+      pdfTarget = params.has('page') ? { id: nextDoc, page } : null
       readerOpen = true
     }
     doc = nextDoc
@@ -557,6 +559,7 @@
       notesOpen = true
     } else if (/\.pdf$/i.test(path)) {
       // The link page; without it, the reader goes back to the last page read.
+      pdfTarget = targetPage === undefined ? null : { id: path, page: targetPage }
       page = targetPage ?? (path === doc ? page : 1)
       if (path !== doc) forgetEpub()
       closeLocal()
@@ -966,7 +969,7 @@
               />
             {/key}
           {:else}
-            <PdfReader bind:this={pdf} src={reader.src} id={reader.id} title={reader.title} bind:page />
+            <PdfReader bind:this={pdf} src={reader.src} id={reader.id} title={reader.title} target={pdfTarget} bind:page />
           {/if}
         </section>
         {#if readerOpen && notesOpen}
