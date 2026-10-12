@@ -86,6 +86,18 @@ export async function searchNotes(q: string, signal?: AbortSignal): Promise<Sear
   return json(await fetch(`/api/search?q=${encodeURIComponent(q)}`, { signal }))
 }
 
+async function postJSON<T>(url: string, body: unknown): Promise<T> {
+  const res = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+  if (res.status === 409) throw new ExistsError((await res.json()).error)
+  return json(res)
+}
+
+/** Renomeia/move arquivo ou pasta; ExistsError se o destino já existir. */
+export const moveItem = (from: string, to: string) => postJSON<{ path: string }>('/api/move', { from, to })
+
+/** Move para a lixeira do vault (.trash); nada é apagado. */
+export const trashItem = (path: string) => postJSON<{ path: string }>('/api/trash', { path })
+
 export function subscribe(onEvent: (e: VaultEvent) => void): () => void {
   const es = new EventSource('/api/events')
   es.onmessage = (m) => onEvent(JSON.parse(m.data))

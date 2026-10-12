@@ -2,8 +2,10 @@ package vault
 
 import (
 	"errors"
+	"io/fs"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -164,5 +166,69 @@ func TestCreateNeverOverwrites(t *testing.T) {
 	}
 	if _, err := v.Create("../fora.md", "x"); err == nil {
 		t.Fatal("caminho fora do vault deveria falhar")
+	}
+}
+
+func TestMove(t *testing.T) {
+	v, dir := newVault(t)
+	if p, err := v.Move("a.md", "pasta nova/b.md"); err != nil || p != "pasta nova/b.md" {
+		t.Fatalf("Move = %q, %v", p, err)
+	}
+	if b, err := os.ReadFile(filepath.Join(dir, "pasta nova/b.md")); err != nil || string(b) != "# A" {
+		t.Fatalf("conteúdo após mover: %q, %v", b, err)
+	}
+	// Nunca sobrescreve.
+	if _, err := v.Move("livros/b.pdf", "pasta nova/b.md"); !errors.Is(err, ErrExists) {
+		t.Fatalf("esperava ErrExists, veio %v", err)
+	}
+	// Pasta inteira, e não para dentro dela mesma.
+	if _, err := v.Move("livros", "livros/sub"); !errors.Is(err, ErrInvalidPath) {
+		t.Fatalf("mover pasta para dentro dela mesma: %v", err)
+	}
+	if _, err := v.Move("livros", "biblioteca"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "biblioteca/b.pdf")); err != nil {
+		t.Fatal(err)
+	}
+	for _, bad := range [][2]string{{"../x", "y.md"}, {"biblioteca/b.pdf", "../fora.pdf"}, {".obsidian/x.json", "x.json"}, {"biblioteca", ".trash/b"}} {
+		if _, err := v.Move(bad[0], bad[1]); err == nil {
+			t.Errorf("Move(%q, %q) deveria falhar", bad[0], bad[1])
+		}
+	}
+	if _, err := v.Move("nao-existe.md", "x.md"); !errors.Is(err, fs.ErrNotExist) {
+		t.Fatalf("origem inexistente: %v", err)
+	}
+}
+
+func TestTrash(t *testing.T) {
+	v, dir := newVault(t)
+	p1, err := v.Trash("a.md")
+	if err != nil || p1 != ".trash/a.md" {
+		t.Fatalf("Trash = %q, %v", p1, err)
+	}
+	if _, err := os.Stat(filepath.Join(dir, "a.md")); !os.IsNotExist(err) {
+		t.Fatal("nota deveria ter saído do lugar")
+	}
+	// Mesmo nome de novo: não sobrescreve o que já está na lixeira.
+	if err := os.WriteFile(filepath.Join(dir, "a.md"), []byte("segunda"), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	p2, err := v.Trash("a.md")
+	if err != nil || p2 == p1 || !strings.HasPrefix(p2, ".trash/a ") || !strings.HasSuffix(p2, ".md") {
+		t.Fatalf("segunda ida à lixeira = %q, %v", p2, err)
+	}
+	if b, _ := os.ReadFile(filepath.Join(dir, p1)); string(b) != "# A" {
+		t.Fatalf("primeira versão na lixeira foi alterada: %q", b)
+	}
+	// Pastas também vão inteiras; a lixeira em si não pode ser enviada.
+	if _, err := v.Trash("livros"); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := v.Trash(".trash"); err == nil {
+		t.Fatal("a própria lixeira não pode ir para a lixeira")
+	}
+	if tree, _ := v.Tree(); len(tree) != 0 {
+		t.Fatalf("lixeira não deveria aparecer na árvore: %+v", tree)
 	}
 }

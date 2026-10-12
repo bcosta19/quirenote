@@ -39,6 +39,9 @@ nota ou subpasta direto nela);
 **📂** abre um PDF do dispositivo em que você está, sem enviar nada para o servidor.
 Links para esse PDF são gravados só com o nome (`[[livro.pdf#page=N]]`) e funcionam enquanto ele estiver aberto.
 
+Clique direito num item da árvore: renomear/mover, mover para a lixeira (`.trash` do vault, a mesma do
+Obsidian — nada é apagado) e, em pastas, criar nota ou subpasta. Renomear nunca sobrescreve outro arquivo.
+
 Arraste as divisórias (entre barra lateral, PDF e notas) para redimensionar; duplo clique restaura.
 Enter numa lista continua com `- `, `1.` ou `- [ ]`; Enter num item vazio sai da lista. Indentação com TAB, como no Obsidian.
 

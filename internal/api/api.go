@@ -35,6 +35,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/files/{path...}", s.file)
 	mux.HandleFunc("POST /api/dirs/{path...}", s.mkdir)
 	mux.HandleFunc("POST /api/notes/{path...}", s.createNote)
+	mux.HandleFunc("POST /api/move", s.move)
+	mux.HandleFunc("POST /api/trash", s.trash)
 	mux.HandleFunc("GET /api/events", s.events)
 	mux.HandleFunc("GET /api/search", s.search)
 	if s.static != nil {
@@ -122,6 +124,49 @@ func (s *Server) createNote(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusCreated, note)
+}
+
+type moveRequest struct {
+	From string `json:"from"`
+	To   string `json:"to"`
+}
+
+// move renomeia/move um arquivo ou pasta; 409 se o destino já existir.
+func (s *Server) move(w http.ResponseWriter, r *http.Request) {
+	var req moveRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 64<<10)).Decode(&req); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "JSON inválido"})
+		return
+	}
+	p, err := s.vault.Move(req.From, req.To)
+	if errors.Is(err, vault.ErrExists) {
+		writeJSON(w, http.StatusConflict, map[string]string{"error": err.Error()})
+		return
+	}
+	if err != nil {
+		writeErr(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]string{"path": p})
+}
+
+type trashRequest struct {
+	Path string `json:"path"`
+}
+
+// trash move para a lixeira do vault (.trash), sem apagar nada.
+func (s *Server) trash(w http.ResponseWriter, r *http.Request) {
+	var req trashRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 64<<10)).Decode(&req); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "JSON inválido"})
+		return
+	}
+	p, err := s.vault.Trash(req.Path)
+	if err != nil {
+		writeErr(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]string{"path": p})
 }
 
 func (s *Server) mkdir(w http.ResponseWriter, r *http.Request) {

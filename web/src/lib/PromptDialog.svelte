@@ -6,17 +6,25 @@
     message,
     value = '',
     hint = '',
+    input: withInput = true,
+    okLabel = 'OK',
+    danger = false,
     onsubmit,
     oncancel,
   }: {
     message: string
     value?: string
     hint?: string
+    /** false: só confirmação (sem campo de texto). */
+    input?: boolean
+    okLabel?: string
+    danger?: boolean
     onsubmit: (value: string) => void
     oncancel: () => void
   } = $props()
 
-  let input: HTMLInputElement
+  let input = $state<HTMLInputElement>()
+  let ok: HTMLButtonElement
   // svelte-ignore state_referenced_locally
   let text = $state(value) // valor inicial sugerido; depois o campo é livre
 
@@ -33,6 +41,10 @@
   }
 
   onMount(() => {
+    if (!input) {
+      ok.focus()
+      return
+    }
     input.focus()
     // Seleciona só o nome (sem pasta nem .md), como ao renomear no explorador de arquivos.
     const start = text.lastIndexOf('/') + 1
@@ -44,14 +56,27 @@
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
 <div class="backdrop" onclick={oncancel}>
   <div class="dialog" onclick={(e) => e.stopPropagation()} role="dialog" aria-label={message} tabindex="-1">
-    <label>
-      <span class="message">{message}</span>
-      <input bind:this={input} bind:value={text} {onkeydown} />
-    </label>
+    {#if withInput}
+      <label>
+        <span class="message">{message}</span>
+        <input bind:this={input} bind:value={text} {onkeydown} />
+      </label>
+    {:else}
+      <p class="message">{message}</p>
+    {/if}
     {#if hint}<p class="hint">{hint}</p>{/if}
     <div class="actions">
       <button onclick={oncancel}>Cancelar</button>
-      <button class="primary" onclick={() => onsubmit(text)}>OK</button>
+      <button
+        class="primary"
+        class:danger
+        bind:this={ok}
+        onclick={() => onsubmit(text)}
+        onkeydown={(e) => {
+          e.stopPropagation()
+          if (e.key === 'Escape') oncancel()
+        }}>{okLabel}</button
+      >
     </div>
   </div>
 </div>
@@ -108,5 +133,12 @@
     background: var(--accent);
     border-color: var(--accent);
     color: var(--panel);
+  }
+  .primary.danger {
+    background: var(--error);
+    border-color: var(--error);
+  }
+  p.message {
+    margin: 0;
   }
 </style>

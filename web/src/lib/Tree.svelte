@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { untrack } from 'svelte'
   import type { Entry } from './api'
   import Tree from './Tree.svelte'
 
@@ -8,6 +9,7 @@
     onopen,
     onnew,
     onnewdir,
+    oncontext,
     expandAll = false,
     depth = 0,
   }: {
@@ -16,11 +18,34 @@
     onopen: (e: Entry) => void
     onnew: (dir: string) => void
     onnewdir: (parent: string) => void
+    /** Clique direito num item (menu de renomear/mover/excluir). */
+    oncontext: (e: Entry, ev: MouseEvent) => void
     expandAll?: boolean
     depth?: number
   } = $props()
 
   let open = $state<Record<string, boolean>>({})
+
+  // Revela a nota/PDF aberto: expande as pastas do caminho só quando ele muda
+  // (inclusive depois de renomear/mover). Recarregar a árvore a cada autosave não
+  // reabre uma pasta que foi recolhida à mão.
+  let revealed = ''
+  $effect(() => {
+    const paths = active.filter((a): a is string => !!a)
+    const key = paths.join('\n')
+    const list = entries // dependência: reavalia quando a árvore chega/atualiza
+    untrack(() => {
+      if (key === revealed || !list.length) return
+      // Caminhos que passam por uma pasta deste nível (prefixo comum dos itens).
+      const prefix = list[0].path.slice(0, list[0].path.lastIndexOf('/') + 1)
+      const pending = paths.filter((a) => a.startsWith(prefix) && a.slice(prefix.length).includes('/'))
+      const under = (e: Entry) => e.dir && pending.some((a) => a.startsWith(e.path + '/'))
+      for (const e of list) if (under(e)) open[e.path] = true
+      // Só dá por revelado quando a árvore já tem as pastas do caminho (ela pode chegar
+      // depois, ex.: no carregamento inicial ou logo após renomear uma pasta).
+      if (pending.every((a) => list.some((e) => e.dir && a.startsWith(e.path + '/')))) revealed = key
+    })
+  })
   const icon = (name: string) => (/\.pdf$/i.test(name) ? '📕' : /\.epub$/i.test(name) ? '📗' : '📝')
 </script>
 
@@ -29,7 +54,15 @@
     <li>
       {#if e.dir}
         <div class="row">
-          <button class="item dir" style:padding-left="{depth * 12 + 8}px" onclick={() => (open[e.path] = !open[e.path])}>
+          <button
+            class="item dir"
+            style:padding-left="{depth * 12 + 8}px"
+            onclick={() => (open[e.path] = !open[e.path])}
+            oncontextmenu={(ev) => {
+              ev.preventDefault()
+              oncontext(e, ev)
+            }}
+          >
             {open[e.path] || expandAll ? '▾' : '▸'} {e.name}
           </button>
           <button
@@ -50,7 +83,7 @@
           >
         </div>
         {#if open[e.path] || expandAll}
-          <Tree entries={e.children ?? []} {active} {onopen} {onnew} {onnewdir} {expandAll} depth={depth + 1} />
+          <Tree entries={e.children ?? []} {active} {onopen} {onnew} {onnewdir} {oncontext} {expandAll} depth={depth + 1} />
         {/if}
       {:else}
         <button
@@ -59,6 +92,10 @@
           style:padding-left="{depth * 12 + 8}px"
           title={e.path}
           onclick={() => onopen(e)}
+          oncontextmenu={(ev) => {
+            ev.preventDefault()
+            oncontext(e, ev)
+          }}
         >
           {icon(e.name)} {e.name.replace(/\.md$/, '')}
         </button>

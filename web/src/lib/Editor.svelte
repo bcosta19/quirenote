@@ -55,6 +55,9 @@
 
   // Compartimento: troca o tema sem recriar o estado (mantém undo, cursor, modo vim).
   const themeSlot = new Compartment()
+  // Somente leitura enquanto a nota é renomeada/movida/excluída (ver setLocked).
+  const lockSlot = new Compartment()
+  let locked = false
 
   type Status = 'loading' | 'saved' | 'dirty' | 'saving' | 'conflict' | 'error'
 
@@ -90,6 +93,7 @@
         visualLineNumbers,
         linkCompletion(() => linkTargets()),
         themeSlot.of(editorTheme(theme)),
+        lockSlot.of(EditorState.readOnly.of(locked)),
         EditorView.lineWrapping,
         EditorView.contentAttributes.of({ spellcheck: 'true', lang: 'pt-BR' }),
         // Prec.highest: senão o modo vim captura as teclas antes.
@@ -220,6 +224,23 @@
     if (r) untrack(() => base?.path === r.path && status !== 'loading' && revealLine(r))
   })
 
+  /**
+   * Trava a edição durante uma operação no arquivo: algo digitado entre gravar o
+   * pendente e a resposta do servidor seria salvo no caminho antigo, recriando-o.
+   */
+  export function setLocked(value: boolean) {
+    locked = value
+    view?.dispatch({ effects: lockSlot.reconfigure(EditorState.readOnly.of(value)) })
+  }
+
+  /** Grava o que estiver pendente (antes de renomear, mover ou excluir a nota). */
+  export async function flush(): Promise<boolean> {
+    clearTimeout(timer)
+    while (status === 'saving') await new Promise((r) => setTimeout(r, 30))
+    if (status === 'dirty' || status === 'error') await save() // só retorna depois de gravar
+    return status === 'saved'
+  }
+
   export function focus() {
     view?.focus()
   }
@@ -254,6 +275,7 @@
     if (status === 'dirty') save()
     if (activeSave === save) activeSave = null
     view?.destroy()
+    view = undefined // chamadas tardias (ex.: setLocked no fim de uma exclusão) viram no-op
   })
 
   const labels: Record<Status, string> = {

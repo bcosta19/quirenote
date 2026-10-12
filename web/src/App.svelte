@@ -1,6 +1,6 @@
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { ExistsError, createDir, createNote, fileUrl, getTree, subscribe, type Entry } from './lib/api'
+  import { ExistsError, createDir, createNote, fileUrl, getTree, moveItem, subscribe, trashItem, type Entry } from './lib/api'
   import { pageLink, resolveLink } from './lib/links'
   import Editor from './lib/Editor.svelte'
   import PdfReader from './lib/PdfReader.svelte'
@@ -9,6 +9,7 @@
   import PromptDialog from './lib/PromptDialog.svelte'
   import { IMAGE } from './lib/markdown'
   import SearchPanel from './lib/SearchPanel.svelte'
+  import ContextMenu, { type MenuItem } from './lib/ContextMenu.svelte'
   import Tree from './lib/Tree.svelte'
   import type { Theme } from './lib/theme'
 
@@ -130,9 +131,117 @@
   }
 
   // Diálogo de texto com o visual do app (no lugar do prompt() do navegador).
-  let dialog = $state<{ message: string; value: string; hint: string; resolve: (v: string | null) => void } | null>(null)
+  type Dialog = {
+    message: string
+    value: string
+    hint: string
+    input: boolean
+    okLabel: string
+    danger: boolean
+    resolve: (v: string | null) => void
+  }
+  let dialog = $state<Dialog | null>(null)
   function ask(message: string, value = '', hint = ''): Promise<string | null> {
-    return new Promise((resolve) => (dialog = { message, value, hint, resolve }))
+    return new Promise((resolve) => (dialog = { message, value, hint, input: true, okLabel: 'OK', danger: false, resolve }))
+  }
+  async function confirmAction(message: string, hint: string, okLabel: string): Promise<boolean> {
+    const r = await new Promise<string | null>(
+      (resolve) => (dialog = { message, value: '', hint, input: false, okLabel, danger: true, resolve }),
+    )
+    return r !== null
+  }
+
+  // Menu de contexto da árvore: renomear/mover, lixeira, criar dentro de pastas.
+  let menu = $state<{ x: number; y: number; items: MenuItem[] } | null>(null)
+  function openMenu(e: Entry, ev: MouseEvent) {
+    const items: MenuItem[] = e.dir
+      ? [
+          { label: 'Nova nota aqui', action: () => newNote(e.path) },
+          { label: 'Nova subpasta', action: () => newFolder(e.path) },
+        ]
+      : [{ label: 'Abrir', action: () => openPath(e.path) }]
+    items.push(
+      { label: 'Renomear / mover…', action: () => renameEntry(e) },
+      { label: 'Mover para a lixeira', action: () => trashEntry(e), danger: true },
+    )
+    menu = { x: ev.clientX, y: ev.clientY, items }
+  }
+
+  /** p é o próprio item ou (se for pasta) algo dentro dele. */
+  const inside = (p: string | null, e: Entry): p is string => !!p && (p === e.path || (e.dir && p.startsWith(e.path + '/')))
+  const remap = (p: string, from: string, to: string) => to + p.slice(from.length)
+
+  /**
+   * Executa uma operação sobre o item e. Se a nota aberta for afetada, trava o editor,
+   * grava o pendente antes (senão o autosave recriaria o arquivo antigo) e só destrava no fim.
+   */
+  async function withSettled(e: Entry, op: () => Promise<void>) {
+    const ed = inside(note, e) ? editor : undefined
+    ed?.setLocked(true)
+    try {
+      if (ed && !(await ed.flush())) {
+        flash('Resolva o conflito ou erro da nota aberta antes de mover ou excluir.')
+        return
+      }
+      await op()
+    } finally {
+      ed?.setLocked(false)
+    }
+  }
+
+  async function refreshTree() {
+    try {
+      tree = await getTree()
+    } catch (err) {
+      flash((err as Error).message)
+    }
+  }
+
+  async function renameEntry(e: Entry) {
+    let to = (await ask(e.dir ? 'Renomear / mover pasta:' : 'Renomear / mover:', e.path, 'Mude o nome ou o caminho; pastas que não existem são criadas.'))
+      ?.trim()
+      .replace(/^\/+|\/+$/g, '')
+    if (!to || to === e.path) return
+    // Sem extensão no novo nome: mantém a original (nota continua .md, PDF continua .pdf).
+    const ext = e.dir ? '' : (e.name.match(/\.[^.]+$/)?.[0] ?? '')
+    if (ext && !/\.[^./]+$/.test(to.split('/').pop()!)) to += ext
+    if (invalidPath(to)) return flash('Nome inválido: não use "..", "." no início ou barras vazias')
+    const target = to
+    await withSettled(e, async () => {
+      try {
+        const { path } = await moveItem(e.path, target)
+        if (inside(note, e)) note = remap(note, e.path, path)
+        if (inside(doc, e)) doc = remap(doc, e.path, path)
+        recent = recent.map((p) => (inside(p, e) ? remap(p, e.path, path) : p))
+        localStorage.setItem('notas:recent', JSON.stringify(recent))
+        flash(`Movido para ${path}`)
+      } catch (err) {
+        flash(err instanceof ExistsError ? `Já existe algo em ${target}` : (err as Error).message)
+      }
+    })
+    await refreshTree()
+  }
+
+  async function trashEntry(e: Entry) {
+    const ok = await confirmAction(
+      `Mover “${e.name.replace(/\.md$/i, '')}” para a lixeira?`,
+      `${e.dir ? 'A pasta inteira vai' : 'Vai'} para .trash no vault (a lixeira do Obsidian); dá para recuperar de lá.`,
+      'Mover para a lixeira',
+    )
+    if (!ok) return
+    await withSettled(e, async () => {
+      try {
+        await trashItem(e.path)
+        if (inside(note, e)) note = null
+        if (inside(doc, e)) closeReader()
+        recent = recent.filter((p) => !inside(p, e))
+        localStorage.setItem('notas:recent', JSON.stringify(recent))
+        flash(`“${e.name.replace(/\.md$/i, '')}” foi para a lixeira`)
+      } catch (err) {
+        flash((err as Error).message)
+      }
+    })
+    await refreshTree()
   }
   function closeDialog(result: string | null) {
     dialog?.resolve(result)
@@ -429,9 +538,16 @@
     message={dialog.message}
     value={dialog.value}
     hint={dialog.hint}
+    input={dialog.input}
+    okLabel={dialog.okLabel}
+    danger={dialog.danger}
     onsubmit={(v) => closeDialog(v)}
     oncancel={() => closeDialog(null)}
   />
+{/if}
+
+{#if menu}
+  <ContextMenu x={menu.x} y={menu.y} items={menu.items} onclose={() => (menu = null)} />
 {/if}
 
 {#if searchOpen}
@@ -472,7 +588,7 @@
         <button onclick={() => fileInput.click()} title="Abrir PDF deste dispositivo">📂</button>
       </div>
       <div class="tree">
-        <Tree entries={visibleTree} active={[note, doc]} onopen={(e) => openPath(e.path)} onnew={newNote} onnewdir={newFolder} expandAll={!!filter} />
+        <Tree entries={visibleTree} active={[note, doc]} onopen={(e) => openPath(e.path)} onnew={newNote} onnewdir={newFolder} oncontext={openMenu} expandAll={!!filter} />
       </div>
     </aside>
     <!-- svelte-ignore a11y_no_static_element_interactions -->

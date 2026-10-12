@@ -14,6 +14,7 @@ import (
 	"path"
 	"sort"
 	"strings"
+	"time"
 )
 
 var (
@@ -217,6 +218,74 @@ func (v *Vault) Create(p, content string) (Note, error) {
 		return Note{}, werr
 	}
 	return v.Read(p)
+}
+
+// Move renomeia ou move um arquivo ou pasta dentro do vault, criando as pastas
+// do destino. Falha com ErrExists se o destino já existir (nunca sobrescreve).
+func (v *Vault) Move(from, to string) (string, error) {
+	from, err := clean(from)
+	if err != nil {
+		return "", err
+	}
+	to, err = clean(to)
+	if err != nil {
+		return "", err
+	}
+	if from == to {
+		return to, nil
+	}
+	if _, err := v.root.Lstat(from); err != nil {
+		return "", err
+	}
+	// Pasta para dentro dela mesma (ex.: a -> a/b) deixaria tudo inacessível.
+	if strings.HasPrefix(to, from+"/") {
+		return "", ErrInvalidPath
+	}
+	// Limitação conhecida: entre este Lstat e o Rename há uma janela mínima em que
+	// outro programa (ex.: Syncthing) poderia criar o destino; os.Root não oferece
+	// RENAME_NOREPLACE. Aceitável num app pessoal.
+	if _, err := v.root.Lstat(to); err == nil {
+		return "", ErrExists
+	} else if !errors.Is(err, fs.ErrNotExist) {
+		return "", err
+	}
+	if dir := path.Dir(to); dir != "." {
+		if err := v.root.MkdirAll(dir, 0o755); err != nil {
+			return "", err
+		}
+	}
+	if err := v.root.Rename(from, to); err != nil {
+		return "", err
+	}
+	return to, nil
+}
+
+// TrashDir é a lixeira do vault, a mesma do Obsidian ("Mover para a lixeira do Obsidian").
+const TrashDir = ".trash"
+
+// Trash move um arquivo ou pasta para a lixeira do vault, sem apagar nada.
+// Se já houver algo com o mesmo nome na lixeira, acrescenta data e hora ao nome.
+func (v *Vault) Trash(p string) (string, error) {
+	p, err := clean(p)
+	if err != nil {
+		return "", err
+	}
+	if _, err := v.root.Lstat(p); err != nil {
+		return "", err
+	}
+	if err := v.root.MkdirAll(TrashDir, 0o755); err != nil {
+		return "", err
+	}
+	name := path.Base(p)
+	dest := path.Join(TrashDir, name)
+	if _, err := v.root.Lstat(dest); err == nil {
+		ext := path.Ext(name)
+		dest = path.Join(TrashDir, fmt.Sprintf("%s %s%s", strings.TrimSuffix(name, ext), time.Now().Format("2006-01-02 150405.000"), ext))
+	}
+	if err := v.root.Rename(p, dest); err != nil {
+		return "", err
+	}
+	return dest, nil
 }
 
 // OpenFile abre um arquivo do vault para leitura (PDF, EPUB, imagens).
