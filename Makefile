@@ -33,8 +33,9 @@ install: build
 	install -Dm755 bin/notas $(HOME)/.local/bin/notas
 	install -Dm644 deploy/notas.service $(HOME)/.config/systemd/user/notas.service
 	install -Dm755 deploy/notas-app $(HOME)/.local/bin/notas-app
-	install -Dm644 deploy/notas.desktop $(HOME)/.local/share/applications/notas.desktop
 	install -Dm644 web/public/icon-512.png $(HOME)/.local/share/icons/hicolor/512x512/apps/notas.png
+	# Caminho absoluto no Icon=: o launcher acha mesmo sem cache de ícones.
+	sed 's|^Icon=.*|Icon=$(HOME)/.local/share/icons/hicolor/512x512/apps/notas.png|' deploy/notas.desktop > $(HOME)/.local/share/applications/notas.desktop
 	systemctl --user daemon-reload
 	@echo "Pronto. Ative com: systemctl --user enable --now notas (o atalho 'Notas' já está no launcher)"
 
