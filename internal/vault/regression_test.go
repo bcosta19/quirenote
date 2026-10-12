@@ -45,6 +45,30 @@ func TestConcurrentSavesRejectStaleVersions(t *testing.T) {
 	}
 }
 
+func TestSavedBMPAttachmentsAppearInTheTree(t *testing.T) {
+	v, dir := newVault(t)
+	if err := os.WriteFile(filepath.Join(dir, ".obsidian/app.json"), []byte(`{"attachmentFolderPath":"Attachments"}`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	bmp := append([]byte{'B', 'M'}, make([]byte, 52)...)
+	p, err := v.SaveImage("a.md", bmp)
+	if err != nil {
+		t.Fatal(err)
+	}
+	tree, err := v.Tree()
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, folder := range tree {
+		for _, file := range folder.Children {
+			if file.Path == p {
+				return
+			}
+		}
+	}
+	t.Fatalf("saved BMP attachment %q is missing from the link-resolution tree: %+v", p, tree)
+}
+
 func TestTrashKeepsEveryVersionWithTheSameName(t *testing.T) {
 	v, dir := newVault(t)
 	versions := map[string]string{}

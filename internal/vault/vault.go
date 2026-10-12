@@ -32,7 +32,7 @@ var (
 // by name, like Obsidian; the frontend sidebar only shows notes and books.
 var visibleExt = map[string]bool{
 	".md": true, ".pdf": true, ".epub": true,
-	".png": true, ".jpg": true, ".jpeg": true, ".gif": true, ".webp": true, ".svg": true, ".avif": true,
+	".png": true, ".jpg": true, ".jpeg": true, ".gif": true, ".webp": true, ".svg": true, ".avif": true, ".bmp": true,
 }
 
 type Vault struct {
