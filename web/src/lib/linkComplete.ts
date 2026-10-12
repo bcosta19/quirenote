@@ -4,13 +4,13 @@ import { keymap } from '@codemirror/view'
 import type { EditorView } from '@codemirror/view'
 import { score } from './fuzzy'
 
-// Autocompletar de [[links]]: ao digitar "[[", sugere notas, PDFs e imagens do vault.
+// [[link]] autocompletion: typing "[[" suggests notes, PDFs and images from the vault.
 
 const MAX = 40
 
 /**
- * Texto do link como o Obsidian grava: só o nome quando é único no vault,
- * senão o caminho. Notas sem ".md"; outros arquivos com extensão.
+ * Link text the way Obsidian writes it: the name only when it is unique in the vault,
+ * otherwise the path. Notes without ".md"; other files with their extension.
  */
 export function linkText(path: string, all: string[]): string {
   const name = path.split('/').pop()!
@@ -21,16 +21,16 @@ export function linkText(path: string, all: string[]): string {
 }
 
 function insertLink(view: EditorView, text: string, from: number, to: number) {
-  // Substitui o nome inteiro do alvo, não só até o cursor: completar no meio de
-  // [[Nov|apelido]] ou [[Li|vewire]] troca o nome e preserva |apelido e #seção.
-  // Só estende quando o link realmente fecha com "]]" nesta linha (direto ou após |apelido/#seção);
-  // sem isso, ao transformar uma palavra existente em link, o resto da linha seria apagado.
+  // Replaces the whole target name, not just up to the cursor: completing in the middle of
+  // [[Nov|alias]] or [[Li|vewire]] swaps the name and keeps |alias and #section.
+  // Only extends when the link really closes with "]]" on this line (directly or after |alias/#section);
+  // otherwise, turning an existing word into a link would delete the rest of the line.
   const rest = view.state.sliceDoc(to, view.state.doc.lineAt(to).to)
   const m = /^[^[\]|#]*(?=\]\]|[|#][^[\]]*\]\])/.exec(rest)
   if (m) to += m[0].length
   const next = view.state.sliceDoc(to, to + 2)
   const insert = m ? text : text + ']]'
-  // Com o link já fechado logo depois do nome, o cursor pula o "]]".
+  // With the link already closed right after the name, the cursor skips the "]]".
   const anchor = from + insert.length + (next === ']]' ? 2 : 0)
   view.dispatch({ changes: { from, to, insert }, selection: { anchor }, userEvent: 'input.complete' })
 }
@@ -47,7 +47,7 @@ export function linkCompletion(targets: () => string[]) {
       .slice(0, MAX)
     return {
       from: m.from + 2,
-      filter: false, // a ordem já vem da nossa busca (ignora acentos)
+      filter: false, // the order already comes from our matcher (accent-insensitive)
       options: ranked.map(({ path }, i) => {
         const text = linkText(path, all)
         return {
@@ -61,7 +61,7 @@ export function linkCompletion(targets: () => string[]) {
   }
   return [
     autocompletion({ override: [source], icons: false }),
-    // Tab aceita a sugestão (como no Obsidian); sem lista aberta, segue indentando.
+    // Tab accepts the suggestion (like Obsidian); without an open list, it keeps indenting.
     Prec.highest(keymap.of([{ key: 'Tab', run: acceptCompletion }])),
   ]
 }

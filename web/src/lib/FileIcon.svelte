@@ -3,7 +3,7 @@
   import BookText from '@lucide/svelte/icons/book-text'
   import FileText from '@lucide/svelte/icons/file-text'
 
-  // Ícone pelo tipo do arquivo: PDF, EPUB ou nota.
+  // Icon by file type: PDF, EPUB or note.
   let { name, size = 14 }: { name: string; size?: number } = $props()
 </script>
 

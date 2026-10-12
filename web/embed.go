@@ -1,4 +1,4 @@
-// Package web embute o build do front (gerado por `npm run build`).
+// Package web embeds the frontend build (produced by `npm run build`).
 package web
 
 import (
@@ -9,7 +9,8 @@ import (
 //go:embed all:dist
 var dist embed.FS
 
-// Dist devolve o build do front, ou nil se ainda não foi gerado.
+// Dist returns the frontend build, or nil if it has not been built yet.
+
 func Dist() fs.FS {
 	sub, err := fs.Sub(dist, "dist")
 	if err != nil {

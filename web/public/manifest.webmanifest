@@ -1,7 +1,7 @@
 {
   "name": "Quirenote",
   "short_name": "Quirenote",
-  "description": "Notas em markdown com leitor de PDF e EPUB",
+  "description": "Markdown notes with a PDF and EPUB reader",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#f2eadb",

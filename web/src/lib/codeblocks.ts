@@ -2,8 +2,8 @@ import { syntaxTree } from '@codemirror/language'
 import { RangeSetBuilder } from '@codemirror/state'
 import { Decoration, ViewPlugin, type DecorationSet, type EditorView, type ViewUpdate } from '@codemirror/view'
 
-// Marca as linhas de blocos ``` com a classe .cm-codeblock (fonte mono e fundo próprio).
-// O realce da linguagem embutida não usa a tag "monospace", então a fonte vem por linha.
+// Marks the lines of ``` blocks with the .cm-codeblock class (mono font and own background).
+// Embedded language highlighting does not use the "monospace" tag, so the font is set per line.
 const line = Decoration.line({ class: 'cm-codeblock' })
 
 function build(view: EditorView): DecorationSet {

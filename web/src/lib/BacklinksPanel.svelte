@@ -3,7 +3,7 @@
   import { onMount, tick } from 'svelte'
   import type { SearchResult } from './api'
 
-  // Notas que apontam para a nota aberta (backlinks), com o trecho de cada link.
+  // Notes that link to the open note (backlinks), with the snippet of each link.
   let {
     note,
     results,
@@ -65,16 +65,16 @@
     onclick={(e) => e.stopPropagation()}
     {onkeydown}
     role="dialog"
-    aria-label="Notas que apontam para esta"
+    aria-label="Notes linking here"
     tabindex="-1"
   >
-    <div class="head"><CornerUpLeft size={16} /> Notas que apontam para <b>{name(note)}</b> <span class="muted">({results.length})</span></div>
+    <div class="head"><CornerUpLeft size={16} /> Notes linking to <b>{name(note)}</b> <span class="muted">({results.length})</span></div>
     <ul bind:this={list}>
       {#each results as r, i (r.path + ':' + r.line)}
         <li>
           <button class:selected={i === selected} onmousemove={() => (selected = i)} onclick={() => choose(r)}>
             <span class="where"
-              ><b>{name(r.path)}</b> <span class="muted">{dir(r.path)}{dir(r.path) ? ' · ' : ''}linha {r.line}</span></span
+              ><b>{name(r.path)}</b> <span class="muted">{dir(r.path)}{dir(r.path) ? ' · ' : ''}line {r.line}</span></span
             >
             <span class="snippet"
               >{#each r.parts as part, j (j)}{#if part.hit}<mark>{part.text}</mark>{:else}{part.text}{/if}{/each}</span
@@ -82,7 +82,7 @@
           </button>
         </li>
       {:else}
-        <li class="empty">Nenhuma nota aponta para esta ainda.</li>
+        <li class="empty">No notes link here yet.</li>
       {/each}
     </ul>
   </div>

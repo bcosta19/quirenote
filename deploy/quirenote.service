@@ -1,13 +1,14 @@
 [Unit]
-Description=Quirenote — notas e leitor de PDF/EPUB via web
+Description=Quirenote — markdown notes with a PDF/EPUB reader, over the web
 After=network-online.target
 
 [Service]
 ExecStart=%h/.local/bin/quirenote
-# Para acessar pela VPN, troque pelo IP do notebook na rede (ex.: `netbird status`).
+# For VPN access, replace it with the machine's IP on the network (e.g. `netbird status`).
 Environment=QUIRENOTE_ADDR=127.0.0.1:8080
 Environment=QUIRENOTE_VAULT=%h/Documents/NotasObsidian/Notas
-# Se o IP da VPN ainda não existir no boot, tenta de novo.
+# If the VPN IP does not exist yet at boot, retry.
+
 Restart=on-failure
 RestartSec=5
 

@@ -1,4 +1,4 @@
-// Package relink reescreve [[links]] de outras notas quando um arquivo é renomeado.
+// Package relink rewrites [[links]] in other notes when a file is renamed.
 package relink
 
 import (
@@ -13,26 +13,26 @@ import (
 )
 
 var (
-	ErrTypeChanged = errors.New("a extensão mudou entre nota (.md) e outro tipo; atualize os links à mão")
-	ErrNotRenamed  = errors.New("o arquivo não foi renomeado (origem ainda existe ou destino não existe)")
+	ErrTypeChanged = errors.New("the extension changed between a note (.md) and another type; update the links by hand")
+	ErrNotRenamed  = errors.New("the file was not renamed (the source still exists or the destination does not)")
 )
 
-// Plan é o que seria alterado. Ambiguous: ainda existe outro arquivo com o nome
-// antigo, então links só pelo nome ([[Nome]]) ficam como estão (podem ser dele).
+// Plan is what would change. Ambiguous: another file with the old name still
+// exists, so name-only links ([[Name]]) stay as they are (they may point to it).
 type Plan struct {
 	Files     []string `json:"files"`
 	Ambiguous bool     `json:"ambiguous"`
 }
 
-// Result lista as notas atualizadas e as puladas (mudaram durante a operação).
+// Result lists the updated notes and the skipped ones (changed during the operation).
 type Result struct {
 	Updated   []string `json:"updated"`
 	Skipped   []string `json:"skipped"`
 	Ambiguous bool     `json:"ambiguous"`
 }
 
-// forms devolve as formas de citar o arquivo num [[link]]: só o nome e o caminho,
-// ambas sem ".md" para notas (o Obsidian omite) e com extensão para outros arquivos.
+// forms returns the ways to reference the file in a [[link]]: name only and full path,
+// both without ".md" for notes (Obsidian omits it) and with the extension for other files.
 func forms(p string) (name, full string) {
 	full = p
 	if isNote(p) {
@@ -43,10 +43,10 @@ func forms(p string) (name, full string) {
 
 func isNote(p string) bool { return strings.EqualFold(path.Ext(p), ".md") }
 
-// Rewrite troca os links para from por links para to em content. Preserva !, .md,
-// #seção, |apelido e \|. Links só pelo nome: com nameLinks=false ficam intactos;
-// senão continuam pelo nome se o novo nome for único no vault (nameUnique), ou
-// passam ao caminho, como o Obsidian.
+// Rewrite replaces links to from with links to to in content. It keeps !, .md,
+// #section, |alias and \|. Name-only links: with nameLinks=false they stay untouched;
+// otherwise they stay name-only if the new name is unique in the vault (nameUnique),
+// or switch to the full path, like Obsidian does.
 func Rewrite(content, from, to string, nameUnique, nameLinks bool) (string, int) {
 	oldName, oldFull := forms(from)
 	newName, newFull := forms(to)
@@ -54,7 +54,7 @@ func Rewrite(content, from, to string, nameUnique, nameLinks bool) (string, int)
 	if oldFull != oldName {
 		alts += "|" + regexp.QuoteMeta(oldFull)
 	}
-	md := `()` // outros arquivos já trazem a extensão no nome
+	md := `()` // other files already carry the extension in the name
 	if isNote(from) {
 		md = `(\.md)?`
 	}
@@ -81,9 +81,9 @@ type change struct {
 	mtime         int64
 }
 
-// prepare valida o pedido e calcula o novo conteúdo de cada nota afetada, sem gravar.
+// prepare validates the request and computes the new content of each affected note, without writing.
 func prepare(ctx context.Context, v *vault.Vault, from, to string) ([]change, bool, error) {
-	// Só depois do rename: barra pedidos velhos ou forjados.
+	// Only after the rename: rejects stale or forged requests.
 	if v.Exists(from) || !v.Exists(to) {
 		return nil, false, ErrNotRenamed
 	}
@@ -101,7 +101,7 @@ func prepare(ctx context.Context, v *vault.Vault, from, to string) ([]change, bo
 	if err != nil {
 		return nil, false, err
 	}
-	// Outro arquivo com o nome antigo? (Renomear só maiúsculas, Lexer → lexer, conta o próprio.)
+	// Another file with the old name? (A case-only rename, Lexer → lexer, counts itself.)
 	same := 0
 	if strings.EqualFold(path.Base(from), path.Base(to)) {
 		same = 1
@@ -113,18 +113,18 @@ func prepare(ctx context.Context, v *vault.Vault, from, to string) ([]change, bo
 	for _, p := range files {
 		note, err := v.Read(p)
 		if err != nil {
-			continue // sumiu ou ilegível: nada a fazer nela
+			continue // gone or unreadable: nothing to do with it
 		}
 		content, _ := Rewrite(note.Content, from, to, unique, !ambiguous)
 		if content == note.Content {
-			continue // nada mudou de fato (ex.: só os links pelo nome, ambíguos)
+			continue // nothing actually changed (e.g. only ambiguous name-only links)
 		}
 		changes = append(changes, change{p, content, note.Mtime})
 	}
 	return changes, ambiguous, nil
 }
 
-// Preview diz quais notas seriam alteradas, sem gravar nada.
+// Preview tells which notes would change, writing nothing.
 func Preview(ctx context.Context, v *vault.Vault, from, to string) (Plan, error) {
 	changes, ambiguous, err := prepare(ctx, v, from, to)
 	plan := Plan{Files: []string{}, Ambiguous: ambiguous}
@@ -134,7 +134,7 @@ func Preview(ctx context.Context, v *vault.Vault, from, to string) (Plan, error)
 	return plan, err
 }
 
-// Run atualiza as notas do vault que apontam para from, depois de from virar to.
+// Run updates the vault notes that link to from, after from became to.
 func Run(ctx context.Context, v *vault.Vault, from, to string) (Result, error) {
 	res := Result{Updated: []string{}, Skipped: []string{}}
 	changes, ambiguous, err := prepare(ctx, v, from, to)
@@ -143,7 +143,8 @@ func Run(ctx context.Context, v *vault.Vault, from, to string) (Result, error) {
 		return res, err
 	}
 	for _, c := range changes {
-		// Grava só se a nota não mudou desde a leitura (Neovim, Obsidian, Syncthing).
+		// Write only if the note did not change since it was read (Neovim, Obsidian, Syncthing).
+
 		if _, err := v.Save(c.path, c.content, c.mtime); err != nil {
 			if !errors.Is(err, vault.ErrConflict) {
 				return res, err

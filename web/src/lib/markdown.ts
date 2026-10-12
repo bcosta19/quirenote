@@ -1,13 +1,13 @@
 import MarkdownIt, { type MarkdownIt as MD, type StateCore, type StateInline } from 'markdown-it'
 import DOMPurify from 'dompurify'
 
-// Renderização do preview, com as extensões do Obsidian que mais aparecem nas notas:
-// [[links]], ![[imagens]], listas de tarefas e frontmatter.
+// Preview rendering, with the Obsidian extensions most common in notes:
+// [[links]], ![[images]], task lists and frontmatter.
 
 export interface RenderContext {
-  /** Resolve um alvo do vault ([[alvo]] ou caminho relativo) para uma URL de arquivo. */
+  /** Resolves a vault target ([[target]] or relative path) to a file URL. */
   fileUrl: (target: string) => string
-  /** Se o alvo de um [[link]] existe no vault (links inexistentes ficam esmaecidos). */
+  /** Whether the target of a [[link]] exists in the vault (missing links are dimmed). */
   exists?: (target: string) => boolean
 }
 
@@ -30,7 +30,7 @@ function wikilinks(md: MD, ctx: RenderContext) {
       const page = ref.match(/#page=(\d+)/)?.[1]
       const cfi = ref.match(/#cfi=(.+)$/)?.[1]
       if (embed && IMAGE.test(target)) {
-        // ![[foto.png|300]]: o número após | é a largura, como no Obsidian.
+        // ![[photo.png|300]]: the number after | is the width, like in Obsidian.
         const width = /^\d+$/.test(alias ?? '') ? ` width="${alias}"` : ''
         const t = state.push('html_inline', '', 0)
         t.content = `<img src="${escapeHtml(ctx.fileUrl(target))}" alt="${escapeHtml(target)}"${width}>`
@@ -38,14 +38,14 @@ function wikilinks(md: MD, ctx: RenderContext) {
         const open = state.push('link_open', 'a', 1)
         open.attrs = [
           ['href', '#'],
-          // [[#seção]] (alvo vazio) aponta para a própria nota: nunca é "inexistente".
+          // [[#section]] (empty target) points to the note itself: never "missing".
           ['class', ['wikilink', embed && 'embed', target && ctx.exists && !ctx.exists(target) && 'missing'].filter(Boolean).join(' ')],
           ['data-target', target],
         ]
         if (page) open.attrs.push(['data-page', page])
         if (cfi) open.attrs.push(['data-cfi', cfi])
         const text = state.push('text', '', 0)
-        text.content = (alias ?? (page ? `${target} · p.${page}` : cfi ? `${target} · posição salva` : ref)).trim()
+        text.content = (alias ?? (page ? `${target} · p.${page}` : cfi ? `${target} · saved position` : ref)).trim()
         state.push('link_close', 'a', -1)
       }
     }
@@ -54,8 +54,8 @@ function wikilinks(md: MD, ctx: RenderContext) {
   })
 }
 
-// "- [ ] tarefa" / "- [x] feita" viram caixas de seleção. data-line é a linha da
-// tarefa na nota (1 = primeira), para o clique no preview alternar a linha certa.
+// "- [ ] task" / "- [x] done" become checkboxes. data-line is the task line in
+// the note (1 = first), so a click in the preview toggles the right line.
 function taskLists(md: MD) {
   md.core.ruler.push('task_lists', (state: StateCore) => {
     const offset = Number(state.env?.lineOffset ?? 0)
@@ -86,7 +86,7 @@ function relativeImages(md: MD, ctx: RenderContext) {
   }
 }
 
-/** Frontmatter simples (chave: valor) exibido como as "propriedades" do Obsidian. */
+/** Simple frontmatter (key: value) shown like Obsidian "properties". */
 function splitFrontmatter(text: string): { props: [string, string][]; body: string; lines: number } {
   const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/)
   if (!m) return { props: [], body: text, lines: 0 }
@@ -95,17 +95,17 @@ function splitFrontmatter(text: string): { props: [string, string][]; body: stri
     const kv = line.match(/^([\w-]+):\s*(.*)$/)
     if (kv) props.push([kv[1], kv[2].replace(/^["']|["']$/g, '')])
   }
-  // lines: quantas linhas o frontmatter ocupa (o corpo começa depois delas).
+  // lines: how many lines the frontmatter takes (the body starts after them).
   return { props, body: text.slice(m[0].length), lines: m[0].split('\n').length - 1 }
 }
 
 export interface Heading {
   level: number
   title: string
-  line: number // 1 = primeira linha da nota
+  line: number // 1 = first line of the note
 }
 
-/** Títulos da nota pelo próprio parser (ATX, setext, recuados; ignora código e frontmatter). */
+/** Note headings from the parser itself (ATX, setext, indented; skips code and frontmatter). */
 export function headings(text: string): Heading[] {
   const { body, lines } = splitFrontmatter(text)
   const tokens = new MarkdownIt().parse(body, {})
@@ -131,7 +131,7 @@ export function createRenderer(ctx: RenderContext) {
       html += '</dl>'
     }
     html += md.render(body, { lineOffset: lines })
-    // As notas podem ter HTML; sanitiza para nada executar script na página.
+    // Notes may contain HTML; sanitize so nothing runs scripts on the page.
     return DOMPurify.sanitize(html)
   }
 }

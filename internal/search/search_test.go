@@ -12,7 +12,7 @@ import (
 
 func TestSearch(t *testing.T) {
 	if _, err := exec.LookPath("rg"); err != nil {
-		t.Skip("ripgrep não instalado")
+		t.Skip("ripgrep not installed")
 	}
 	dir := t.TempDir()
 	write := func(name, body string) {
@@ -42,7 +42,7 @@ func TestSearch(t *testing.T) {
 		got[r.Path] = r.Line
 	}
 	if len(got) != 3 || got["estudos/compiladores.md"] != 3 || got["outra.md"] != 2 || got["ignorada.md"] != 1 {
-		t.Fatalf("resultados inesperados: %+v", res)
+		t.Fatalf("unexpected results: %+v", res)
 	}
 	for _, r := range res {
 		hit := ""
@@ -52,16 +52,16 @@ func TestSearch(t *testing.T) {
 			}
 		}
 		if hit != "FUNÇÃO" && hit != "funcao" && hit != "função" {
-			t.Errorf("%s: trecho marcado %q", r.Path, hit)
+			t.Errorf("%s: highlighted snippet %q", r.Path, hit)
 		}
 	}
 
-	// Metacaracteres de regex e de shell são buscados literalmente.
+	// Regex and shell metacharacters are searched literally.
 	res, err = Search(context.Background(), dir, "[a-z]+ .*")
 	if err != nil || len(res) != 1 || res[0].Path != "perigo.md" {
-		t.Fatalf("busca literal falhou: %+v, %v", res, err)
+		t.Fatalf("literal search failed: %+v, %v", res, err)
 	}
-	// Nota antiga em Latin-1 (não UTF-8): o rg manda a linha em base64; não pode quebrar.
+	// Old Latin-1 note (not UTF-8): rg sends the line in base64; it must not break.
 	write("latin1.md", strings.Repeat("x", 100)+" fun\xe7\xe3o e funcao\n")
 	res, err = Search(context.Background(), dir, "funcao")
 	if err != nil {
@@ -73,35 +73,35 @@ func TestSearch(t *testing.T) {
 			found = true
 			for _, p := range r.Parts {
 				if !utf8.ValidString(p.Text) {
-					t.Errorf("trecho com UTF-8 inválido: %q", p.Text)
+					t.Errorf("snippet with invalid UTF-8: %q", p.Text)
 				}
 			}
 		}
 	}
 	if !found {
-		t.Fatalf("nota Latin-1 não encontrada: %+v", res)
+		t.Fatalf("Latin-1 note not found: %+v", res)
 	}
 
-	// Extensão em maiúsculas também é nota.
+	// An uppercase extension is a note too.
 	write("MAIUSC.MD", "função em arquivo .MD\n")
 	if res, _ := Search(context.Background(), dir, "arquivo .MD"); len(res) != 1 {
-		t.Fatalf(".MD não encontrado: %+v", res)
+		t.Fatalf(".MD not found: %+v", res)
 	}
 
-	// Ocorrência maior que a janela do trecho não pode quebrar a busca.
+	// A match longer than the snippet window must not break the search.
 	long := strings.Repeat("palavra", 80)
 	write("longa.md", long+"\n")
 	if res, err := Search(context.Background(), dir, long[:400]); err != nil || len(res) != 1 || len(res[0].Parts) == 0 {
-		t.Fatalf("ocorrência longa: %+v, %v", res, err)
+		t.Fatalf("long match: %+v, %v", res, err)
 	}
 	if res, _ := Search(context.Background(), dir, "   "); len(res) != 0 {
-		t.Fatalf("consulta vazia deveria dar zero resultados: %+v", res)
+		t.Fatalf("an empty query should return no results: %+v", res)
 	}
 }
 
 func TestBacklinks(t *testing.T) {
 	if _, err := exec.LookPath("rg"); err != nil {
-		t.Skip("ripgrep não instalado")
+		t.Skip("ripgrep not installed")
 	}
 	dir := t.TempDir()
 	write := func(name, body string) {
@@ -131,10 +131,10 @@ func TestBacklinks(t *testing.T) {
 		got[r.Path] = true
 	}
 	if len(got) != 4 || !got["a.md"] || !got["b.md"] || !got["c.md"] || !got["tabela.md"] {
-		t.Fatalf("backlinks inesperados: %+v", res)
+		t.Fatalf("unexpected backlinks: %+v", res)
 	}
-	// Ponto no nome é literal (regex escapada).
+	// A dot in the name is literal (escaped regex).
 	if res, _ := Backlinks(context.Background(), dir, "a.b.md"); len(res) != 1 || res[0].Path != "regex.md" {
-		t.Fatalf("nome com ponto: %+v", res)
+		t.Fatalf("name with a dot: %+v", res)
 	}
 }

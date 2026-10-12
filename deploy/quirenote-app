@@ -1,6 +1,6 @@
 #!/bin/bash
-# Abre o Quirenote numa janela de app (Chromium sem barra de endereço), no Omarchy.
-# Se a janela já existe, só foca nela; se o servidor está parado, sobe o serviço.
+# Opens Quirenote in an app window (Chromium without an address bar) on Omarchy.
+# If the window already exists, it just focuses it; if the server is down, it starts the service.
 url=${QUIRENOTE_URL:-${NOTAS_URL:-http://127.0.0.1:8080}}
 
 if ! curl -fs -o /dev/null "$url/api/tree"; then
@@ -11,12 +11,13 @@ if ! curl -fs -o /dev/null "$url/api/tree"; then
   done
 fi
 
-# A janela de app do Chromium tem a classe chrome-<host>__-Default (sem a porta).
+# Chromium app windows have the class chrome-<host>__-Default (without the port).
 host=${url#*//}
 host=${host%%[:/]*}
-# Perfil próprio do Chromium, sem extensões, um renderer só e sem tarefas em segundo plano (menos RAM).
-# O app só abre páginas do próprio servidor; um renderer basta.
+# Dedicated Chromium profile: no extensions, a single renderer and no background tasks (less RAM).
+# The app only opens pages from its own server, so one renderer is enough.
 profile=${XDG_DATA_HOME:-$HOME/.local/share}/quirenote/chromium
 exec omarchy-launch-or-focus-webapp "chrome-${host}__" "$url" --user-data-dir="$profile" --disable-extensions --no-first-run --no-default-browser-check \
-  --disable-features=SpareRendererForSitePerProcess,Translate --lang=pt-BR --renderer-process-limit=1 \
+  --disable-features=SpareRendererForSitePerProcess,Translate --lang=en-US
+ --renderer-process-limit=1 \
   --disable-background-networking --disable-component-update

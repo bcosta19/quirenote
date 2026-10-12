@@ -1,7 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte'
 
-  // Substitui o prompt() nativo do navegador, que não segue o tema do app.
+  // Replaces the browser's native prompt(), which does not follow the app theme.
   let {
     message,
     value = '',
@@ -15,7 +15,7 @@
     message: string
     value?: string
     hint?: string
-    /** false: só confirmação (sem campo de texto). */
+    /** false: confirmation only (no text field). */
     input?: boolean
     okLabel?: string
     danger?: boolean
@@ -26,10 +26,10 @@
   let input = $state<HTMLInputElement>()
   let ok: HTMLButtonElement
   // svelte-ignore state_referenced_locally
-  let text = $state(value) // valor inicial sugerido; depois o campo é livre
+  let text = $state(value) // suggested initial value; the field is free afterwards
 
   function onkeydown(e: KeyboardEvent) {
-    // Não deixa atalhos do app (Ctrl+O, Ctrl+E…) agirem enquanto digita aqui.
+    // Keeps the app shortcuts (Ctrl+O, Ctrl+E…) from acting while typing here.
     e.stopPropagation()
     if (e.key === 'Enter') {
       e.preventDefault()
@@ -46,7 +46,7 @@
       return
     }
     input.focus()
-    // Seleciona só o nome (sem pasta nem .md), como ao renomear no explorador de arquivos.
+    // Selects only the name (no folder or .md), like renaming in a file manager.
     const start = text.lastIndexOf('/') + 1
     const end = text.toLowerCase().endsWith('.md') ? text.length - 3 : text.length
     input.setSelectionRange(start, end)
@@ -66,7 +66,7 @@
     {/if}
     {#if hint}<p class="hint">{hint}</p>{/if}
     <div class="actions">
-      <button onclick={oncancel}>Cancelar</button>
+      <button onclick={oncancel}>Cancel</button>
       <button
         class="primary"
         class:danger

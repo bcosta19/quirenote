@@ -1,5 +1,5 @@
-// EB Garamond embutida no build (e no binário Go): fica igual em qualquer dispositivo.
-// Só latin + latin-ext (acentos do português) para não inchar o binário.
+// EB Garamond embedded in the build (and in the Go binary): it looks the same on any device.
+// Only latin + latin-ext (accented characters) to keep the binary small.
 import '@fontsource/eb-garamond/latin-400.css'
 import '@fontsource/eb-garamond/latin-ext-400.css'
 import '@fontsource/eb-garamond/latin-400-italic.css'

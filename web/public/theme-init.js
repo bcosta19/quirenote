@@ -1,6 +1,7 @@
-// Aplica o tema salvo antes de a página desenhar (evita piscar no tema errado).
-// Arquivo externo, não inline: a CSP da página só permite scripts do próprio app.
-// Migração única das preferências do nome antigo (notas:*) para quirenote:*.
+// Applies the saved theme before the page paints (avoids flashing the wrong theme).
+// External file, not inline: the page CSP only allows the app's own scripts.
+// One-time migration of preferences from the old name (notas:*) to quirenote:*.
+
 for (const k of Object.keys(localStorage)) {
   if (k.startsWith('notas:')) {
     const nk = 'quirenote:' + k.slice(6)

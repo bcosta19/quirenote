@@ -1,15 +1,15 @@
 import type { Entry } from './api'
 
-// Links no formato do Obsidian: [[alvo#page=12|apelido]]
+// Links in Obsidian format: [[target#page=12|alias]]
 const WIKILINK = /\[\[([^\]|#]+)(#[^\]|]*)?(\|[^\]]*)?\]\]/g
 
 export interface WikiLink {
   target: string
   page?: number
-  cfi?: string // posição num EPUB: [[livro.epub#cfi=epubcfi(...)]]
+  cfi?: string // position in an EPUB: [[book.epub#cfi=epubcfi(...)]]
 }
 
-/** Encontra o wikilink que contém a posição `col` da linha. */
+/** Finds the wikilink that contains position `col` of the line. */
 export function linkAt(line: string, col: number): WikiLink | null {
   for (const m of line.matchAll(WIKILINK)) {
     const start = m.index!
@@ -31,8 +31,8 @@ function flatten(entries: Entry[], out: string[] = []): string[] {
 }
 
 /**
- * Resolve o alvo como o Obsidian: caminho completo ou só o nome do arquivo,
- * com ou sem a extensão .md.
+ * Resolves the target like Obsidian: full path or file name only,
+ * with or without the .md extension.
  */
 export function resolveLink(tree: Entry[], target: string): string | null {
   const files = flatten(tree)
@@ -48,12 +48,12 @@ export function resolveLink(tree: Entry[], target: string): string | null {
   return null
 }
 
-/** Link para a página atual, no formato que o Obsidian também entende. */
+/** Link to the current page, in a format Obsidian understands too. */
 export const pageLink = (path: string, page: number) => `[[${path}#page=${page}]]`
 
 /**
- * Link para a posição atual num EPUB (convenção deste app; o Obsidian abre o livro).
- * Tira as marcações opcionais de id do CFI ("[c3]"): os colchetes quebrariam o [[link]],
- * e o CFI continua válido sem elas.
+ * Link to the current position in an EPUB (this app's convention; Obsidian just opens the book).
+ * Strips the optional id assertions from the CFI ("[c3]"): the brackets would break the [[link]],
+ * and the CFI stays valid without them.
  */
 export const cfiLink = (path: string, cfi: string) => `[[${path}#cfi=${cfi.replace(/\[[^\]]*\]/g, '')}]]`

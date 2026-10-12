@@ -1,19 +1,19 @@
 import type { Extension } from '@codemirror/state'
 import { EditorView, GutterMarker, ViewPlugin, gutter, type BlockInfo, type ViewUpdate } from '@codemirror/view'
 
-// Numeração como a do Word: cada linha que aparece na tela ganha um número,
-// inclusive as criadas pela quebra automática. Reflui ao redimensionar a janela.
+// Word-style numbering: every line shown on screen gets a number,
+// including those created by soft wrapping. Reflows when the window is resized.
 
 const HEADING = /^#{1,6}\s/
 
-/** Quantas linhas de tela o bloco ocupa (títulos têm fonte maior que a linha padrão). */
+/** How many screen lines the block takes (headings have a larger font than the default line). */
 function rowsOf(view: EditorView, block: BlockInfo): number {
   const text = view.state.doc.sliceString(block.from, Math.min(block.to, block.from + 8))
   const scale = HEADING.test(text) ? 1.3 : 1
   return Math.max(1, Math.round(block.height / (view.defaultLineHeight * scale)))
 }
 
-// Primeiro número de cada linha visível (chave: posição inicial do bloco).
+// First number of each visible line (key: block start position).
 class Counter {
   starts = new Map<number, number>()
   constructor(view: EditorView) {
@@ -27,7 +27,7 @@ class Counter {
     const { doc } = view.state
     const visible = view.viewportLineBlocks
     if (!visible.length) return
-    // Linhas acima da área visível: soma pelas alturas do mapa do CodeMirror.
+    // Lines above the visible area: summed from the CodeMirror height map.
     let n = 1
     for (let pos = 0; pos < visible[0].from; ) {
       const block = view.lineBlockAt(pos)

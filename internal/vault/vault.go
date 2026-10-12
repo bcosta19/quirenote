@@ -1,7 +1,7 @@
-// Package vault dá acesso seguro aos arquivos do vault de notas.
+// Package vault gives safe access to the files of the notes vault.
 //
-// Todo acesso passa por um os.Root, então caminhos vindos do navegador
-// não conseguem escapar do diretório do vault (../, symlinks, absolutos).
+// Every access goes through an os.Root, so paths coming from the browser
+// cannot escape the vault directory (../, symlinks, absolute paths).
 package vault
 
 import (
@@ -20,15 +20,15 @@ import (
 )
 
 var (
-	ErrConflict    = errors.New("arquivo foi modificado no disco")
-	ErrInvalidPath = errors.New("caminho inválido")
-	ErrNotNote     = errors.New("só arquivos .md podem ser editados")
-	ErrExists      = errors.New("já existe um arquivo com esse nome")
-	ErrBadName     = errors.New("o nome não pode conter # ^ [ ] | (o Obsidian não aceita; quebraria os links)")
+	ErrConflict    = errors.New("file was modified on disk")
+	ErrInvalidPath = errors.New("invalid path")
+	ErrNotNote     = errors.New("only .md files can be edited")
+	ErrExists      = errors.New("a file with this name already exists")
+	ErrBadName     = errors.New("the name cannot contain # ^ [ ] | (Obsidian rejects them; they would break links)")
 )
 
-// Extensões listadas na árvore. Imagens entram para o preview resolver ![[foto.png]]
-// pelo nome, como o Obsidian; a barra lateral do front mostra só notas e livros.
+// Extensions listed in the tree. Images are included so the preview can resolve ![[photo.png]]
+// by name, like Obsidian; the frontend sidebar only shows notes and books.
 var visibleExt = map[string]bool{
 	".md": true, ".pdf": true, ".epub": true,
 	".png": true, ".jpg": true, ".jpeg": true, ".gif": true, ".webp": true, ".svg": true, ".avif": true,
@@ -49,7 +49,7 @@ type Entry struct {
 type Note struct {
 	Path    string `json:"path"`
 	Content string `json:"content"`
-	Mtime   int64  `json:"mtime,string"` // UnixNano; string no JSON (passa de 2^53, o limite exato do Number em JS)
+	Mtime   int64  `json:"mtime,string"` // UnixNano; a string in JSON (it exceeds 2^53, the exact limit of a JS Number)
 }
 
 func Open(dir string) (*Vault, error) {
@@ -63,8 +63,8 @@ func Open(dir string) (*Vault, error) {
 func (v *Vault) Dir() string  { return v.dir }
 func (v *Vault) Close() error { return v.root.Close() }
 
-// Hidden reporta se o caminho (relativo) passa por arquivo/diretório oculto,
-// como .obsidian, .stversions ou os temporários de escrita.
+// Hidden reports whether the (relative) path goes through a hidden file/directory,
+// such as .obsidian, .stversions or the temporary write files.
 func Hidden(p string) bool {
 	for _, part := range strings.Split(p, "/") {
 		if strings.HasPrefix(part, ".") && part != "." {
@@ -74,14 +74,14 @@ func Hidden(p string) bool {
 	return false
 }
 
-// ValidName reporta se o nome novo (último trecho do caminho) pode ser citado num
-// [[link]]: o Obsidian recusa # ^ [ ] | em nomes, porque têm significado no link.
-// Só o nome novo é checado: pastas antigas com esses caracteres continuam usáveis.
+// ValidName reports whether the new name (last path element) can be referenced in a
+// [[link]]: Obsidian rejects # ^ [ ] | in names because they mean something in links.
+// Only the new name is checked: existing folders with these characters remain usable.
 func ValidName(p string) bool {
 	return !strings.ContainsAny(path.Base(p), "#^[]|\r\n")
 }
 
-// Exists reporta se o caminho existe no vault.
+// Exists reports whether the path exists in the vault.
 func (v *Vault) Exists(p string) bool {
 	p, err := clean(p)
 	if err != nil {
@@ -99,7 +99,7 @@ func clean(p string) (string, error) {
 	return p, nil
 }
 
-// Tree devolve os diretórios e arquivos visíveis, diretórios primeiro.
+// Tree returns the visible directories and files, directories first.
 func (v *Vault) Tree() ([]Entry, error) {
 	return v.readDir(".")
 }
@@ -151,11 +151,11 @@ func (v *Vault) Read(p string) (Note, error) {
 	return Note{Path: p, Content: string(data), Mtime: info.ModTime().UnixNano()}, nil
 }
 
-// Save grava a nota de forma atômica (arquivo temporário + rename).
+// Save writes the note atomically (temporary file + rename).
 //
-// baseMtime é o mtime que o cliente leu. Se o arquivo mudou desde então
-// (Neovim, Obsidian, Syncthing...), devolve ErrConflict junto com a versão
-// atual do disco. baseMtime == 0 força a gravação.
+// baseMtime is the mtime the client read. If the file changed since then
+// (Neovim, Obsidian, Syncthing...), it returns ErrConflict along with the
+// current version on disk. baseMtime == 0 forces the write.
 func (v *Vault) Save(p, content string, baseMtime int64) (Note, error) {
 	p, err := clean(p)
 	if err != nil {
@@ -195,7 +195,7 @@ func (v *Vault) Save(p, content string, baseMtime int64) (Note, error) {
 	return v.Read(p)
 }
 
-// Mkdir cria uma pasta (e as intermediárias) dentro do vault. Não falha se já existir.
+// Mkdir creates a folder (and its parents) inside the vault. It does not fail if it exists.
 func (v *Vault) Mkdir(p string) (string, error) {
 	p, err := clean(p)
 	if err != nil {
@@ -210,8 +210,8 @@ func (v *Vault) Mkdir(p string) (string, error) {
 	return p, nil
 }
 
-// Create cria uma nota nova; falha com ErrExists se o arquivo já existir
-// (mesmo que o navegador ainda não saiba dele), sem nunca sobrescrever.
+// Create creates a new note; it fails with ErrExists if the file already exists
+// (even if the browser does not know about it yet), never overwriting.
 func (v *Vault) Create(p, content string) (Note, error) {
 	p, err := clean(p)
 	if err != nil {
@@ -234,7 +234,7 @@ func (v *Vault) Create(p, content string) (Note, error) {
 	return v.Read(p)
 }
 
-// createExcl grava um arquivo novo (O_EXCL: ErrExists se já houver) em p já validado.
+// createExcl writes a new file (O_EXCL: ErrExists if present) at an already validated p.
 func (v *Vault) createExcl(p string, data []byte) error {
 	f, err := v.root.OpenFile(p, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
 	if errors.Is(err, fs.ErrExist) {
@@ -248,26 +248,26 @@ func (v *Vault) createExcl(p string, data []byte) error {
 		werr = cerr
 	}
 	if werr != nil {
-		_ = v.root.Remove(p) // não deixa arquivo truncado que bloquearia novas tentativas
+		_ = v.root.Remove(p) // do not leave a truncated file that would block retries
 		return werr
 	}
 	return nil
 }
 
-// ErrNotImage indica um anexo cujo conteúdo não é uma imagem aceita.
-var ErrNotImage = errors.New("o arquivo não é uma imagem PNG, JPEG, GIF, WebP ou BMP")
+// ErrNotImage means an attachment whose content is not an accepted image.
+var ErrNotImage = errors.New("the file is not a PNG, JPEG, GIF, WebP or BMP image")
 
-// MaxAttachment é o tamanho máximo de uma imagem colada.
+// MaxAttachment is the maximum size of a pasted image.
 const MaxAttachment = 20 << 20
 
-// Extensão pelo conteúdo (não pelo nome enviado). SVG fica de fora: pode conter script.
+// Extension by content (not by the uploaded name). SVG is excluded: it may contain scripts.
 var imageExt = map[string]string{
 	"image/png": ".png", "image/jpeg": ".jpg", "image/gif": ".gif", "image/webp": ".webp", "image/bmp": ".bmp",
 }
 
-// attachmentDir segue a configuração de anexos do Obsidian (.obsidian/app.json,
-// "attachmentFolderPath"): vazio ou "/" é a raiz do vault, "./" a pasta da nota,
-// "./sub" uma subpasta dela e outro valor uma pasta fixa do vault.
+// attachmentDir follows Obsidian's attachment setting (.obsidian/app.json,
+// "attachmentFolderPath"): empty or "/" is the vault root, "./" the note's folder,
+// "./sub" a subfolder of it and any other value a fixed vault folder.
 func (v *Vault) attachmentDir(note string) string {
 	var cfg struct {
 		AttachmentFolderPath string `json:"attachmentFolderPath"`
@@ -290,8 +290,8 @@ func (v *Vault) attachmentDir(note string) string {
 	}
 }
 
-// SaveImage grava uma imagem colada/arrastada na pasta de anexos, com o nome que o
-// Obsidian usa ("Pasted image AAAAMMDDhhmmss.png"), sem sobrescrever nada.
+// SaveImage writes a pasted/dropped image to the attachment folder, with the name
+// Obsidian uses ("Pasted image YYYYMMDDhhmmss.png"), never overwriting anything.
 func (v *Vault) SaveImage(note string, data []byte) (string, error) {
 	if len(data) == 0 || len(data) > MaxAttachment {
 		return "", ErrNotImage
@@ -327,8 +327,8 @@ func (v *Vault) SaveImage(note string, data []byte) (string, error) {
 	return "", ErrExists
 }
 
-// Move renomeia ou move um arquivo ou pasta dentro do vault, criando as pastas
-// do destino. Falha com ErrExists se o destino já existir (nunca sobrescreve).
+// Move renames or moves a file or folder inside the vault, creating the destination
+// folders. It fails with ErrExists if the destination exists (never overwrites).
 func (v *Vault) Move(from, to string) (string, error) {
 	from, err := clean(from)
 	if err != nil {
@@ -347,13 +347,13 @@ func (v *Vault) Move(from, to string) (string, error) {
 	if _, err := v.root.Lstat(from); err != nil {
 		return "", err
 	}
-	// Pasta para dentro dela mesma (ex.: a -> a/b) deixaria tudo inacessível.
+	// Moving a folder into itself (e.g. a -> a/b) would make everything unreachable.
 	if strings.HasPrefix(to, from+"/") {
 		return "", ErrInvalidPath
 	}
-	// Limitação conhecida: entre este Lstat e o Rename há uma janela mínima em que
-	// outro programa (ex.: Syncthing) poderia criar o destino; os.Root não oferece
-	// RENAME_NOREPLACE. Aceitável num app pessoal.
+	// Known limitation: between this Lstat and the Rename there is a tiny window in which
+	// another program (e.g. Syncthing) could create the destination; os.Root has no
+	// RENAME_NOREPLACE. Acceptable for a personal app.
 	if _, err := v.root.Lstat(to); err == nil {
 		return "", ErrExists
 	} else if !errors.Is(err, fs.ErrNotExist) {
@@ -370,11 +370,11 @@ func (v *Vault) Move(from, to string) (string, error) {
 	return to, nil
 }
 
-// TrashDir é a lixeira do vault, a mesma do Obsidian ("Mover para a lixeira do Obsidian").
+// TrashDir is the vault trash, the same one Obsidian uses ("Move to Obsidian trash").
 const TrashDir = ".trash"
 
-// Trash move um arquivo ou pasta para a lixeira do vault, sem apagar nada.
-// Se já houver algo com o mesmo nome na lixeira, acrescenta data e hora ao nome.
+// Trash moves a file or folder to the vault trash, deleting nothing.
+// If the trash already has something with the same name, it appends date and time.
 func (v *Vault) Trash(p string) (string, error) {
 	p, err := clean(p)
 	if err != nil {
@@ -398,7 +398,7 @@ func (v *Vault) Trash(p string) (string, error) {
 	return dest, nil
 }
 
-// OpenFile abre um arquivo do vault para leitura (PDF, EPUB, imagens).
+// OpenFile opens a vault file for reading (PDF, EPUB, images).
 func (v *Vault) OpenFile(p string) (*os.File, error) {
 	p, err := clean(p)
 	if err != nil {

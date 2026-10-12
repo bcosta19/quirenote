@@ -3,7 +3,7 @@ ADDR  ?= 127.0.0.1:8080
 
 .PHONY: dev dev-api dev-web build front check install clean
 
-# Em dev: Go em :8080 + Vite (hot reload) em :5173, que repassa /api para o Go.
+# Dev: Go on :8080 + Vite (hot reload) on :5173, which proxies /api to Go.
 dev:
 	@$(MAKE) -j2 dev-api dev-web
 
@@ -34,10 +34,11 @@ install: build
 	install -Dm644 deploy/quirenote.service $(HOME)/.config/systemd/user/quirenote.service
 	install -Dm755 deploy/quirenote-app $(HOME)/.local/bin/quirenote-app
 	install -Dm644 web/public/icon-512.png $(HOME)/.local/share/icons/hicolor/512x512/apps/quirenote.png
-	# Caminho absoluto no Icon=: o launcher acha mesmo sem cache de ícones.
+	# Absolute path in Icon=: the launcher finds it even without an icon cache.
 	sed 's|^Icon=.*|Icon=$(HOME)/.local/share/icons/hicolor/512x512/apps/quirenote.png|' deploy/quirenote.desktop > $(HOME)/.local/share/applications/quirenote.desktop
 	systemctl --user daemon-reload
-	@echo "Pronto. Ative com: systemctl --user enable --now quirenote (o atalho 'Quirenote' já está no launcher)"
+	@echo "Done. Enable with: systemctl --user enable --now quirenote (the 'Quirenote' launcher entry is installed)"
+
 
 clean:
 	rm -rf bin web/dist/assets web/dist/index.html web/dist/icon.svg web/dist/icon-512.png web/dist/manifest.webmanifest

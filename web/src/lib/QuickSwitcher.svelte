@@ -10,8 +10,8 @@
     oncreate,
     onclose,
   }: {
-    files: string[] // caminhos de notas e livros do vault
-    recent: string[] // abertos recentemente (mais recente primeiro)
+    files: string[] // paths of the vault notes and books
+    recent: string[] // recently opened (most recent first)
     onopen: (path: string) => void
     oncreate: (path: string) => void
     onclose: () => void
@@ -40,7 +40,7 @@
       .sort((a, b) => b.s - a.s)
       .slice(0, MAX)
       .map(({ path }): Item => ({ kind: 'open', path }))
-    // Sem nota com esse nome exato: oferece criar (como no Obsidian).
+    // No note with this exact name: offer to create it (like Obsidian).
     const target = /\.md$/i.test(q) ? q : `${q}.md`
     if (!files.some((f) => f.toLowerCase() === target.toLowerCase())) found.push({ kind: 'create', path: target })
     return found
@@ -75,8 +75,8 @@
       move(-1)
     } else if (e.key === 'Enter') {
       e.preventDefault()
-      // Shift+Enter cria uma nota com o texto digitado mesmo que haja resultados.
-      // Se a nota já existe, não há item "Criar": abre a existente.
+      // Shift+Enter creates a note with the typed text even if there are results.
+      // If the note already exists, there is no "Create" item: it opens the existing one.
       if (e.shiftKey && query.trim()) choose(items.find((i) => i.kind === 'create') ?? items[0])
       else choose(items[selected])
     } else if (e.key === 'Escape') {
@@ -93,20 +93,20 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
 <div class="backdrop" onclick={onclose}>
-  <div class="switcher" onclick={(e) => e.stopPropagation()} role="dialog" aria-label="Abrir nota" tabindex="-1">
+  <div class="switcher" onclick={(e) => e.stopPropagation()} role="dialog" aria-label="Open note" tabindex="-1">
     <input
       bind:this={input}
       bind:value={query}
       {onkeydown}
-      placeholder="Buscar ou criar nota…  (↑↓ navega · Enter abre · Shift+Enter cria · Esc fecha)"
+      placeholder="Find or create a note…  (↑↓ navigate · Enter open · Shift+Enter create · Esc close)"
     />
     <ul bind:this={list}>
       {#each items as item, i (item.kind + item.path)}
         <li>
           <button class:selected={i === selected} onmousemove={() => (selected = i)} onclick={() => choose(item)}>
             {#if item.kind === 'create'}
-              <span class="name">＋ Criar nota “{name(item.path)}”</span>
-              <span class="dir">{dir(item.path) || 'raiz do vault'}</span>
+              <span class="name">＋ Create note “{name(item.path)}”</span>
+              <span class="dir">{dir(item.path) || 'vault root'}</span>
             {:else}
               <span class="name"><FileIcon name={item.path} /> {name(item.path)}</span>
               <span class="dir">{dir(item.path)}</span>
@@ -114,7 +114,7 @@
           </button>
         </li>
       {:else}
-        <li class="empty">Nenhuma nota no vault.</li>
+        <li class="empty">No notes in the vault.</li>
       {/each}
     </ul>
   </div>

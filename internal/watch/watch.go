@@ -1,5 +1,5 @@
-// Package watch observa o vault e repassa as mudanças para os navegadores
-// conectados (via SSE no pacote api).
+// Package watch watches the vault and forwards changes to connected
+// browsers (via SSE in the api package).
 package watch
 
 import (
@@ -17,11 +17,11 @@ import (
 )
 
 type Event struct {
-	Path string `json:"path"` // relativo ao vault
+	Path string `json:"path"` // relative to the vault
 	Op   string `json:"op"`   // write | create | remove | rename
 }
 
-// Broker distribui eventos para os assinantes.
+// Broker distributes events to subscribers.
 type Broker struct {
 	mu   sync.Mutex
 	subs map[chan Event]struct{}
@@ -47,14 +47,15 @@ func (b *Broker) publish(e Event) {
 	for ch := range b.subs {
 		select {
 		case ch <- e:
-		default: // cliente lento: descarta em vez de travar o watcher
+		default: // slow client: drop instead of blocking the watcher
 		}
 	}
 }
 
-// Run observa o diretório recursivamente até ctx ser cancelado.
-// Eventos repetidos do mesmo arquivo são agrupados (debounce), já que
-// editores costumam gerar várias escritas por salvamento.
+// Run watches the directory recursively until ctx is canceled.
+// Repeated events for the same file are coalesced (debounce), since
+// editors often produce several writes per save.
+
 func Run(ctx context.Context, dir string, b *Broker) error {
 	w, err := fsnotify.NewWatcher()
 	if err != nil {

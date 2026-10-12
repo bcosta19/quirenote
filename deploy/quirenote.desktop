@@ -1,7 +1,7 @@
 [Desktop Entry]
 Version=1.0
 Name=Quirenote
-Comment=Notas em markdown com leitor de PDF e EPUB
+Comment=Markdown notes with a PDF and EPUB reader
 Exec=quirenote-app
 Icon=quirenote
 Terminal=false

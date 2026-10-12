@@ -1,4 +1,4 @@
-// Tipos espelhados de internal/vault e internal/watch (Go).
+// Types mirrored from internal/vault and internal/watch (Go).
 
 export interface Entry {
   name: string
@@ -10,7 +10,7 @@ export interface Entry {
 export interface Note {
   path: string
   content: string
-  /** UnixNano como string: é opaco para o front, só volta ao servidor. */
+  /** UnixNano as a string: opaque to the frontend, only sent back to the server. */
   mtime: string
 }
 
@@ -23,7 +23,7 @@ export class ExistsError extends Error {}
 
 export class ConflictError extends Error {
   constructor(public current: Note) {
-    super('arquivo foi modificado no disco')
+    super('file was modified on disk')
   }
 }
 
@@ -47,7 +47,7 @@ export async function getNote(path: string): Promise<Note> {
   return json(await fetch(`/api/notes/${enc(path)}`))
 }
 
-/** mtime = versão que o editor leu; "0" força a gravação. */
+/** mtime = the version the editor read; "0" forces the write. */
 export async function saveNote(path: string, content: string, mtime: string): Promise<Note> {
   const res = await fetch(`/api/notes/${enc(path)}`, {
     method: 'PUT',
@@ -58,7 +58,7 @@ export async function saveNote(path: string, content: string, mtime: string): Pr
   return json(res)
 }
 
-/** Cria uma nota nova; falha se já existir (o servidor nunca sobrescreve). */
+/** Creates a new note; fails if it already exists (the server never overwrites). */
 export async function createNote(path: string, content: string): Promise<Note> {
   const res = await fetch(`/api/notes/${enc(path)}`, {
     method: 'POST',
@@ -70,7 +70,7 @@ export async function createNote(path: string, content: string): Promise<Note> {
 }
 
 export async function createDir(path: string): Promise<{ path: string }> {
-  // O servidor exige JSON em tudo que altera o vault (proteção contra CSRF).
+  // The server requires JSON for everything that changes the vault (CSRF protection).
   return json(
     await fetch(`/api/dirs/${enc(path)}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' }),
   )
@@ -92,38 +92,38 @@ async function postJSON<T>(url: string, body: unknown): Promise<T> {
   return json(res)
 }
 
-/** Renomeia/move arquivo ou pasta; ExistsError se o destino já existir. */
+/** Renames/moves a file or folder; ExistsError if the destination already exists. */
 export const moveItem = (from: string, to: string) => postJSON<{ path: string }>('/api/move', { from, to })
 
-/** Move para a lixeira do vault (.trash); nada é apagado. */
+/** Moves to the vault trash (.trash); nothing is deleted. */
 export const trashItem = (path: string) => postJSON<{ path: string }>('/api/trash', { path })
 
 function toBase64(file: Blob): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader()
     reader.onload = () => resolve(String(reader.result).replace(/^data:[^,]*,/, ''))
-    reader.onerror = () => reject(reader.error ?? new Error('não foi possível ler a imagem'))
+    reader.onerror = () => reject(reader.error ?? new Error('could not read the image'))
     reader.readAsDataURL(file)
   })
 }
 
-/** Grava uma imagem colada/arrastada na pasta de anexos do vault; devolve o caminho criado. */
+/** Stores a pasted/dropped image in the vault attachment folder; returns the created path. */
 export async function uploadImage(note: string, file: Blob): Promise<string> {
   const { path } = await postJSON<{ path: string }>('/api/images', { note, data: await toBase64(file) })
   return path
 }
 
-/** Trechos de outras notas com [[link]] para a nota. */
+/** Snippets of other notes with a [[link]] to the note. */
 export async function getBacklinks(note: string, signal?: AbortSignal): Promise<SearchResult[]> {
   return json(await fetch(`/api/backlinks?note=${encodeURIComponent(note)}`, { signal }))
 }
 
-/** Quais notas teriam os [[links]] atualizados após renomear from → to (nada é gravado). */
+/** Which notes would have their [[links]] updated after renaming from → to (nothing is written). */
 export async function previewRelink(from: string, to: string): Promise<{ files: string[]; ambiguous: boolean }> {
   return json(await fetch(`/api/relink?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`))
 }
 
-/** Atualiza os [[links]] de outras notas depois de renomear from → to. */
+/** Updates the [[links]] in other notes after renaming from → to. */
 export const relinkNotes = (from: string, to: string) =>
   postJSON<{ updated: string[]; skipped: string[]; ambiguous: boolean }>('/api/relink', { from, to })
 

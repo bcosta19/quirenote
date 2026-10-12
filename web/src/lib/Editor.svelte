@@ -1,11 +1,11 @@
 <script lang="ts" module>
   import { Vim } from '@replit/codemirror-vim'
 
-  // Comandos ex são globais no codemirror-vim; apontam para o editor ativo.
+  // Ex commands are global in codemirror-vim; they target the active editor.
   let activeSave: (() => void) | null = null
   Vim.defineEx('write', 'w', () => activeSave?.())
-  // Como num processador de texto: j/k e as setas andam pelas linhas que aparecem
-  // na tela, não pelo parágrafo inteiro (equivale a gj/gk do vim).
+  // Like a word processor: j/k and the arrows move through the lines shown on
+  // screen, not the whole paragraph (equivalent to vim's gj/gk).
   for (const mode of ['normal', 'visual']) {
     Vim.map('j', 'gj', mode)
     Vim.map('k', 'gk', mode)
@@ -43,22 +43,22 @@
   }: {
     path: string
     onlink: (target: string, page?: number, cfi?: string) => void
-    /** Atalhos extras do app (ex.: rolar o PDF); têm prioridade sobre o vim. */
+    /** Extra app shortcuts (e.g. scrolling the PDF); they take precedence over vim. */
     keys?: KeyBinding[]
     theme?: Theme
-    /** Texto atual do editor (inclui o que ainda não foi salvo); usado pelo preview. */
+    /** Current editor text (including unsaved changes); used by the preview. */
     oncontent?: (text: string) => void
-    /** Arquivos do vault sugeridos ao digitar "[[" (lido na hora, sempre atualizado). */
+    /** Vault files suggested when typing "[[" (read on demand, always current). */
     linkTargets?: () => string[]
-    /** Posiciona o cursor numa linha (resultado de busca); n muda a cada pedido. */
+    /** Moves the cursor to a line (search result); n changes on every request. */
     reveal?: { path: string; line: number; n: number } | null
-    /** Grava uma imagem colada/arrastada e devolve o caminho no vault (ou null se falhar). */
+    /** Stores a pasted/dropped image and returns its vault path (or null on failure). */
     onimage?: (file: File) => Promise<string | null>
   } = $props()
 
-  // Compartimento: troca o tema sem recriar o estado (mantém undo, cursor, modo vim).
+  // Compartment: swaps the theme without recreating the state (keeps undo, cursor, vim mode).
   const themeSlot = new Compartment()
-  // Somente leitura enquanto a nota é renomeada/movida/excluída (ver setLocked).
+  // Read-only while the note is renamed/moved/deleted (see setLocked).
   const lockSlot = new Compartment()
   let locked = false
 
@@ -66,7 +66,7 @@
 
   let host: HTMLDivElement
   let view: EditorView | undefined
-  // Última versão confirmada no disco (conteúdo + mtime).
+  // Last version confirmed on disk (content + mtime).
   let base: Note | null = null
   let status = $state<Status>('loading')
   let errorMsg = $state('')
@@ -89,7 +89,7 @@
       doc,
       extensions: [
         vim(),
-        // Frontmatter YAML (--- ... ---) como no Obsidian; sem isso vira título markdown.
+        // YAML frontmatter (--- ... ---) like Obsidian; otherwise it becomes a markdown heading.
         yamlFrontmatter({ content: markdown({ codeLanguages: languages }) }),
         codeBlocks,
         writing,
@@ -99,14 +99,14 @@
         lockSlot.of(EditorState.readOnly.of(locked)),
         EditorView.lineWrapping,
         EditorView.contentAttributes.of({ spellcheck: 'true', lang: 'pt-BR' }),
-        // Mantém a quebra de linha original (CRLF de notas vindas do Windows):
-        // sem isso, qualquer edição regravaria a nota inteira em LF.
+        // Keeps the original line endings (CRLF from notes created on Windows):
+        // otherwise any edit would rewrite the whole note as LF.
         EditorState.lineSeparator.of(doc.includes('\r\n') ? '\r\n' : '\n'),
-        // Prec.highest: senão o modo vim captura as teclas antes.
+        // Prec.highest: otherwise vim mode grabs the keys first.
         Prec.highest(
           keymap.of([
             { key: 'Mod-s', run: () => (save(), true) },
-            // Segue o [[link]] sob o cursor; numa linha de tarefa sem link, alterna [ ]/[x].
+            // Follows the [[link]] under the cursor; on a task line without a link, toggles [ ]/[x].
             {
               key: 'Mod-Enter',
               run: (v) => {
@@ -118,8 +118,8 @@
           ]),
         ),
         EditorView.domEventHandlers({
-          // Colar print/imagem: grava no vault e insere ![[imagem]], como o Obsidian.
-          // Se a área de transferência também tiver texto (ex.: trecho de página), cola o texto.
+          // Pasting a screenshot/image: stores it in the vault and inserts ![[image]], like Obsidian.
+          // If the clipboard also has text (e.g. a snippet from a page), paste the text.
           paste(e, v) {
             const images = imageFiles(e.clipboardData)
             if (!images.length || e.clipboardData?.getData('text/plain')) return false
@@ -167,12 +167,12 @@
     for (const [i, file] of files.entries()) {
       const before = view?.state.doc
       const path = await onimage(file)
-      // Ignora se falhou ou se o usuário trocou de nota enquanto a imagem subia.
+      // Ignore if it failed or the user switched notes while the image was uploading.
       if (!path || !view || base?.path !== notePath) return
-      // Se o texto mudou durante o upload, a posição guardada pode ter ficado no meio
-      // de uma palavra: nesse caso a imagem entra onde o cursor está agora.
+      // If the text changed during the upload, the saved position may now be in the middle
+      // of a word: in that case the image goes where the cursor is now.
       const at = view.state.doc === before ? Math.min(pos, view.state.doc.length) : view.state.selection.main.head
-      // Só o nome quando é único no vault, senão o caminho (como o Obsidian); várias imagens, uma por linha.
+      // Name only when unique in the vault, otherwise the path (like Obsidian); several images, one per line.
       const insert = (i > 0 ? '\n' : '') + `![[${linkText(path, linkTargets())}]]`
       view.dispatch({ changes: { from: at, insert }, selection: { anchor: at + insert.length }, userEvent: 'input.paste' })
       pos = at + insert.length
@@ -216,7 +216,7 @@
     conflict = null
     try {
       const note = await getNote(p)
-      if (p !== path) return // usuário já trocou de nota
+      if (p !== path) return // the user already switched notes
       base = note
       view?.setState(newState(note.content))
       oncontent?.(note.content)
@@ -229,11 +229,11 @@
     }
   }
 
-  /** Chamado quando o arquivo muda no disco (Neovim, Obsidian, Syncthing). */
+  /** Called when the file changes on disk (Neovim, Obsidian, Syncthing). */
   export async function externalChange() {
     if (!view || !base) return
     const note = await getNote(base.path).catch(() => null)
-    if (!note || note.mtime === base.mtime) return // nosso próprio salvamento
+    if (!note || note.mtime === base.mtime) return // our own save
     if (status === 'saved') {
       base = note
       setDoc(note.content)
@@ -259,7 +259,7 @@
     save()
   }
 
-  // Cada pedido de posicionamento vale uma vez: voltar à nota depois não pula de novo.
+  // Each positioning request applies once: returning to the note later does not jump again.
   let revealed = 0
   function revealLine(r: { line: number; n: number }) {
     if (!view || r.n === revealed) return
@@ -269,34 +269,34 @@
     view.focus()
   }
 
-  // Pedido de posicionar numa nota já aberta (se for outra nota, o load aplica ao carregar).
+  // Positioning request for an already open note (for another note, load applies it).
   $effect(() => {
     const r = reveal
     if (r) untrack(() => base?.path === r.path && status !== 'loading' && revealLine(r))
   })
 
   /**
-   * Trava a edição durante uma operação no arquivo: algo digitado entre gravar o
-   * pendente e a resposta do servidor seria salvo no caminho antigo, recriando-o.
+   * Locks editing during a file operation: anything typed between saving the pending
+   * changes and the server response would be saved to the old path, recreating it.
    */
   export function setLocked(value: boolean) {
     locked = value
     view?.dispatch({ effects: lockSlot.reconfigure(EditorState.readOnly.of(value)) })
   }
 
-  /** Grava o que estiver pendente (antes de renomear, mover ou excluir a nota). */
+  /** Saves anything pending (before renaming, moving or deleting the note). */
   export async function flush(): Promise<boolean> {
     clearTimeout(timer)
     while (status === 'saving') await new Promise((r) => setTimeout(r, 30))
-    if (status === 'dirty' || status === 'error') await save() // só retorna depois de gravar
+    if (status === 'dirty' || status === 'error') await save() // only returns after saving
     return status === 'saved'
   }
 
-  /** Alterna "- [ ]" / "- [x]" na linha (1 = primeira). Devolve false se não for tarefa. */
+  /** Toggles "- [ ]" / "- [x]" on the line (1 = first). Returns false if it is not a task. */
   export function toggleTask(n: number): boolean {
     if (!view || locked || n < 1 || n > view.state.doc.lines) return false
     const line = view.state.doc.line(n)
-    // Aceita tarefas dentro de citações ("> - [ ] x"), como o preview mostra.
+    // Accepts tasks inside quotes ("> - [ ] x"), as the preview shows them.
     const m = line.text.match(/^(\s*(?:>\s*)*(?:[-*+]|\d+[.)])\s+\[)([ xX])\]/)
     if (!m) return false
     const at = line.from + m[1].length
@@ -330,7 +330,7 @@
   })
 
   $effect(() => {
-    const p = path // única dependência: trocar de nota recarrega o editor
+    const p = path // the only dependency: switching notes reloads the editor
     untrack(() => load(p))
   })
 
@@ -338,29 +338,29 @@
     if (status === 'dirty') save()
     if (activeSave === save) activeSave = null
     view?.destroy()
-    view = undefined // chamadas tardias (ex.: setLocked no fim de uma exclusão) viram no-op
+    view = undefined // late calls (e.g. setLocked at the end of a delete) become no-ops
   })
 
   const labels: Record<Status, string> = {
-    loading: 'carregando…',
-    saved: 'salvo',
-    dirty: 'editando…',
-    saving: 'salvando…',
-    conflict: 'conflito',
-    error: 'erro',
+    loading: 'loading…',
+    saved: 'saved',
+    dirty: 'editing…',
+    saving: 'saving…',
+    conflict: 'conflict',
+    error: 'error',
   }
 </script>
 
 <div class="editor">
   {#if conflict}
     <div class="banner">
-      <span>Esta nota mudou no disco (Neovim/Obsidian?).</span>
-      <button onclick={useDisk}>Usar a do disco</button>
+      <span>This note changed on disk (Neovim/Obsidian?).</span>
+      <button onclick={useDisk}>Use the disk version</button>
       <button onclick={keepMine}>Manter a minha</button>
     </div>
   {/if}
   {#if status === 'error'}
-    <div class="banner error">{errorMsg} <button onclick={save}>tentar de novo</button></div>
+    <div class="banner error">{errorMsg} <button onclick={save}>try again</button></div>
   {/if}
   <div class="cm" bind:this={host}></div>
   <div class="status" class:warn={status === 'conflict' || status === 'error'}>{labels[status]}</div>
@@ -394,7 +394,7 @@
     padding: 0 10px 0 6px;
     text-align: right;
   }
-  /* Lista do autocompletar de [[links]]: fonte da interface, não a do texto. */
+  /* [[link]] autocompletion list: the UI font, not the text font. */
   .cm :global(.cm-tooltip-autocomplete > ul) {
     font-family: system-ui, sans-serif;
     font-size: 14px;
@@ -414,14 +414,14 @@
     font-size: 0.8em;
     background: var(--code-bg);
   }
-  /* Coluna de leitura centralizada (~100 caracteres), como o zen mode do Neovim. */
+  /* Centered reading column (~100 characters), like Neovim zen mode. */
   .cm :global(.cm-scroller) {
     justify-content: center;
   }
   .cm :global(.cm-content) {
     flex: 0 1 44em;
     max-width: 44em;
-    padding: 16px 0 40vh; /* respiro no fim: dá para escrever no meio da tela */
+    padding: 16px 0 40vh; /* breathing room at the end: you can write in the middle of the screen */
   }
   .banner {
     display: flex;

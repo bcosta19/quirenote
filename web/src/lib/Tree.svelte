@@ -23,7 +23,7 @@
     onopen: (e: Entry) => void
     onnew: (dir: string) => void
     onnewdir: (parent: string) => void
-    /** Clique direito num item (menu de renomear/mover/excluir). */
+    /** Right click on an item (rename/move/delete menu). */
     oncontext: (e: Entry, ev: MouseEvent) => void
     expandAll?: boolean
     depth?: number
@@ -31,23 +31,23 @@
 
   let open = $state<Record<string, boolean>>({})
 
-  // Revela a nota/PDF aberto: expande as pastas do caminho só quando ele muda
-  // (inclusive depois de renomear/mover). Recarregar a árvore a cada autosave não
-  // reabre uma pasta que foi recolhida à mão.
+  // Reveals the open note/PDF: expands the folders on its path only when it changes
+  // (including after rename/move). Reloading the tree on every autosave does not
+  // reopen a folder that was collapsed by hand.
   let revealed = ''
   $effect(() => {
     const paths = active.filter((a): a is string => !!a)
     const key = paths.join('\n')
-    const list = entries // dependência: reavalia quando a árvore chega/atualiza
+    const list = entries // dependency: re-evaluates when the tree arrives/updates
     untrack(() => {
       if (key === revealed || !list.length) return
-      // Caminhos que passam por uma pasta deste nível (prefixo comum dos itens).
+      // Paths that go through a folder at this level (common prefix of the items).
       const prefix = list[0].path.slice(0, list[0].path.lastIndexOf('/') + 1)
       const pending = paths.filter((a) => a.startsWith(prefix) && a.slice(prefix.length).includes('/'))
       const under = (e: Entry) => e.dir && pending.some((a) => a.startsWith(e.path + '/'))
       for (const e of list) if (under(e)) open[e.path] = true
-      // Só dá por revelado quando a árvore já tem as pastas do caminho (ela pode chegar
-      // depois, ex.: no carregamento inicial ou logo após renomear uma pasta).
+      // Only counts as revealed once the tree has the folders on the path (it may arrive
+      // later, e.g. on the initial load or right after renaming a folder).
       if (pending.every((a) => list.some((e) => e.dir && a.startsWith(e.path + '/')))) revealed = key
     })
   })
@@ -71,19 +71,19 @@
           </button>
           <button
             class="new"
-            title="Nova nota em {e.path}"
+            title="New note in {e.path}"
             onclick={() => {
               open[e.path] = true
               onnew(e.path)
-            }} aria-label="Nova nota"><FilePlus size={14} /></button
+            }} aria-label="New note"><FilePlus size={14} /></button
           >
           <button
             class="new"
-            title="Nova subpasta em {e.path}"
+            title="New subfolder in {e.path}"
             onclick={() => {
               open[e.path] = true
               onnewdir(e.path)
-            }} aria-label="Nova subpasta"><FolderPlus size={14} /></button
+            }} aria-label="New subfolder"><FolderPlus size={14} /></button
           >
         </div>
         {#if open[e.path] || expandAll}
@@ -161,7 +161,7 @@
   .new:focus-visible {
     visibility: visible;
   }
-  /* Sem hover (celular/tablet): botão sempre visível. */
+  /* No hover (phone/tablet): button always visible. */
   @media (hover: none) {
     .new {
       visibility: visible;

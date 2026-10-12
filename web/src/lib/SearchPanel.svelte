@@ -2,7 +2,7 @@
   import { onMount, tick } from 'svelte'
   import { searchNotes, type SearchResult } from './api'
 
-  // Busca no conteúdo de todas as notas (ripgrep no servidor), sem diferenciar acentos.
+  // Full-text search across all notes (ripgrep on the server), accent-insensitive.
   let {
     initial = '',
     onopen,
@@ -10,12 +10,12 @@
   }: {
     initial?: string
     onopen: (path: string, line: number) => void
-    /** Recebe o termo buscado, para reabrir com ele depois. */
+    /** Receives the search term, to reopen with it later. */
     onclose: (query: string) => void
   } = $props()
 
   // svelte-ignore state_referenced_locally
-  let query = $state(initial) // termo inicial (ex.: busca anterior); depois o campo é livre
+  let query = $state(initial) // initial term (e.g. the previous search); the field is free afterwards
   let results = $state<SearchResult[]>([])
   let selected = $state(0)
   let status = $state('')
@@ -35,18 +35,18 @@
     inflight = new AbortController()
     status = 'buscando…'
     try {
-      // O servidor manda um resultado além do limite só para indicar que houve corte.
+      // The server sends one result past the limit just to signal truncation.
       const found = await searchNotes(q, inflight.signal)
       const cut = found.length > LIMIT
       results = found.slice(0, LIMIT)
       selected = 0
-      status = results.length ? `${results.length}${cut ? '+' : ''} trecho(s)` : 'nada encontrado'
+      status = results.length ? `${results.length}${cut ? '+' : ''} match(es)` : 'nothing found'
     } catch (e) {
       if ((e as Error).name !== 'AbortError') status = (e as Error).message
     }
   }
 
-  // Busca enquanto digita, esperando uma pausa curta.
+  // Searches while typing, after a short pause.
   $effect(() => {
     const q = query
     clearTimeout(timer)
@@ -54,7 +54,7 @@
     return () => clearTimeout(timer)
   })
 
-  /** Fecha guardando o termo (usado também pelo Ctrl+Shift+F do app). */
+  /** Closes keeping the term (also used by the app's Ctrl+Shift+F). */
   export function close() {
     onclose(query)
   }
@@ -73,7 +73,7 @@
   }
 
   function onkeydown(e: KeyboardEvent) {
-    e.stopPropagation() // atalhos do app não agem enquanto digita aqui
+    e.stopPropagation() // app shortcuts do not act while typing here
     const ctrl = e.ctrlKey || e.metaKey
     if (e.key === 'ArrowDown' || (ctrl && (e.key === 'j' || e.key === 'n'))) {
       e.preventDefault()
@@ -102,9 +102,9 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
 <div class="backdrop" onclick={() => onclose(query)}>
-  <div class="panel" onclick={(e) => e.stopPropagation()} role="dialog" aria-label="Buscar nas notas" tabindex="-1">
+  <div class="panel" onclick={(e) => e.stopPropagation()} role="dialog" aria-label="Search notes" tabindex="-1">
     <div class="head">
-      <input bind:this={input} bind:value={query} {onkeydown} placeholder="Buscar no conteúdo das notas…" />
+      <input bind:this={input} bind:value={query} {onkeydown} placeholder="Search note contents…" />
       <span class="status">{status}</span>
     </div>
     <ul bind:this={list}>
@@ -112,7 +112,7 @@
         <li>
           <button class:selected={i === selected} onmousemove={() => (selected = i)} onclick={() => choose(r)}>
             <span class="where"
-              ><b>{name(r.path)}</b> <span class="dir">{dir(r.path)}{dir(r.path) ? ' · ' : ''}linha {r.line}</span></span
+              ><b>{name(r.path)}</b> <span class="dir">{dir(r.path)}{dir(r.path) ? ' · ' : ''}line {r.line}</span></span
             >
             <span class="snippet"
               >{#each r.parts as part, j (j)}{#if part.hit}<mark>{part.text}</mark>{:else}{part.text}{/if}{/each}</span

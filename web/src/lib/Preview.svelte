@@ -11,7 +11,7 @@
     text: string
     fileUrl: (target: string) => string
     exists: (target: string) => boolean
-    /** Clique numa caixa de tarefa: alterna a linha na nota (via editor). */
+    /** Click on a task checkbox: toggles the line in the note (via the editor). */
     ontoggle?: (line: number) => void
     onlink: (target: string, page?: number, cfi?: string) => void
   } = $props()
@@ -22,7 +22,7 @@
   function onclick(e: MouseEvent) {
     const box = (e.target as HTMLElement).closest<HTMLInputElement>('input.task-box')
     if (box) {
-      // O preview é redesenhado a partir do texto; quem muda a nota é o editor.
+      // The preview is redrawn from the text; the editor is what changes the note.
       e.preventDefault()
       const line = Number(box.dataset.line)
       if (line > 0) ontoggle?.(line)
@@ -38,7 +38,7 @@
     } else if (/^(https?:|mailto:)/.test(href)) {
       window.open(href, '_blank', 'noopener')
     } else if (href && !href.startsWith('#')) {
-      // Link markdown para outra nota/arquivo do vault: [texto](pasta/nota.md)
+      // Markdown link to another vault note/file: [text](folder/note.md)
       onlink(decodeURI(href))
     }
   }
@@ -91,7 +91,7 @@
     border-bottom: 1px solid color-mix(in srgb, var(--link) 35%, transparent);
     cursor: pointer;
   }
-  /* Link para nota que ainda não existe (clicar oferece criar), como no Obsidian. */
+  /* Link to a note that does not exist yet (clicking offers to create it), like Obsidian. */
   article :global(a.missing) {
     opacity: 0.6;
     border-bottom-style: dashed;

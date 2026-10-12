@@ -1,4 +1,4 @@
-// Package search faz busca de texto nas notas do vault usando o ripgrep.
+// Package search runs text searches over the vault notes using ripgrep.
 package search
 
 import (
@@ -14,34 +14,34 @@ import (
 	"time"
 )
 
-var ErrNoRipgrep = errors.New("ripgrep (rg) não está instalado")
+var ErrNoRipgrep = errors.New("ripgrep (rg) is not installed")
 
-// Part é um pedaço do trecho encontrado; Hit marca o texto que casou.
+// Part is a piece of the matched snippet; Hit marks the matching text.
 type Part struct {
 	Text string `json:"text"`
 	Hit  bool   `json:"hit,omitempty"`
 }
 
 type Result struct {
-	Path  string `json:"path"` // relativo ao vault
+	Path  string `json:"path"` // relative to the vault
 	Line  int    `json:"line"`
 	Parts []Part `json:"parts"`
 }
 
 const (
 	perFile = 5
-	// MaxTotal é o limite de resultados; Search devolve um a mais para o front saber que houve corte.
+	// MaxTotal is the result limit; Search returns one extra so the frontend knows it was truncated.
 	MaxTotal  = 200
-	maxChars  = 160 // tamanho do trecho mostrado ao redor do que casou
+	maxChars  = 160 // size of the snippet shown around the match
 	searchFor = 5 * time.Second
 )
 
-// Variantes acentuadas: buscar "funcao" também acha "função".
+// Accented variants: searching "funcao" also finds "função".
 var accents = map[rune]string{
 	'a': "aáàâãä", 'e': "eéèêë", 'i': "iíìîï", 'o': "oóòôõö", 'u': "uúùûü", 'c': "cç", 'n': "nñ",
 }
 
-// Pattern monta a regex do ripgrep: texto literal, sem diferenciar acentos.
+// Pattern builds the ripgrep regex: literal text, accent-insensitive.
 func Pattern(q string) string {
 	var b strings.Builder
 	for _, r := range strings.ToLower(q) {
@@ -64,8 +64,8 @@ func fold(r rune) rune {
 	return r
 }
 
-// rgData é texto UTF-8 ("text") ou, se o conteúdo não for UTF-8 válido
-// (ex.: nota antiga em Latin-1), os bytes em base64 ("bytes").
+// rgData is UTF-8 text ("text") or, if the content is not valid UTF-8
+// (e.g. an old Latin-1 note), the bytes in base64 ("bytes").
 type rgData struct {
 	Text  string `json:"text"`
 	Bytes string `json:"bytes"`
@@ -95,7 +95,7 @@ type rgMessage struct {
 	} `json:"data"`
 }
 
-// Search procura q nos arquivos .md de dir (ignorando ocultos, como .obsidian e .trash).
+// Search looks for q in the .md files of dir (skipping hidden ones like .obsidian and .trash).
 func Search(ctx context.Context, dir, q string) ([]Result, error) {
 	q = strings.TrimSpace(q)
 	if q == "" {
@@ -104,12 +104,12 @@ func Search(ctx context.Context, dir, q string) ([]Result, error) {
 	return run(ctx, dir, Pattern(q))
 }
 
-// BacklinkPattern casa [[links]] para a nota (caminho relativo ao vault, com .md):
-// pelo nome ou pelo caminho, com ou sem .md, seguidos de #seção, |apelido (ou \|
-// dentro de tabelas) ou ]]. É aproximado: não resolve caminhos parciais/relativos e
-// conta [[Nome]] para todas as notas com esse nome, em qualquer pasta.
+// BacklinkPattern matches [[links]] to the note (path relative to the vault, with .md):
+// by name or by path, with or without .md, followed by #section, |alias (or \|
+// inside tables) or ]]. It is approximate: it does not resolve partial/relative paths
+// and counts [[Name]] for every note with that name, in any folder.
 func BacklinkPattern(note string) string {
-	// Notas são citadas sem ".md" (opcional); outros arquivos (PDF, imagem), com extensão.
+	// Notes are referenced without ".md" (optional); other files (PDF, image) with their extension.
 	full, md := note, ""
 	if strings.EqualFold(filepath.Ext(note), ".md") {
 		full, md = strings.TrimSuffix(note, filepath.Ext(note)), `(?:\.md)?`
@@ -122,7 +122,7 @@ func BacklinkPattern(note string) string {
 	return `\[\[(?:` + alts + `)` + md + `(?:\\?[#|][^\]]*)?\]\]`
 }
 
-// Backlinks lista os trechos de outras notas que apontam para note.
+// Backlinks lists the snippets of other notes that link to note.
 func Backlinks(ctx context.Context, dir, note string) ([]Result, error) {
 	note = filepath.ToSlash(strings.TrimPrefix(note, "/"))
 	if note == "" || strings.HasPrefix(note, "../") {
@@ -134,16 +134,16 @@ func Backlinks(ctx context.Context, dir, note string) ([]Result, error) {
 	}
 	out := res[:0]
 	for _, r := range res {
-		if r.Path != note { // links da nota para ela mesma não contam
+		if r.Path != note { // links from the note to itself do not count
 			out = append(out, r)
 		}
 	}
 	return out, nil
 }
 
-// Files lista TODAS as notas .md que casam com o padrão (sem os limites de
-// resultados da busca). Diferente de Search, falha se o tempo estourar: quem usa
-// (atualizar links) não pode agir sobre uma lista incompleta.
+// Files lists ALL .md notes matching the pattern (without the search result
+// limits). Unlike Search, it fails on timeout: its caller (link updating)
+// must not act on an incomplete list.
 func Files(ctx context.Context, dir, pattern string) ([]string, error) {
 	rg, err := exec.LookPath("rg")
 	if err != nil {
@@ -156,11 +156,11 @@ func Files(ctx context.Context, dir, pattern string) ([]string, error) {
 	cmd.Dir = dir
 	out, err := cmd.Output()
 	if ctx.Err() != nil {
-		return nil, errors.New("a busca demorou demais; nada foi alterado")
+		return nil, errors.New("the search took too long; nothing was changed")
 	}
 	var exit *exec.ExitError
 	if errors.As(err, &exit) && exit.ExitCode() == 1 {
-		return []string{}, nil // código 1 = nenhum arquivo casou
+		return []string{}, nil // exit code 1 = no file matched
 	}
 	if err != nil {
 		return nil, err
@@ -174,7 +174,7 @@ func Files(ctx context.Context, dir, pattern string) ([]string, error) {
 	return files, nil
 }
 
-// run executa o ripgrep com o padrão nas notas .md do vault e monta os trechos.
+// run executes ripgrep with the pattern over the vault's .md notes and builds the snippets.
 func run(ctx context.Context, dir, pattern string) ([]Result, error) {
 	rg, err := exec.LookPath("rg")
 	if err != nil {
@@ -183,8 +183,8 @@ func run(ctx context.Context, dir, pattern string) ([]Result, error) {
 	ctx, cancel := context.WithTimeout(ctx, searchFor)
 	defer cancel()
 
-	// Sem shell: o termo vai como argumento depois de "-e", nunca é interpretado.
-	// --no-ignore: um .gitignore no vault não deve esconder notas (ocultos seguem de fora).
+	// No shell: the term is passed as an argument after "-e" and is never interpreted.
+	// --no-ignore: a .gitignore in the vault must not hide notes (hidden files stay excluded).
 	cmd := exec.CommandContext(ctx, rg, "--json", "--ignore-case", "--no-ignore", "--max-count", "5",
 		"--iglob", "*.md", "--max-filesize", "2M", "-e", pattern, "--", ".")
 	cmd.Dir = dir
@@ -198,8 +198,8 @@ func run(ctx context.Context, dir, pattern string) ([]Result, error) {
 
 	results := []Result{}
 	count := map[string]int{}
-	// bufio.Reader em vez de Scanner: linhas JSON muito longas (nota de uma linha só)
-	// não interrompem a leitura do resto dos resultados.
+	// bufio.Reader instead of Scanner: very long JSON lines (a single-line note)
+	// do not stop reading the remaining results.
 	rd := bufio.NewReaderSize(out, 64*1024)
 	for len(results) <= MaxTotal {
 		raw, err := rd.ReadBytes('\n')
@@ -217,17 +217,17 @@ func run(ctx context.Context, dir, pattern string) ([]Result, error) {
 		count[p]++
 		results = append(results, Result{Path: p, Line: m.Data.LineNumber, Parts: snippet(m)})
 	}
-	// Resultados suficientes ou fim da saída: encerra o rg (o código de saída 1 = "nada achado").
+	// Enough results or end of output: stop rg (exit code 1 = "nothing found").
 	cancel()
 	_ = cmd.Wait()
 	if errors.Is(ctx.Err(), context.DeadlineExceeded) && len(results) == 0 {
-		return nil, errors.New("a busca demorou demais")
+		return nil, errors.New("the search took too long")
 	}
 	return results, nil
 }
 
-// snippet recorta a linha ao redor da primeira ocorrência e marca as ocorrências.
-// Os offsets do rg são em bytes; bytes inválidos em UTF-8 viram "�" no fim.
+// snippet cuts the line around the first match and marks the matches.
+// rg offsets are in bytes; invalid UTF-8 bytes become "�" at the end.
 func snippet(m rgMessage) []Part {
 	line := strings.TrimRight(m.Data.Lines.String(), "\r\n")
 	var subs []struct{ Start, End int }
@@ -239,7 +239,7 @@ func snippet(m rgMessage) []Part {
 	if len(subs) == 0 {
 		return []Part{{Text: clip(strings.ToValidUTF8(line, "�"))}}
 	}
-	// Janela em bytes ao redor da primeira ocorrência, ajustada para não cortar UTF-8.
+	// Byte window around the first match, adjusted so it does not split UTF-8.
 	start := max(0, subs[0].Start-maxChars/2)
 	end := min(len(line), start+maxChars*2)
 	for start > 0 && !utf8Start(line[start]) {
@@ -263,7 +263,8 @@ func snippet(m rgMessage) []Part {
 	if pos < end {
 		parts = append(parts, Part{Text: line[pos:end]})
 	}
-	if len(parts) == 0 { // salvaguarda; com start < end sempre há ao menos uma parte
+	if len(parts) == 0 { // safeguard; with start < end there is always at least one part
+
 		return []Part{{Text: clip(strings.ToValidUTF8(line, "�"))}}
 	}
 	for i := range parts {

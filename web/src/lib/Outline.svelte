@@ -3,7 +3,7 @@
   import { score } from './fuzzy'
   import { headings, type Heading } from './markdown'
 
-  // Sumário da nota (Ctrl+Shift+O): títulos com busca aproximada; Enter leva até o título.
+  // Note outline (Ctrl+Shift+O): headings with fuzzy search; Enter jumps to the heading.
   let { text, onjump, onclose }: { text: string; onjump: (line: number) => void; onclose: () => void } = $props()
 
   let query = $state('')
@@ -62,8 +62,8 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
 <div class="backdrop" onclick={onclose}>
-  <div class="outline" onclick={(e) => e.stopPropagation()} role="dialog" aria-label="Sumário da nota" tabindex="-1">
-    <input bind:this={input} bind:value={query} {onkeydown} placeholder="Ir para o título…" />
+  <div class="outline" onclick={(e) => e.stopPropagation()} role="dialog" aria-label="Note outline" tabindex="-1">
+    <input bind:this={input} bind:value={query} {onkeydown} placeholder="Go to heading…" />
     <ul bind:this={list}>
       {#each items as h, i (h.line)}
         <li>
@@ -78,7 +78,7 @@
           </button>
         </li>
       {:else}
-        <li class="empty">{all.length ? 'Nenhum título com esse texto.' : 'Esta nota não tem títulos.'}</li>
+        <li class="empty">{all.length ? 'No heading matches.' : 'This note has no headings.'}</li>
       {/each}
     </ul>
   </div>

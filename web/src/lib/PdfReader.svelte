@@ -11,8 +11,8 @@
     title,
     page = $bindable(1),
   }: {
-    src: string // URL do PDF: /api/files/... (vault) ou blob: (arquivo local)
-    id: string // identifica o PDF para lembrar a última página lida
+    src: string // PDF URL: /api/files/... (vault) or blob: (local file)
+    id: string // identifies the PDF to remember the last page read
     title: string
     page?: number
   } = $props()
@@ -51,7 +51,7 @@
 
       eventBus.on('pagesinit', () => {
         v.currentScaleValue = 'page-width'
-        // Página pedida pelo link, senão a última lida neste PDF.
+        // Page requested by the link, otherwise the last one read in this PDF.
         const saved = Number(localStorage.getItem(pageKey(id)) || 1)
         const target = page > 1 ? page : saved
         if (target > 1) v.currentPageNumber = target
@@ -61,13 +61,13 @@
         localStorage.setItem(pageKey(id), String(e.pageNumber))
       })
 
-      // Reajusta à largura quando o painel muda de tamanho. Com debounce, para não
-      // re-renderizar o PDF a cada pixel enquanto a divisória é arrastada.
+      // Refits to the width when the panel is resized. Debounced, so the PDF is not
+      // re-rendered on every pixel while the divider is dragged.
       let hiddenPage = 0
       let timer: ReturnType<typeof setTimeout> | undefined
       ro = new ResizeObserver(() => {
         if (container.clientWidth === 0) {
-          // Recolhido: guarda a página para voltar exatamente nela.
+          // Collapsed: keep the page to come back to exactly the same one.
           hiddenPage ||= page
           return
         }
@@ -85,8 +85,8 @@
       ro.observe(container)
       viewer = v
     }).catch(() => {
-      // Ex.: o servidor de dev do Vite atualizou as dependências e esta aba ficou desatualizada.
-      error = 'não foi possível carregar o leitor — recarregue a página (Ctrl+Shift+R)'
+      // E.g. the Vite dev server updated its dependencies and this tab is now stale.
+      error = 'could not load the reader — reload the page (Ctrl+Shift+R)'
     })
     return () => {
       ro?.disconnect()
@@ -99,7 +99,7 @@
     if (viewer) untrack(() => open(url))
   })
 
-  // Link [[livro.pdf#page=N]] clicado com o PDF já aberto.
+  // A [[book.pdf#page=N]] link clicked with the PDF already open.
   $effect(() => {
     const target = page
     if (viewer && total && target !== viewer.currentPageNumber) {
@@ -109,7 +109,7 @@
 
   const SCROLL_STEP = 60
 
-  /** Rola o PDF (chamado pelos atalhos com o foco no editor). */
+  /** Scrolls the PDF (called by the shortcuts while the editor has focus). */
   export function scroll(dir: 1 | -1) {
     container?.scrollBy({ top: dir * SCROLL_STEP })
   }
@@ -131,13 +131,13 @@
 <div class="reader">
   <div class="toolbar">
     <span class="title" {title}>{title.split('/').pop()}</span>
-    <input type="number" min="1" max={total} value={page} onchange={goTo} aria-label="Página" />
+    <input type="number" min="1" max={total} value={page} onchange={goTo} aria-label="Page" />
     <span class="muted">/ {total || '…'}</span>
-    <button onclick={() => zoom(1 / 1.15)} title="Diminuir zoom" aria-label="Diminuir zoom"><Minus size={15} /></button>
-    <button onclick={() => zoom(1.15)} title="Aumentar zoom" aria-label="Aumentar zoom"><Plus size={15} /></button>
-    <button onclick={() => viewer && (viewer.currentScaleValue = 'page-width')} title="Ajustar à largura" aria-label="Ajustar à largura"><MoveHorizontal size={15} /></button>
+    <button onclick={() => zoom(1 / 1.15)} title="Zoom out" aria-label="Zoom out"><Minus size={15} /></button>
+    <button onclick={() => zoom(1.15)} title="Zoom in" aria-label="Zoom in"><Plus size={15} /></button>
+    <button onclick={() => viewer && (viewer.currentScaleValue = 'page-width')} title="Fit to width" aria-label="Fit to width"><MoveHorizontal size={15} /></button>
   </div>
-  {#if error}<div class="error">Erro ao abrir o PDF: {error}</div>{/if}
+  {#if error}<div class="error">Could not open the PDF: {error}</div>{/if}
   <div class="viewport">
     <div class="pdf-container" bind:this={container}>
       <div class="pdfViewer"></div>
@@ -174,7 +174,7 @@
     flex: 1;
     min-height: 0;
   }
-  /* O PDFViewer exige container com position: absolute. */
+  /* PDFViewer requires a container with position: absolute. */
   .pdf-container {
     position: absolute;
     inset: 0;

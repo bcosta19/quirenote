@@ -1,4 +1,4 @@
-// Package api expõe o vault por HTTP para o front.
+// Package api exposes the vault over HTTP to the frontend.
 package api
 
 import (
@@ -22,7 +22,7 @@ import (
 type Server struct {
 	vault  *vault.Vault
 	broker *watch.Broker
-	static fs.FS // build do front; nil em dev (Vite serve o front)
+	static fs.FS // frontend build; nil in dev (Vite serves the frontend)
 }
 
 func New(v *vault.Vault, b *watch.Broker, static fs.FS) *Server {
@@ -51,9 +51,9 @@ func (s *Server) Handler() http.Handler {
 	return logRequests(requireJSON(mux))
 }
 
-// requireJSON recusa requisições que alteram o vault sem Content-Type JSON.
-// Formulários e fetch "no-cors" de outras páginas não conseguem enviar esse
-// cabeçalho sem preflight, então isso bloqueia CSRF a partir do navegador.
+// requireJSON rejects requests that change the vault without a JSON Content-Type.
+// Forms and "no-cors" fetches from other pages cannot send this header without
+// a preflight, so this blocks CSRF from the browser.
 func requireJSON(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if r.Method != http.MethodGet && r.Method != http.MethodHead {
@@ -93,12 +93,12 @@ type saveRequest struct {
 func (s *Server) saveNote(w http.ResponseWriter, r *http.Request) {
 	var req saveRequest
 	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 10<<20)).Decode(&req); err != nil {
-		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "JSON inválido"})
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON"})
 		return
 	}
 	note, err := s.vault.Save(r.PathValue("path"), req.Content, req.Mtime)
 	if errors.Is(err, vault.ErrConflict) {
-		// Devolve a versão do disco para o front decidir (recarregar ou sobrescrever).
+		// Return the version on disk so the frontend can decide (reload or overwrite).
 		writeJSON(w, http.StatusConflict, note)
 		return
 	}
@@ -113,11 +113,11 @@ type createRequest struct {
 	Content string `json:"content"`
 }
 
-// createNote cria uma nota nova; 409 se já existir (nunca sobrescreve).
+// createNote creates a new note; 409 if it already exists (never overwrites).
 func (s *Server) createNote(w http.ResponseWriter, r *http.Request) {
 	var req createRequest
 	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 10<<20)).Decode(&req); err != nil {
-		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "JSON inválido"})
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON"})
 		return
 	}
 	note, err := s.vault.Create(r.PathValue("path"), req.Content)
@@ -137,11 +137,11 @@ type moveRequest struct {
 	To   string `json:"to"`
 }
 
-// move renomeia/move um arquivo ou pasta; 409 se o destino já existir.
+// move renames/moves a file or folder; 409 if the destination already exists.
 func (s *Server) move(w http.ResponseWriter, r *http.Request) {
 	var req moveRequest
 	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 64<<10)).Decode(&req); err != nil {
-		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "JSON inválido"})
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON"})
 		return
 	}
 	p, err := s.vault.Move(req.From, req.To)
@@ -156,7 +156,7 @@ func (s *Server) move(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, map[string]string{"path": p})
 }
 
-// relinkPreview diz quais notas teriam os [[links]] atualizados (nada é gravado).
+// relinkPreview tells which notes would have their [[links]] updated (nothing is written).
 func (s *Server) relinkPreview(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	plan, err := relink.Preview(r.Context(), s.vault, q.Get("from"), q.Get("to"))
@@ -167,11 +167,11 @@ func (s *Server) relinkPreview(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, plan)
 }
 
-// relink atualiza os [[links]] de outras notas depois de renomear from para to.
+// relink updates the [[links]] in other notes after renaming from to to.
 func (s *Server) relink(w http.ResponseWriter, r *http.Request) {
 	var req moveRequest
 	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 64<<10)).Decode(&req); err != nil {
-		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "JSON inválido"})
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON"})
 		return
 	}
 	res, err := relink.Run(r.Context(), s.vault, req.From, req.To)
@@ -197,11 +197,11 @@ type trashRequest struct {
 	Path string `json:"path"`
 }
 
-// trash move para a lixeira do vault (.trash), sem apagar nada.
+// trash moves to the vault trash (.trash), deleting nothing.
 func (s *Server) trash(w http.ResponseWriter, r *http.Request) {
 	var req trashRequest
 	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 64<<10)).Decode(&req); err != nil {
-		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "JSON inválido"})
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON"})
 		return
 	}
 	p, err := s.vault.Trash(req.Path)
@@ -213,25 +213,25 @@ func (s *Server) trash(w http.ResponseWriter, r *http.Request) {
 }
 
 type imageRequest struct {
-	Note string `json:"note"` // nota onde a imagem foi colada (define a pasta de anexos)
-	Data string `json:"data"` // base64; JSON por causa da proteção anti-CSRF
+	Note string `json:"note"` // note where the image was pasted (determines the attachment folder)
+	Data string `json:"data"` // base64; JSON because of the anti-CSRF protection
 }
 
-// saveImage grava uma imagem colada/arrastada no editor e devolve o caminho.
+// saveImage stores an image pasted/dropped into the editor and returns its path.
 func (s *Server) saveImage(w http.ResponseWriter, r *http.Request) {
 	var req imageRequest
 	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, vault.MaxAttachment*4/3+4096)).Decode(&req); err != nil {
 		var tooBig *http.MaxBytesError
 		if errors.As(err, &tooBig) {
-			writeJSON(w, http.StatusRequestEntityTooLarge, map[string]string{"error": "imagem grande demais (máx. 20 MB)"})
+			writeJSON(w, http.StatusRequestEntityTooLarge, map[string]string{"error": "image too large (max 20 MB)"})
 		} else {
-			writeJSON(w, http.StatusBadRequest, map[string]string{"error": "JSON inválido"})
+			writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON"})
 		}
 		return
 	}
 	data, err := base64.StdEncoding.DecodeString(req.Data)
 	if err != nil {
-		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "imagem em base64 inválida"})
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid base64 image"})
 		return
 	}
 	p, err := s.vault.SaveImage(req.Note, data)
@@ -267,18 +267,18 @@ func (s *Server) file(w http.ResponseWriter, r *http.Request) {
 		http.NotFound(w, r)
 		return
 	}
-	// Aberto direto pela URL, um SVG/HTML do vault não roda script na origem do app.
-	// (fetch do PDF.js e <img> não são afetados por estes cabeçalhos.)
+	// Opened directly by URL, an SVG/HTML from the vault cannot run scripts on the app origin.
+	// (PDF.js fetches and <img> are not affected by these headers.)
 	w.Header().Set("Content-Security-Policy", "sandbox")
 	w.Header().Set("X-Content-Type-Options", "nosniff")
-	// ServeContent cuida de Range (PDF.js carrega por partes), ETag e cache.
+	// ServeContent handles Range (PDF.js loads in chunks), ETag and caching.
 	http.ServeContent(w, r, info.Name(), info.ModTime(), f)
 }
 
 func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query().Get("q")
 	if len(q) > 200 {
-		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "busca longa demais"})
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "query too long"})
 		return
 	}
 	res, err := search.Search(r.Context(), s.vault.Dir(), q)
@@ -293,7 +293,7 @@ func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, res)
 }
 
-// backlinks lista os trechos de outras notas com [[link]] para ?note=.
+// backlinks lists the snippets of other notes with a [[link]] to ?note=.
 func (s *Server) backlinks(w http.ResponseWriter, r *http.Request) {
 	res, err := search.Backlinks(r.Context(), s.vault.Dir(), r.URL.Query().Get("note"))
 	if errors.Is(err, search.ErrNoRipgrep) {
@@ -307,7 +307,7 @@ func (s *Server) backlinks(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusOK, res)
 }
 
-// events mantém uma conexão SSE e envia as mudanças do vault.
+// events keeps an SSE connection open and sends vault changes.
 func (s *Server) events(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/event-stream")
 	w.Header().Set("Cache-Control", "no-cache")
@@ -316,7 +316,7 @@ func (s *Server) events(w http.ResponseWriter, r *http.Request) {
 	ch, unsubscribe := s.broker.Subscribe()
 	defer unsubscribe()
 
-	_, _ = fmt.Fprint(w, ": conectado\n\n")
+	_, _ = fmt.Fprint(w, ": connected\n\n")
 	_ = rc.Flush()
 	ping := time.NewTicker(30 * time.Second)
 	defer ping.Stop()
@@ -337,7 +337,7 @@ func (s *Server) events(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// spa serve o build do front e devolve index.html para rotas desconhecidas.
+// spa serves the frontend build and returns index.html for unknown routes.
 func spa(static fs.FS) http.Handler {
 	files := http.FileServerFS(static)
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -367,7 +367,8 @@ func writeErr(w http.ResponseWriter, err error) {
 	case errors.Is(err, vault.ErrInvalidPath), errors.Is(err, vault.ErrNotNote), errors.Is(err, vault.ErrBadName):
 		status = http.StatusBadRequest
 	default:
-		// os.Root devolve erro próprio para caminhos que escapam do vault.
+		// os.Root returns its own error for paths that escape the vault.
+
 		if strings.Contains(err.Error(), "escapes from parent") {
 			status = http.StatusBadRequest
 		} else {

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Servidor Go do `make dev` com recarga automática: recompila e reinicia a cada
-# mudança em arquivos .go (o Vite já faz isso sozinho para o front).
+# Go server for `make dev` with auto-reload: rebuilds and restarts on every
+# change to .go files (Vite already does this on its own for the frontend).
 set -u
 cd "$(dirname "$0")/.."
 
 pid=""
 watcher=""
-crashes=0 # quedas seguidas logo ao subir (porta ocupada, vault inválido…)
+crashes=0 # consecutive crashes right at startup (port in use, invalid vault…)
 stop() {
   [ -n "$watcher" ] && kill "$watcher" 2>/dev/null
   [ -n "$pid" ] && kill "$pid" 2>/dev/null && wait "$pid" 2>/dev/null
@@ -20,24 +20,24 @@ while true; do
     pid=$!
     started=$SECONDS
   else
-    echo "dev-api: erro de compilação; aguardando correção…" >&2
+    echo "dev-api: build error; waiting for a fix…" >&2
   fi
-  # Espera a próxima mudança em código Go (ignora o resto do repositório).
-  # Em segundo plano + wait: assim um SIGTERM interrompe a espera na hora.
+  # Wait for the next Go code change (ignores the rest of the repository).
+  # In the background + wait: this way a SIGTERM interrupts the wait right away.
   inotifywait -qq -r -e close_write,create,delete,move --include '\.go$' cmd internal web/embed.go &
   watcher=$!
   if [ -n "$pid" ] && [ "$crashes" -lt 3 ]; then
-    # Acorda com o que vier primeiro: mudança no código ou o servidor saindo sozinho.
+    # Wake up on whichever comes first: a code change or the server exiting on its own.
     wait -n "$watcher" "$pid"
     if kill -0 "$watcher" 2>/dev/null; then
-      # Caiu em menos de 5 s: conta como falha ao subir; depois de 3, para de insistir.
+      # Died in under 5 s: counts as a startup failure; after 3, stop retrying.
       if [ $((SECONDS - started)) -lt 5 ]; then crashes=$((crashes + 1)); else crashes=0; fi
       if [ "$crashes" -ge 3 ]; then
-        echo "dev-api: o servidor caiu 3 vezes ao subir; aguardando mudança no código…" >&2
+        echo "dev-api: the server crashed 3 times at startup; waiting for a code change…" >&2
         pid=""
         wait "$watcher"
       else
-        echo "dev-api: o servidor saiu; reiniciando em 1 s…" >&2
+        echo "dev-api: the server exited; restarting in 1 s…" >&2
         kill "$watcher" 2>/dev/null
         watcher="" pid=""
         sleep 1
@@ -49,6 +49,7 @@ while true; do
   fi
   watcher=""
   crashes=0
-  echo "dev-api: código Go mudou, reiniciando…" >&2
+  echo "dev-api: Go code changed, restarting…"
+ >&2
   stop
 done

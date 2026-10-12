@@ -1,8 +1,8 @@
 <script lang="ts" module>
   export interface EpubLocation {
-    id: string // de qual livro é esta posição
+    id: string // which book this position belongs to
     cfi: string
-    fraction: number // 0–1 do livro inteiro
+    fraction: number // 0–1 of the whole book
     chapter: string
   }
 </script>
@@ -13,7 +13,7 @@
   import { onMount, untrack } from 'svelte'
   import type { Theme } from './theme'
 
-  // Leitor de EPUB com foliate-js (o motor do leitor Foliate), no mesmo painel do PDF.
+  // EPUB reader with foliate-js (the engine of the Foliate reader), in the same panel as the PDF.
 
   let {
     src,
@@ -23,12 +23,12 @@
     target = null,
     location = $bindable(null),
   }: {
-    src: string | File // URL do vault ou arquivo local (sem upload)
-    id: string // identifica o livro para lembrar a última posição
+    src: string | File // vault URL or local file (no upload)
+    id: string // identifies the book to remember the last position
     title: string
     theme?: Theme
-    /** Pedido de ir para uma posição (link [[livro.epub#cfi=…]]); n muda a cada pedido.
-     *  Só vale se id for o deste livro (um pedido antigo de outro livro é ignorado). */
+    /** Request to go to a position ([[book.epub#cfi=…]] link); n changes on every request.
+     *  Only applies if id is this book's (a stale request for another book is ignored). */
     target?: { id: string; cfi: string; n: number } | null
     location?: EpubLocation | null
   } = $props()
@@ -40,9 +40,9 @@
   let ready = $state(false)
 
   const key = () => `quirenote:epub:${id}`
-  const NOT_FOUND = 'posição do link não encontrada neste livro'
+  const NOT_FOUND = 'link position not found in this book'
 
-  /** A posição existe neste livro? (resolveNavigation aceita capítulos inexistentes.) */
+  /** Does the position exist in this book? (resolveNavigation accepts missing chapters.) */
   function valid(el: any, cfi: string | null | undefined): boolean {
     if (!cfi) return false
     try {
@@ -53,7 +53,7 @@
     }
   }
 
-  // Cores do tema dentro do livro (o EPUB roda num iframe próprio).
+  // Theme colors inside the book (the EPUB runs in its own iframe).
   function css(t: Theme) {
     const [bg, fg, link] = t === 'light' ? ['#f2eadb', '#332e26', '#4b6a88'] : ['#282c34', '#dcdde0', '#61afef']
     return `
@@ -75,7 +75,7 @@
     return out
   }
 
-  // Navegação pedida pelo usuário: a mensagem de erro anterior deixa de valer.
+  // User-initiated navigation: the previous error message no longer applies.
   function next() {
     error = ''
     view?.next()
@@ -117,18 +117,18 @@
           location = { id, cfi: d.cfi, fraction: d.fraction ?? 0, chapter: d.tocItem?.label?.trim?.() ?? '' }
           if (d.cfi) localStorage.setItem(key(), d.cfi)
         })
-        // Setas dentro do livro também viram a página.
+        // Arrow keys inside the book also turn the page.
         el.addEventListener('load', (e: CustomEvent) => e.detail.doc.addEventListener('keydown', onKey))
-        // Links externos do livro: só http(s)/mailto e sem window.opener (como no preview).
+        // External links in the book: only http(s)/mailto and without window.opener (like the preview).
         el.addEventListener('external-link', (e: CustomEvent) => {
           e.preventDefault()
           const href = String(e.detail?.href ?? '')
           if (/^(https?:|mailto:)/i.test(href)) window.open(href, '_blank', 'noopener')
         })
-        // Lido antes do await: um pedido que chegue durante o init fica para o $effect.
+        // Read before the await: a request arriving during init is left to the $effect.
         const t0 = target?.id === id ? target : null
         lastTarget = t0?.n ?? 0
-        // Alvo do link inválido: abre na posição salva e avisa (em vez de ficar em branco).
+        // Invalid link target: open at the saved position and warn (instead of staying blank).
         const saved = localStorage.getItem(key())
         const start = valid(el, t0?.cfi) ? t0!.cfi : valid(el, saved) ? saved : null
         await el.init({ lastLocation: start, showTextStart: true })
@@ -136,7 +136,7 @@
         view = el
         ready = true
       } catch (e) {
-        error = (e as Error).message || 'não foi possível abrir o EPUB'
+        error = (e as Error).message || 'could not open the EPUB'
       }
     })()
     return () => {
@@ -146,13 +146,13 @@
     }
   })
 
-  // Tema trocado com o livro aberto.
+  // Theme changed with the book open.
   $effect(() => {
     const t = theme
     untrack(() => view?.renderer?.setStyles?.(css(t)))
   })
 
-  // Link para uma posição clicado com o livro já aberto.
+  // A position link clicked with the book already open.
   let lastTarget = 0
   $effect(() => {
     const t = target
@@ -166,7 +166,7 @@
     }
   })
 
-  /** Mesma interface do leitor de PDF (atalhos Alt+↑/↓ com o foco no editor). */
+  /** Same interface as the PDF reader (Alt+↑/↓ shortcuts while the editor has focus). */
   export function scroll(dir: 1 | -1) {
     if (dir > 0) next()
     else prev()
@@ -186,18 +186,18 @@
   <div class="toolbar">
     <span class="title" {title}>{title.split('/').pop()}</span>
     {#if toc.length}
-      <select onchange={goToc} aria-label="Capítulos" value="">
-        <option value="" disabled>{location?.chapter || 'Capítulos'}</option>
+      <select onchange={goToc} aria-label="Chapters" value="">
+        <option value="" disabled>{location?.chapter || 'Chapters'}</option>
         {#each toc as item (item.href)}
           <option value={item.href}>{'  '.repeat(item.depth)}{item.label}</option>
         {/each}
       </select>
     {/if}
-    <button onclick={prev} title="Página anterior (←)" aria-label="Página anterior"><ChevronLeft size={16} /></button>
+    <button onclick={prev} title="Previous page (←)" aria-label="Previous page"><ChevronLeft size={16} /></button>
     <span class="muted">{location ? Math.round(location.fraction * 100) + '%' : '…'}</span>
-    <button onclick={next} title="Próxima página (→)" aria-label="Próxima página"><ChevronRight size={16} /></button>
+    <button onclick={next} title="Next page (→)" aria-label="Next page"><ChevronRight size={16} /></button>
   </div>
-  {#if error}<div class="error">Erro no EPUB: {error}</div>{/if}
+  {#if error}<div class="error">EPUB error: {error}</div>{/if}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
   <div class="viewport" bind:this={host} onkeydown={onKey}></div>
 </div>

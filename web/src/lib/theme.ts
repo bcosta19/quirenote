@@ -6,7 +6,7 @@ import { oneDark } from '@codemirror/theme-one-dark'
 
 export type Theme = 'light' | 'dark'
 
-// Tipografia comum aos dois temas: títulos maiores, como num livro, e código em mono.
+// Typography shared by both themes: larger headings, like a book, and code in mono.
 const typography = syntaxHighlighting(
   HighlightStyle.define([
     { tag: t.heading1, fontSize: '1.45em', fontWeight: '700' },
@@ -20,7 +20,7 @@ const typography = syntaxHighlighting(
   ]),
 )
 
-// "Papel": bege quente, tinta marrom, destaques em sépia.
+// "Paper": warm beige, brown ink, sepia accents.
 const paper = [
   EditorView.theme(
     {

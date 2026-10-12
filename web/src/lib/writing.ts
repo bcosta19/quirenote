@@ -15,12 +15,12 @@ import {
   type ViewUpdate,
 } from '@codemirror/view'
 
-// Ajustes de escrita, alinhados com o Obsidian (TAB, largura 4) e com o
-// wrap/linebreak/breakindent do Neovim.
+// Writing tweaks, aligned with Obsidian (TAB, width 4) and with
+// Neovim's wrap/linebreak/breakindent.
 
 const TAB_SIZE = 4
 
-// Prefixo de linha que define o recuo da continuação: espaços + marcador de lista/citação.
+// Line prefix that sets the continuation indent: spaces + list/quote marker.
 const PREFIX = /^([ \t]*)([-*+][ \t]+\[[ xX]\][ \t]+|[-*+][ \t]+|\d+[.)][ \t]+|>[ \t]*)?/
 
 const remeasure = StateEffect.define<null>()
@@ -43,15 +43,15 @@ function prefixWidth(prefix: string, font: string): number {
 }
 
 /**
- * "breakindent": quando um item de lista quebra linha, a continuação alinha com
- * o texto do item, não com a margem. Mede o prefixo na fonte real do editor.
+ * "breakindent": when a list item wraps, the continuation aligns with the
+ * item text, not the margin. Measures the prefix in the editor's actual font.
  */
 const hangingIndent = ViewPlugin.fromClass(
   class {
     decorations: DecorationSet
     constructor(readonly view: EditorView) {
       this.decorations = this.build()
-      // A fonte embutida pode carregar depois: mede de novo quando estiver pronta.
+      // The embedded font may load later: measure again once it is ready.
       document.fonts.ready.then(() => {
         widths.clear()
         view.dispatch({ effects: remeasure.of(null) })
@@ -87,9 +87,9 @@ const hangingIndent = ViewPlugin.fromClass(
 )
 
 /**
- * Base do editor no lugar do basicSetup do CodeMirror, com cara de processador de
- * texto: sem números de linha, sem gutter de dobra e sem destacar a linha lógica
- * atual (que num parágrafo quebrado pinta o parágrafo inteiro). Sem autocompletar.
+ * Editor base instead of CodeMirror's basicSetup, feeling like a word processor:
+ * no line numbers, no fold gutter and no highlight of the current logical line
+ * (which in a wrapped paragraph paints the whole paragraph). No autocompletion.
  */
 const base: Extension = [
   highlightSpecialChars(),
@@ -108,7 +108,7 @@ export const writing: Extension = [
   base,
   indentUnit.of('\t'),
   EditorState.tabSize.of(TAB_SIZE),
-  // Tab indenta em vez de mover o foco para outro elemento da página.
+  // Tab indents instead of moving focus to another element on the page.
   Prec.high(
     keymap.of([
       { key: 'Tab', run: indentMore, shift: indentLess },

@@ -7,7 +7,7 @@
     danger?: boolean
   }
 
-  // Menu de contexto (clique direito) com o visual do app.
+  // Context menu (right click) with the app look.
   let { x, y, items, onclose }: { x: number; y: number; items: MenuItem[]; onclose: () => void } = $props()
 
   let menu: HTMLDivElement
@@ -15,7 +15,7 @@
   let top = $state(0)
 
   onMount(() => {
-    // Mantém o menu dentro da janela.
+    // Keeps the menu inside the window.
     const r = menu.getBoundingClientRect()
     left = Math.min(x, window.innerWidth - r.width - 4)
     top = Math.min(y, window.innerHeight - r.height - 4)
@@ -26,10 +26,10 @@
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape') return
       e.preventDefault()
-      e.stopPropagation() // o Esc só fecha o menu; não chega ao vim nem aos atalhos do app
+      e.stopPropagation() // Esc only closes the menu; it does not reach vim or the app shortcuts
       onclose()
     }
-    // capture: fecha antes de outro clique agir; contextmenu em outro item reabre no lugar certo.
+    // capture: closes before another click acts; contextmenu on another item reopens in the right place.
     window.addEventListener('pointerdown', close, true)
     window.addEventListener('keydown', onKey, true)
     window.addEventListener('blur', onclose)

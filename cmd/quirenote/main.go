@@ -21,9 +21,9 @@ import (
 
 func main() {
 	home, _ := os.UserHomeDir()
-	addr := flag.String("addr", env("QUIRENOTE_ADDR", env("NOTAS_ADDR", "127.0.0.1:8080")), "endereço HTTP (use o IP do NetBird/Tailscale para acesso remoto)")
-	dir := flag.String("vault", env("QUIRENOTE_VAULT", env("NOTAS_VAULT", filepath.Join(home, "Documents/NotasObsidian/Notas"))), "diretório do vault")
-	debug := flag.Bool("debug", false, "log detalhado")
+	addr := flag.String("addr", env("QUIRENOTE_ADDR", env("NOTAS_ADDR", "127.0.0.1:8080")), "HTTP address (use the NetBird/Tailscale IP for remote access)")
+	dir := flag.String("vault", env("QUIRENOTE_VAULT", env("NOTAS_VAULT", filepath.Join(home, "Documents/NotasObsidian/Notas"))), "vault directory")
+	debug := flag.Bool("debug", false, "verbose logging")
 	flag.Parse()
 
 	if *debug {
@@ -54,7 +54,7 @@ func run(addr, dir string) error {
 
 	static := web.Dist()
 	if static == nil {
-		slog.Warn("front não embutido: rode `make build` ou use `make dev` (Vite)")
+		slog.Warn("frontend not embedded: run `make build` or use `make dev` (Vite)")
 	}
 
 	srv := &http.Server{
@@ -77,7 +77,8 @@ func run(addr, dir string) error {
 	return nil
 }
 
-// env lê uma variável de ambiente (NOTAS_* são os nomes antigos, ainda aceitos).
+// env reads an environment variable (NOTAS_* are the old names, still accepted).
+
 func env(key, fallback string) string {
 	if v := os.Getenv(key); v != "" {
 		return v

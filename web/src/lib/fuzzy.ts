@@ -1,9 +1,9 @@
-// Busca aproximada para a troca rápida de notas: as letras da consulta precisam
-// aparecer em ordem; acentos e maiúsculas não importam.
+// Fuzzy matching for the quick switcher: the query letters must appear
+// in order; accents and case do not matter.
 
 const fold = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase()
 
-/** Pontuação (maior é melhor) ou null se não casar. Favorece o nome do arquivo e letras seguidas. */
+/** Score (higher is better) or null if it does not match. Favors the file name and consecutive letters. */
 export function score(query: string, path: string): number | null {
   const q = fold(query.trim())
   if (!q) return 0
@@ -17,12 +17,12 @@ export function score(query: string, path: string): number | null {
     const i = p.indexOf(ch, pi)
     if (i < 0) return null
     s += 1
-    if (i === prev + 1) s += 3 // sequência contínua
-    if (i >= nameStart) s += 2 // no nome, não na pasta
-    if (i === nameStart || /[\s/_-]/.test(p[i - 1] ?? '')) s += 4 // início de palavra
+    if (i === prev + 1) s += 3 // consecutive run
+    if (i >= nameStart) s += 2 // in the name, not the folder
+    if (i === nameStart || /[\s/_-]/.test(p[i - 1] ?? '')) s += 4 // start of a word
     prev = i
     pi = i + 1
   }
   if (p.slice(nameStart).startsWith(q)) s += 10
-  return s - p.length * 0.01 // desempate: caminhos mais curtos primeiro
+  return s - p.length * 0.01 // tie-breaker: shorter paths first
 }

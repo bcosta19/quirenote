@@ -25,7 +25,7 @@
   background: var(--bg);
 }
 
-/* "Papel": bege quente em vez de branco, tinta marrom. */
+/* "Paper": warm beige instead of white, brown ink. */
 :root[data-theme='light'] {
   --bg: #e9e0cd;
   --panel: #e0d6c1;
@@ -50,7 +50,7 @@
 
 * {
   box-sizing: border-box;
-  /* Barras de rolagem finas, com as cores do tema (editor, árvore, PDF). */
+  /* Thin scrollbars in the theme colors (editor, tree, PDF). */
   scrollbar-width: thin;
   scrollbar-color: var(--scroll-thumb) transparent;
 }
