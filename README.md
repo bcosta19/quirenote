@@ -25,7 +25,7 @@ Flags/variáveis: `-vault` / `NOTAS_VAULT` (padrão `~/Documents/NotasObsidian/N
 | `Alt+\` | recolher/mostrar o PDF (sem fechar; volta na mesma página) |
 | `Ctrl+Shift+\` | barra lateral |
 | `Tab` / `Shift+Tab` | indentar / desindentar (inclusive itens de lista) |
-| `Ctrl+Shift+L` | inserir link da página atual do PDF |
+| `Ctrl+Shift+L` | inserir link da posição atual (PDF: `#page=N`; EPUB: `#cfi=…`) |
 | `Alt+↑` / `Alt+↓` | rolar o PDF sem sair do editor |
 | `Alt+Shift+↑` / `Alt+Shift+↓` | página anterior / próxima do PDF |
 | `Ctrl+clique` / `Ctrl+Enter` | seguir `[[link]]` (se a nota não existir, oferece criar) |
@@ -39,7 +39,7 @@ Flags/variáveis: `-vault` / `NOTAS_VAULT` (padrão `~/Documents/NotasObsidian/N
 
 Na barra lateral: **+** cria uma nota e **📁+** cria uma pasta (passe o mouse numa pasta para criar
 nota ou subpasta direto nela);
-**📂** abre um PDF do dispositivo em que você está, sem enviar nada para o servidor.
+**📂** abre um PDF ou EPUB do dispositivo em que você está, sem enviar nada para o servidor.
 Links para esse PDF são gravados só com o nome (`[[livro.pdf#page=N]]`) e funcionam enquanto ele estiver aberto.
 
 Colar um print (`Ctrl+V` no modo insert) ou arrastar uma imagem para o editor grava o arquivo na pasta de
@@ -58,3 +58,9 @@ Tema claro "papel" por padrão (☾/☀ no topo alterna para o escuro; a escolha
 O editor usa **EB Garamond**, embutida no binário (igual em qualquer dispositivo); código fica em mono.
 Cores do editor: `web/src/lib/theme.ts`; cores da interface: `web/src/app.css`.
 `docs/fontes.html` é a prévia usada para escolher a fonte.
+
+## Leitor
+
+PDF (PDF.js) e EPUB (foliate-js) no mesmo painel: recolher (`Alt+\`), redimensionar, lembrar a última
+posição e virar páginas sem sair do editor (`Alt+↑/↓`). A página tem uma Content Security Policy
+(`script-src 'self'`) que também bloqueia JavaScript embutido em EPUBs.

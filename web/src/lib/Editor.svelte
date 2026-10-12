@@ -42,7 +42,7 @@
     onimage,
   }: {
     path: string
-    onlink: (target: string, page?: number) => void
+    onlink: (target: string, page?: number, cfi?: string) => void
     /** Atalhos extras do app (ex.: rolar o PDF); têm prioridade sobre o vim. */
     keys?: KeyBinding[]
     theme?: Theme
@@ -80,7 +80,7 @@
     const line = view.state.doc.lineAt(pos)
     const link = linkAt(line.text, pos - line.from)
     if (!link) return false
-    onlink(link.target, link.page)
+    onlink(link.target, link.page, link.cfi)
     return true
   }
 

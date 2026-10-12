@@ -5,9 +5,12 @@
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Notas</title>
-    <script>
-      document.documentElement.dataset.theme = localStorage.getItem('notas:theme') === 'dark' ? 'dark' : 'light'
-    </script>
+    <!--
+      CSP: só scripts do próprio app. Também vale para os iframes dos EPUBs (blob:),
+      bloqueando JavaScript embutido em livros — exigência do foliate-js.
+    -->
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self'; object-src 'none'; base-uri 'self'" />
+    <script src="/theme-init.js"></script>
   </head>
   <body>
     <div id="app"></div>

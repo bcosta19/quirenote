@@ -28,6 +28,7 @@ function wikilinks(md: MD, ctx: RenderContext) {
       const [ref, alias] = raw.split('|')
       const target = ref.split('#')[0].trim()
       const page = ref.match(/#page=(\d+)/)?.[1]
+      const cfi = ref.match(/#cfi=(.+)$/)?.[1]
       if (embed && IMAGE.test(target)) {
         // ![[foto.png|300]]: o número após | é a largura, como no Obsidian.
         const width = /^\d+$/.test(alias ?? '') ? ` width="${alias}"` : ''
@@ -42,8 +43,9 @@ function wikilinks(md: MD, ctx: RenderContext) {
           ['data-target', target],
         ]
         if (page) open.attrs.push(['data-page', page])
+        if (cfi) open.attrs.push(['data-cfi', cfi])
         const text = state.push('text', '', 0)
-        text.content = (alias ?? (page ? `${target} · p.${page}` : ref)).trim()
+        text.content = (alias ?? (page ? `${target} · p.${page}` : cfi ? `${target} · posição salva` : ref)).trim()
         state.push('link_close', 'a', -1)
       }
     }

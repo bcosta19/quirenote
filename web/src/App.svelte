@@ -16,9 +16,10 @@
     type Entry,
     type SearchResult,
   } from './lib/api'
-  import { pageLink, resolveLink } from './lib/links'
+  import { cfiLink, pageLink, resolveLink } from './lib/links'
   import Editor from './lib/Editor.svelte'
   import PdfReader from './lib/PdfReader.svelte'
+  import EpubReader, { type EpubLocation } from './lib/EpubReader.svelte'
   import Preview from './lib/Preview.svelte'
   import QuickSwitcher from './lib/QuickSwitcher.svelte'
   import PromptDialog from './lib/PromptDialog.svelte'
@@ -58,6 +59,19 @@
   let editor: ReturnType<typeof Editor> | undefined = $state()
   let fileInput: HTMLInputElement
   let pdf: ReturnType<typeof PdfReader> | undefined = $state()
+  let epub: ReturnType<typeof EpubReader> | undefined = $state()
+  // EPUB: posição atual (para o link) e pedido de ir a uma posição (link #cfi=).
+  let epubLoc = $state<EpubLocation | null>(null)
+  let epubTarget = $state<{ id: string; cfi: string; n: number } | null>(null)
+  /** Pede ao leitor do livro id que vá para cfi (sem cfi, cancela pedidos pendentes). */
+  function goEpub(id?: string, cfi?: string) {
+    epubTarget = id && cfi ? { id, cfi, n: (epubTarget?.n ?? 0) + 1 } : null
+  }
+  /** Trocou de documento: posição/pedido do livro anterior deixam de valer. */
+  function forgetEpub() {
+    epubTarget = null
+    epubLoc = null
+  }
 
   // Controlar o PDF sem tirar o foco do editor.
   // Sem PDF aberto, devolvem false e o editor segue com o comportamento padrão.
@@ -76,24 +90,34 @@
   }
 
   const pdfKeys = [
-    { key: 'Alt-ArrowDown', run: () => (pdf && readerOpen ? (pdf.scroll(1), true) : false) },
-    { key: 'Alt-ArrowUp', run: () => (pdf && readerOpen ? (pdf.scroll(-1), true) : false) },
-    { key: 'Alt-Shift-ArrowDown', run: () => (pdf && readerOpen ? (pdf.turnPage(1), true) : false) },
-    { key: 'Alt-Shift-ArrowUp', run: () => (pdf && readerOpen ? (pdf.turnPage(-1), true) : false) },
+    { key: 'Alt-ArrowDown', run: () => (activeReader && readerOpen ? (activeReader.scroll(1), true) : false) },
+    { key: 'Alt-ArrowUp', run: () => (activeReader && readerOpen ? (activeReader.scroll(-1), true) : false) },
+    { key: 'Alt-Shift-ArrowDown', run: () => (activeReader && readerOpen ? (activeReader.turnPage(1), true) : false) },
+    { key: 'Alt-Shift-ArrowUp', run: () => (activeReader && readerOpen ? (activeReader.turnPage(-1), true) : false) },
   ]
 
   // PDF escolhido do dispositivo: lido direto pelo navegador, sem upload.
   // Não vai para a URL porque o blob: some ao recarregar.
-  let localPdf = $state<{ name: string; size: number; url: string } | null>(null)
+  let localPdf = $state<{ name: string; size: number; url: string; file: File } | null>(null)
 
   // O que o leitor mostra: um PDF do vault ou um PDF local.
+  const kindOf = (name: string) => (/\.epub$/i.test(name) ? ('epub' as const) : ('pdf' as const))
   const reader = $derived(
     doc
-      ? { src: fileUrl(doc), id: doc, title: doc, link: doc }
+      ? { src: fileUrl(doc), file: null, id: doc, title: doc, link: doc, kind: kindOf(doc) }
       : localPdf
-        ? { src: localPdf.url, id: `local:${localPdf.name}:${localPdf.size}`, title: localPdf.name, link: localPdf.name }
+        ? {
+            src: localPdf.url,
+            file: localPdf.file, // EPUB local é lido direto do arquivo (sem upload)
+            id: `local:${localPdf.name}:${localPdf.size}`,
+            title: localPdf.name,
+            link: localPdf.name,
+            kind: kindOf(localPdf.name),
+          }
         : null,
   )
+  /** Leitor visível (PDF ou EPUB), para os atalhos Alt+↑/↓ com o foco no editor. */
+  const activeReader = $derived(reader?.kind === 'epub' ? epub : pdf)
 
   $effect(() => {
     const params = new URLSearchParams()
@@ -116,6 +140,7 @@
     const params = new URLSearchParams(location.hash.slice(1))
     note = params.get('note')
     const nextDoc = params.get('doc')
+    if (nextDoc !== doc) forgetEpub()
     if (nextDoc) {
       closeLocal()
       page = Number(params.get('page') || 1)
@@ -432,21 +457,28 @@
     toastTimer = setTimeout(() => (toast = ''), 3000)
   }
 
-  function openPath(path: string, targetPage?: number) {
+  function openPath(path: string, targetPage?: number, targetCfi?: string) {
     // Abrir por qualquer outro caminho cancela o posicionamento pedido pela busca.
     reveal = null
-    if (/\.(md|pdf)$/i.test(path)) remember(path)
+    if (/\.(md|pdf|epub)$/i.test(path)) remember(path)
     if (/\.md$/i.test(path)) {
       note = path
       notesOpen = true
     } else if (/\.pdf$/i.test(path)) {
       // Página do link; sem ela, o leitor volta para a última página lida.
       page = targetPage ?? (path === doc ? page : 1)
+      if (path !== doc) forgetEpub()
       closeLocal()
       doc = path
       readerOpen = true
+    } else if (/\.epub$/i.test(path)) {
+      closeLocal()
+      if (path !== doc) forgetEpub()
+      doc = path
+      readerOpen = true
+      goEpub(path, targetCfi)
     } else {
-      flash('EPUB ainda não suportado (próximo passo do MVP)')
+      flash('Formato não suportado no leitor')
     }
   }
 
@@ -456,9 +488,10 @@
     input.value = '' // permite escolher o mesmo arquivo de novo
     if (!file) return
     closeLocal()
-    localPdf = { name: file.name, size: file.size, url: URL.createObjectURL(file) }
+    localPdf = { name: file.name, size: file.size, url: URL.createObjectURL(file), file }
     doc = null
     page = 1
+    forgetEpub()
     readerOpen = true
   }
 
@@ -469,16 +502,18 @@
 
   function closeReader() {
     closeLocal()
+    forgetEpub()
     doc = null
   }
 
-  async function openLink(target: string, targetPage?: number) {
+  async function openLink(target: string, targetPage?: number, targetCfi?: string) {
     const path = resolveLink(tree, target)
-    if (path) return openPath(path, targetPage)
-    // Link para o PDF local aberto (gravado só com o nome do arquivo).
+    if (path) return openPath(path, targetPage, targetCfi)
+    // Link para o PDF/EPUB local aberto (gravado só com o nome do arquivo).
     const name = target.split('/').pop()!
     if (localPdf && name === localPdf.name) {
       if (targetPage) page = targetPage
+      if (targetCfi && reader) goEpub(reader.id, targetCfi)
       return
     }
     // Link para nota que ainda não existe: oferece criar (como no Obsidian),
@@ -491,7 +526,7 @@
       if (chosen?.trim()) await createAndOpen(chosen)
       return
     }
-    flash(`Não encontrado: ${target}${/\.pdf$/i.test(target) ? ' (se for um PDF local, abra-o com 📂)' : ''}`)
+    flash(`Não encontrado: ${target}${/\.(pdf|epub)$/i.test(target) ? ' (se for um arquivo local, abra-o com 📂)' : ''}`)
   }
 
   function allPaths(entries: Entry[]): Set<string> {
@@ -504,7 +539,7 @@
   /** dir: subpasta escolhida na árvore; sem ela, pede o caminho completo. */
   async function newNote(dir?: string) {
     // Com um PDF aberto, sugere uma nota de leitura ligada a ele.
-    const base = reader ? reader.link.split('/').pop()!.replace(/\.pdf$/i, '') : 'Nova nota'
+    const base = reader ? reader.link.split('/').pop()!.replace(/\.(pdf|epub)$/i, '') : 'Nova nota'
     let path: string | undefined
     if (dir) {
       const name = (await ask(`Nova nota em "${dir}":`, base))?.trim().replace(/^\/+/, '')
@@ -568,7 +603,11 @@
   }
 
   function insertPageLink() {
-    if (reader && editor) editor.insert(pageLink(reader.link, page) + ' ')
+    if (!reader || !editor) return
+    if (reader.kind === 'epub') {
+      // Só a posição deste livro (logo após trocar, a anterior ainda pode estar em epubLoc).
+      if (epubLoc?.cfi && epubLoc.id === reader.id) editor.insert(cfiLink(reader.link, epubLoc.cfi) + ' ')
+    } else editor.insert(pageLink(reader.link, page) + ' ')
   }
 
   // Atalhos na fase de captura: chegam antes do editor, cujo modo vim usa Ctrl+E (rolar)
@@ -608,12 +647,12 @@
 
   function onKey(e: KeyboardEvent) {
     // Fora do editor (que já trata e marca defaultPrevented), os mesmos atalhos do PDF.
-    if (!e.defaultPrevented && e.altKey && !e.ctrlKey && !e.metaKey && pdf && readerOpen) {
+    if (!e.defaultPrevented && e.altKey && !e.ctrlKey && !e.metaKey && activeReader && readerOpen) {
       const dir = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0
       if (dir) {
         e.preventDefault()
-        if (e.shiftKey) pdf.turnPage(dir)
-        else pdf.scroll(dir)
+        if (e.shiftKey) activeReader.turnPage(dir)
+        else activeReader.scroll(dir)
         return
       }
     }
@@ -719,7 +758,7 @@
   />
 {/if}
 
-<input type="file" accept="application/pdf,.pdf" hidden bind:this={fileInput} onchange={openLocal} />
+<input type="file" accept="application/pdf,.pdf,application/epub+zip,.epub" hidden bind:this={fileInput} onchange={openLocal} />
 
 <div class="app" class:dragging style:--sidebar-w="{sidebarW}px" style:--notes-w="{notesPct}%">
   {#if sidebarOpen}
@@ -728,7 +767,7 @@
         <input placeholder="Filtrar…" title="Filtra a árvore pelo nome · Ctrl+O busca rápida · Ctrl+Shift+F busca no conteúdo" bind:value={filter} />
         <button onclick={() => newNote()} title="Nova nota">+</button>
         <button onclick={() => newFolder()} title="Nova pasta">📁+</button>
-        <button onclick={() => fileInput.click()} title="Abrir PDF deste dispositivo">📂</button>
+        <button onclick={() => fileInput.click()} title="Abrir PDF ou EPUB deste dispositivo">📂</button>
       </div>
       <div class="tree">
         <Tree entries={visibleTree} active={[note, doc]} onopen={(e) => openPath(e.path)} onnew={newNote} onnewdir={newFolder} oncontext={openMenu} expandAll={!!filter} />
@@ -762,14 +801,20 @@
         </button>
       {/if}
       {#if reader && note && notesOpen}
-        <button onclick={insertPageLink} title="Inserir link da página atual (Ctrl+Shift+L)">⇥ p.{page}</button>
+        <button onclick={insertPageLink} title="Inserir link da posição atual (Ctrl+Shift+L)">
+          ⇥ {reader.kind === 'epub'
+            ? epubLoc?.id === reader.id
+              ? Math.round(epubLoc.fraction * 100) + '%'
+              : '…'
+            : 'p.' + page}
+        </button>
       {/if}
       {#if !sidebarOpen}
-        <button onclick={() => fileInput.click()} title="Abrir PDF deste dispositivo">📂</button>
+        <button onclick={() => fileInput.click()} title="Abrir PDF ou EPUB deste dispositivo">📂</button>
       {/if}
       {#if reader}
-        <button onclick={toggleReader} title="Recolher/mostrar o PDF sem fechar (Alt+\)">
-          {readerOpen ? '⟨ Recolher PDF' : 'PDF ⟩'}
+        <button onclick={toggleReader} title="Recolher/mostrar o leitor sem fechar (Alt+\)">
+          {readerOpen ? '⟨ Recolher leitor' : 'Leitor ⟩'}
         </button>
         <button onclick={closeReader} title="Fechar leitor">✕</button>
       {/if}
@@ -790,7 +835,21 @@
     >
       {#if reader}
         <section class="reader-pane" class:hidden={!readerOpen}>
-          <PdfReader bind:this={pdf} src={reader.src} id={reader.id} title={reader.title} bind:page />
+          {#if reader.kind === 'epub'}
+            {#key reader.id}
+              <EpubReader
+                bind:this={epub}
+                src={reader.file ?? reader.src}
+                id={reader.id}
+                title={reader.title}
+                {theme}
+                target={epubTarget}
+                bind:location={epubLoc}
+              />
+            {/key}
+          {:else}
+            <PdfReader bind:this={pdf} src={reader.src} id={reader.id} title={reader.title} bind:page />
+          {/if}
         </section>
         {#if readerOpen && notesOpen}
           <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -831,7 +890,7 @@
           {/if}
         {:else}
           <div class="empty">
-            <p>Abra uma nota na barra lateral ou crie uma com <kbd>+</kbd>. Para ler um PDF deste dispositivo (fora do vault), use <kbd>📂</kbd>.</p>
+            <p>Abra uma nota na barra lateral ou crie uma com <kbd>+</kbd>. Para ler um PDF ou EPUB deste dispositivo (fora do vault), use <kbd>📂</kbd>.</p>
             <p class="muted">
               <kbd>Ctrl+O</kbd> busca rápida · <kbd>Ctrl+Shift+F</kbd> busca no conteúdo · <kbd>Ctrl+Shift+O</kbd> sumário · <kbd>Ctrl+E</kbd> preview ·  <kbd>Ctrl+\</kbd> recolhe as notas · <kbd>Alt+\</kbd> recolhe o PDF · <kbd>Ctrl+Shift+\</kbd> barra lateral · <kbd>Ctrl+Shift+L</kbd> insere link da página ·
               <kbd>Alt+↑/↓</kbd> rola o PDF · <kbd>Alt+Shift+↑/↓</kbd> muda de página · <kbd>Ctrl+clique</kbd> ou <kbd>Ctrl+Enter</kbd> segue um <code>[[link]]</code> · <kbd>:w</kbd> salva

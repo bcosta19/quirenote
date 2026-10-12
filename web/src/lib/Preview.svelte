@@ -13,7 +13,7 @@
     exists: (target: string) => boolean
     /** Clique numa caixa de tarefa: alterna a linha na nota (via editor). */
     ontoggle?: (line: number) => void
-    onlink: (target: string, page?: number) => void
+    onlink: (target: string, page?: number, cfi?: string) => void
   } = $props()
 
   const render = $derived(createRenderer({ fileUrl, exists }))
@@ -34,7 +34,7 @@
     const target = a.dataset.target
     const href = a.getAttribute('href') ?? ''
     if (target) {
-      onlink(target, a.dataset.page ? Number(a.dataset.page) : undefined)
+      onlink(target, a.dataset.page ? Number(a.dataset.page) : undefined, a.dataset.cfi)
     } else if (/^(https?:|mailto:)/.test(href)) {
       window.open(href, '_blank', 'noopener')
     } else if (href && !href.startsWith('#')) {

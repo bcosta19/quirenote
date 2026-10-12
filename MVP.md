@@ -25,8 +25,8 @@ os mesmos arquivos que o Neovim (`alias notas`) e o Obsidian. As notas continuam
 | Must | Edição estilo processador de texto (Tab, listas, numeração por linha visual) | ✅ |
 | Must | Recolher o PDF e redimensionar painéis com o mouse | ✅ |
 | Must | Binário único com o front embutido + unit systemd | ✅ |
-| Should | Leitor EPUB (foliate-js) com link por CFI | |
-| Should | Busca no conteúdo (`rg --json`) | |
+| Should | Leitor EPUB (foliate-js) com link por CFI | ✅ |
+| Should | Busca no conteúdo (`rg --json`) | ✅ |
 | Should | Divisor arrastável entre leitor e notas | ✅ |
 | Should | Preview do markdown renderizado (imagens `![[...]]`, tarefas, propriedades) | ✅ |
 | Could | Destaques (highlights) no PDF salvos no vault | |
