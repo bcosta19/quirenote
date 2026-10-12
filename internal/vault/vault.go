@@ -168,17 +168,21 @@ func (v *Vault) Save(p, content string, baseMtime int64) (Note, error) {
 	if strings.ToLower(path.Ext(p)) != ".md" {
 		return Note{}, ErrNotNote
 	}
+	info, err := v.root.Stat(p)
+	if err != nil && (baseMtime != 0 || !errors.Is(err, fs.ErrNotExist)) {
+		return Note{}, err
+	}
+	mode := fs.FileMode(0o644)
+	if info != nil {
+		mode = info.Mode().Perm()
+	}
 	if baseMtime != 0 {
-		info, err := v.root.Stat(p)
-		if err == nil && info.ModTime().UnixNano() != baseMtime {
+		if info.ModTime().UnixNano() != baseMtime {
 			current, rerr := v.Read(p)
 			if rerr != nil {
 				return Note{}, rerr
 			}
 			return current, ErrConflict
-		}
-		if err != nil {
-			return Note{}, err
 		}
 	}
 
@@ -189,8 +193,15 @@ func (v *Vault) Save(p, content string, baseMtime int64) (Note, error) {
 		}
 	}
 	tmp := path.Join(dir, fmt.Sprintf(".%s.quirenote-%s.tmp", path.Base(p), randHex()))
-	if err := v.root.WriteFile(tmp, []byte(content), 0o644); err != nil {
+	if err := v.root.WriteFile(tmp, []byte(content), mode); err != nil {
+		_ = v.root.Remove(tmp)
 		return Note{}, err
+	}
+	if info != nil {
+		if err := v.root.Chmod(tmp, mode); err != nil {
+			_ = v.root.Remove(tmp)
+			return Note{}, err
+		}
 	}
 	if err := v.root.Rename(tmp, p); err != nil {
 		_ = v.root.Remove(tmp)

@@ -45,6 +45,37 @@ func TestConcurrentSavesRejectStaleVersions(t *testing.T) {
 	}
 }
 
+func TestSavePreservesExistingPermissions(t *testing.T) {
+	for _, mode := range []os.FileMode{0o600, 0o640, 0o660} {
+		for _, force := range []bool{false, true} {
+			t.Run(fmt.Sprintf("%o/force=%v", mode, force), func(t *testing.T) {
+				v, dir := newVault(t)
+				p := filepath.Join(dir, "a.md")
+				if err := os.Chmod(p, mode); err != nil {
+					t.Fatal(err)
+				}
+				note, err := v.Read("a.md")
+				if err != nil {
+					t.Fatal(err)
+				}
+				if force {
+					note.Mtime = 0
+				}
+				if _, err := v.Save(note.Path, "edited", note.Mtime); err != nil {
+					t.Fatal(err)
+				}
+				info, err := os.Stat(p)
+				if err != nil {
+					t.Fatal(err)
+				}
+				if info.Mode().Perm() != mode {
+					t.Fatalf("saved permissions = %o; want %o", info.Mode().Perm(), mode)
+				}
+			})
+		}
+	}
+}
+
 func TestStaleSaveDoesNotResurrectMovedOrTrashedNotes(t *testing.T) {
 	for _, operation := range []string{"move", "trash", "move folder"} {
 		t.Run(operation, func(t *testing.T) {
