@@ -273,3 +273,28 @@ func TestSaveImage(t *testing.T) {
 		t.Fatal("pasta de anexos fora do vault deveria falhar")
 	}
 }
+
+func TestBadNames(t *testing.T) {
+	v, _ := newVault(t)
+	for _, bad := range []string{"C# notas.md", "x^y.md", "a [b].md", "a|b.md"} {
+		if _, err := v.Create(bad, "x"); !errors.Is(err, ErrBadName) {
+			t.Errorf("Create(%q) = %v", bad, err)
+		}
+		if _, err := v.Move("a.md", bad); !errors.Is(err, ErrBadName) {
+			t.Errorf("Move(a.md, %q) = %v", bad, err)
+		}
+	}
+	if _, err := v.Mkdir("Pasta #1"); !errors.Is(err, ErrBadName) {
+		t.Errorf("Mkdir com # = %v", err)
+	}
+	// Pasta antiga com # (criada fora do app) continua usável: só o nome novo é checado.
+	if err := os.Mkdir(filepath.Join(v.Dir(), "C#"), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := v.Create("C#/nota.md", "x"); err != nil {
+		t.Errorf("criar dentro de pasta antiga com #: %v", err)
+	}
+	if !v.Exists("a.md") || v.Exists("nao.md") || v.Exists("../x") {
+		t.Error("Exists incorreto")
+	}
+}

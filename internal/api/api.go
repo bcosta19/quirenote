@@ -13,6 +13,7 @@ import (
 	"strings"
 	"time"
 
+	"notas/internal/relink"
 	"notas/internal/search"
 	"notas/internal/vault"
 	"notas/internal/watch"
@@ -38,6 +39,8 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("POST /api/notes/{path...}", s.createNote)
 	mux.HandleFunc("POST /api/move", s.move)
 	mux.HandleFunc("POST /api/trash", s.trash)
+	mux.HandleFunc("GET /api/relink", s.relinkPreview)
+	mux.HandleFunc("POST /api/relink", s.relink)
 	mux.HandleFunc("POST /api/images", s.saveImage)
 	mux.HandleFunc("GET /api/events", s.events)
 	mux.HandleFunc("GET /api/search", s.search)
@@ -151,6 +154,43 @@ func (s *Server) move(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	writeJSON(w, http.StatusOK, map[string]string{"path": p})
+}
+
+// relinkPreview diz quais notas teriam os [[links]] atualizados (nada é gravado).
+func (s *Server) relinkPreview(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+	plan, err := relink.Preview(r.Context(), s.vault, q.Get("from"), q.Get("to"))
+	if err != nil {
+		writeRelinkErr(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, plan)
+}
+
+// relink atualiza os [[links]] de outras notas depois de renomear from para to.
+func (s *Server) relink(w http.ResponseWriter, r *http.Request) {
+	var req moveRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 64<<10)).Decode(&req); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "JSON inválido"})
+		return
+	}
+	res, err := relink.Run(r.Context(), s.vault, req.From, req.To)
+	if err != nil {
+		writeRelinkErr(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, res)
+}
+
+func writeRelinkErr(w http.ResponseWriter, err error) {
+	switch {
+	case errors.Is(err, search.ErrNoRipgrep):
+		writeJSON(w, http.StatusServiceUnavailable, map[string]string{"error": err.Error()})
+	case errors.Is(err, relink.ErrTypeChanged), errors.Is(err, relink.ErrNotRenamed), errors.Is(err, vault.ErrBadName):
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+	default:
+		writeErr(w, err)
+	}
 }
 
 type trashRequest struct {
@@ -324,7 +364,7 @@ func writeErr(w http.ResponseWriter, err error) {
 	switch {
 	case errors.Is(err, fs.ErrNotExist):
 		status = http.StatusNotFound
-	case errors.Is(err, vault.ErrInvalidPath), errors.Is(err, vault.ErrNotNote):
+	case errors.Is(err, vault.ErrInvalidPath), errors.Is(err, vault.ErrNotNote), errors.Is(err, vault.ErrBadName):
 		status = http.StatusBadRequest
 	default:
 		// os.Root devolve erro próprio para caminhos que escapam do vault.

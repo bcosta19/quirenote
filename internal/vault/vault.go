@@ -24,6 +24,7 @@ var (
 	ErrInvalidPath = errors.New("caminho inválido")
 	ErrNotNote     = errors.New("só arquivos .md podem ser editados")
 	ErrExists      = errors.New("já existe um arquivo com esse nome")
+	ErrBadName     = errors.New("o nome não pode conter # ^ [ ] | (o Obsidian não aceita; quebraria os links)")
 )
 
 // Extensões listadas na árvore. Imagens entram para o preview resolver ![[foto.png]]
@@ -71,6 +72,23 @@ func Hidden(p string) bool {
 		}
 	}
 	return false
+}
+
+// ValidName reporta se o nome novo (último trecho do caminho) pode ser citado num
+// [[link]]: o Obsidian recusa # ^ [ ] | em nomes, porque têm significado no link.
+// Só o nome novo é checado: pastas antigas com esses caracteres continuam usáveis.
+func ValidName(p string) bool {
+	return !strings.ContainsAny(path.Base(p), "#^[]|\r\n")
+}
+
+// Exists reporta se o caminho existe no vault.
+func (v *Vault) Exists(p string) bool {
+	p, err := clean(p)
+	if err != nil {
+		return false
+	}
+	_, err = v.root.Lstat(p)
+	return err == nil
 }
 
 func clean(p string) (string, error) {
@@ -183,6 +201,9 @@ func (v *Vault) Mkdir(p string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	if !ValidName(p) {
+		return "", ErrBadName
+	}
 	if err := v.root.MkdirAll(p, 0o755); err != nil {
 		return "", err
 	}
@@ -198,6 +219,9 @@ func (v *Vault) Create(p, content string) (Note, error) {
 	}
 	if strings.ToLower(path.Ext(p)) != ".md" {
 		return Note{}, ErrNotNote
+	}
+	if !ValidName(p) {
+		return Note{}, ErrBadName
 	}
 	if dir := path.Dir(p); dir != "." {
 		if err := v.root.MkdirAll(dir, 0o755); err != nil {
@@ -316,6 +340,9 @@ func (v *Vault) Move(from, to string) (string, error) {
 	}
 	if from == to {
 		return to, nil
+	}
+	if !ValidName(to) {
+		return "", ErrBadName
 	}
 	if _, err := v.root.Lstat(from); err != nil {
 		return "", err

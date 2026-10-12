@@ -8,6 +8,8 @@
     getBacklinks,
     getTree,
     moveItem,
+    previewRelink,
+    relinkNotes,
     subscribe,
     trashItem,
     uploadImage,
@@ -189,9 +191,9 @@
   function ask(message: string, value = '', hint = ''): Promise<string | null> {
     return new Promise((resolve) => (dialog = { message, value, hint, input: true, okLabel: 'OK', danger: false, resolve }))
   }
-  async function confirmAction(message: string, hint: string, okLabel: string): Promise<boolean> {
+  async function confirmAction(message: string, hint: string, okLabel: string, danger = true): Promise<boolean> {
     const r = await new Promise<string | null>(
-      (resolve) => (dialog = { message, value: '', hint, input: false, okLabel, danger: true, resolve }),
+      (resolve) => (dialog = { message, value: '', hint, input: false, okLabel, danger, resolve }),
     )
     return r !== null
   }
@@ -262,8 +264,9 @@
     // Sem extensão no novo nome: mantém a original (nota continua .md, PDF continua .pdf).
     const ext = e.dir ? '' : (e.name.match(/\.[^.]+$/)?.[0] ?? '')
     if (ext && !/\.[^./]+$/.test(to.split('/').pop()!)) to += ext
-    if (invalidPath(to)) return flash('Nome inválido: não use "..", "." no início ou barras vazias')
+    if (invalidPath(to)) return flash('Nome inválido: não use "..", "." no início, barras vazias nem # ^ [ ] |')
     const target = to
+    let moved = ''
     await withSettled(e, async () => {
       try {
         const { path } = await moveItem(e.path, target)
@@ -272,11 +275,57 @@
         recent = recent.map((p) => (inside(p, e) ? remap(p, e.path, path) : p))
         localStorage.setItem('notas:recent', JSON.stringify(recent))
         flash(`Movido para ${path}`)
+        if (!e.dir) moved = path
       } catch (err) {
         flash(err instanceof ExistsError ? `Já existe algo em ${target}` : (err as Error).message)
       }
     })
     await refreshTree()
+    if (moved) await offerRelink(e.path, moved)
+  }
+
+  /** Depois de renomear um arquivo, oferece atualizar os [[links]] das notas que o citavam. */
+  async function offerRelink(from: string, to: string) {
+    // Nota virou outro tipo (ou o contrário): a forma do link muda; fica para o usuário.
+    if (/\.md$/i.test(from) !== /\.md$/i.test(to)) return
+    let plan: { files: string[]; ambiguous: boolean }
+    try {
+      plan = await previewRelink(from, to) // lista exata, sem limite, do que mudaria
+    } catch {
+      return // sem ripgrep ou falha na busca: renomear já deu certo, só não oferece
+    }
+    const ambiguousNote = plan.ambiguous
+      ? ' Ainda existe outro arquivo com o nome antigo, então links só pelo nome ficam como estão.'
+      : ''
+    if (!plan.files.length) {
+      if (plan.ambiguous) flash(`Links só pelo nome não foram alterados: ainda existe outro “${from.split('/').pop()}”.`)
+      return
+    }
+    const n = plan.files.length
+    const ok = await confirmAction(
+      `Atualizar os links em ${n} ${n === 1 ? 'nota' : 'notas'}?`,
+      `${plan.files.slice(0, 5).join(', ')}${n > 5 ? ` e mais ${n - 5}` : ''} ${n === 1 ? 'ainda aponta' : 'ainda apontam'} para o nome antigo ` +
+        `(links em blocos de código também mudam).${ambiguousNote}`,
+      'Atualizar links',
+      false,
+    )
+    if (!ok) return
+    // A nota aberta pode ser uma das citantes: trava o editor e grava o pendente antes
+    // (o servidor pula notas alteradas durante a operação em vez de sobrescrevê-las).
+    const ed = note && plan.files.includes(note) ? editor : undefined
+    ed?.setLocked(true)
+    try {
+      if (ed && !(await ed.flush())) return flash('Resolva o conflito ou erro da nota aberta antes de atualizar os links.')
+      const { updated, skipped } = await relinkNotes(from, to)
+      flash(
+        `${updated.length} ${updated.length === 1 ? 'nota atualizada' : 'notas atualizadas'}` +
+          (skipped.length ? `; puladas (mudaram no meio): ${skipped.join(', ')}` : ''),
+      )
+    } catch (err) {
+      flash((err as Error).message)
+    } finally {
+      ed?.setLocked(false)
+    }
   }
 
   async function trashEntry(e: Entry) {
@@ -475,7 +524,7 @@
   async function createAndOpen(path: string) {
     path = path.trim().replace(/^\/+/, '')
     if (!path.endsWith('.md')) path += '.md'
-    if (invalidPath(path)) return flash('Nome inválido: não use "..", "." no início ou barras vazias')
+    if (invalidPath(path)) return flash('Nome inválido: não use "..", "." no início, barras vazias nem # ^ [ ] |')
     if (allPaths(tree).has(path)) return openPath(path)
     const title = path.split('/').pop()!.replace(/\.md$/, '')
     const content = reader ? `---\nsource: "[[${reader.link}]]"\n---\n\n# ${title}\n\n` : `# ${title}\n\n`
@@ -493,9 +542,13 @@
     openPath(path)
   }
 
-  /** Recusa ., .. e nomes ocultos (o servidor também recusa; aqui a mensagem fica clara). */
+  /**
+   * Recusa ., .., nomes ocultos e # ^ [ ] | (o Obsidian não aceita: quebrariam os
+   * links). O servidor também recusa; aqui a mensagem fica clara.
+   */
   function invalidPath(path: string): boolean {
-    return path.split('/').some((part) => part === '' || part.startsWith('.'))
+    // # ^ [ ] | só no nome novo (último trecho): pastas antigas com eles seguem usáveis.
+    return path.split('/').some((part) => part === '' || part.startsWith('.')) || /[#^[\]|]/.test(path.split('/').pop()!)
   }
 
   /** parent: pasta escolhida na árvore; sem ela, cria a partir da raiz do vault. */
@@ -504,7 +557,7 @@
       ?.trim()
       .replace(/^\/+|\/+$/g, '')
     if (!name) return
-    if (invalidPath(name)) return flash('Nome inválido: não use "..", "." no início ou barras vazias')
+    if (invalidPath(name)) return flash('Nome inválido: não use "..", "." no início, barras vazias nem # ^ [ ] |')
     try {
       const { path } = await createDir(parent ? `${parent}/${name}` : name)
       tree = await getTree()

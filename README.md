@@ -46,7 +46,8 @@ Colar um print (`Ctrl+V` no modo insert) ou arrastar uma imagem para o editor gr
 anexos do Obsidian (`.obsidian/app.json`; padrão: raiz do vault) e insere `![[Pasted image ….png]]`.
 
 Clique direito num item da árvore: renomear/mover, mover para a lixeira (`.trash` do vault, a mesma do
-Obsidian — nada é apagado) e, em pastas, criar nota ou subpasta. Renomear nunca sobrescreve outro arquivo.
+Obsidian — nada é apagado) e, em pastas, criar nota ou subpasta. Renomear nunca sobrescreve outro arquivo e, se outras notas
+citavam o arquivo, oferece atualizar os `[[links]]` delas. Nomes com `# ^ [ ] |` são recusados (como no Obsidian).
 
 Arraste as divisórias (entre barra lateral, PDF e notas) para redimensionar; duplo clique restaura.
 Enter numa lista continua com `- `, `1.` ou `- [ ]`; Enter num item vazio sai da lista. Indentação com TAB, como no Obsidian.

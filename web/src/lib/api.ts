@@ -118,6 +118,15 @@ export async function getBacklinks(note: string, signal?: AbortSignal): Promise<
   return json(await fetch(`/api/backlinks?note=${encodeURIComponent(note)}`, { signal }))
 }
 
+/** Quais notas teriam os [[links]] atualizados após renomear from → to (nada é gravado). */
+export async function previewRelink(from: string, to: string): Promise<{ files: string[]; ambiguous: boolean }> {
+  return json(await fetch(`/api/relink?from=${encodeURIComponent(from)}&to=${encodeURIComponent(to)}`))
+}
+
+/** Atualiza os [[links]] de outras notas depois de renomear from → to. */
+export const relinkNotes = (from: string, to: string) =>
+  postJSON<{ updated: string[]; skipped: string[]; ambiguous: boolean }>('/api/relink', { from, to })
+
 export function subscribe(onEvent: (e: VaultEvent) => void): () => void {
   const es = new EventSource('/api/events')
   es.onmessage = (m) => onEvent(JSON.parse(m.data))

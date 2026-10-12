@@ -109,13 +109,17 @@ func Search(ctx context.Context, dir, q string) ([]Result, error) {
 // dentro de tabelas) ou ]]. É aproximado: não resolve caminhos parciais/relativos e
 // conta [[Nome]] para todas as notas com esse nome, em qualquer pasta.
 func BacklinkPattern(note string) string {
-	noExt := strings.TrimSuffix(note, filepath.Ext(note))
-	name := filepath.Base(noExt)
-	alts := regexp.QuoteMeta(name)
-	if noExt != name {
-		alts += "|" + regexp.QuoteMeta(noExt)
+	// Notas são citadas sem ".md" (opcional); outros arquivos (PDF, imagem), com extensão.
+	full, md := note, ""
+	if strings.EqualFold(filepath.Ext(note), ".md") {
+		full, md = strings.TrimSuffix(note, filepath.Ext(note)), `(?:\.md)?`
 	}
-	return `\[\[(?:` + alts + `)(?:\.md)?(?:\\?[#|][^\]]*)?\]\]`
+	name := filepath.Base(full)
+	alts := regexp.QuoteMeta(name)
+	if full != name {
+		alts += "|" + regexp.QuoteMeta(full)
+	}
+	return `\[\[(?:` + alts + `)` + md + `(?:\\?[#|][^\]]*)?\]\]`
 }
 
 // Backlinks lista os trechos de outras notas que apontam para note.
@@ -135,6 +139,39 @@ func Backlinks(ctx context.Context, dir, note string) ([]Result, error) {
 		}
 	}
 	return out, nil
+}
+
+// Files lista TODAS as notas .md que casam com o padrão (sem os limites de
+// resultados da busca). Diferente de Search, falha se o tempo estourar: quem usa
+// (atualizar links) não pode agir sobre uma lista incompleta.
+func Files(ctx context.Context, dir, pattern string) ([]string, error) {
+	rg, err := exec.LookPath("rg")
+	if err != nil {
+		return nil, ErrNoRipgrep
+	}
+	ctx, cancel := context.WithTimeout(ctx, 3*searchFor)
+	defer cancel()
+	cmd := exec.CommandContext(ctx, rg, "--files-with-matches", "--ignore-case", "--no-ignore",
+		"--iglob", "*.md", "-e", pattern, "--", ".")
+	cmd.Dir = dir
+	out, err := cmd.Output()
+	if ctx.Err() != nil {
+		return nil, errors.New("a busca demorou demais; nada foi alterado")
+	}
+	var exit *exec.ExitError
+	if errors.As(err, &exit) && exit.ExitCode() == 1 {
+		return []string{}, nil // código 1 = nenhum arquivo casou
+	}
+	if err != nil {
+		return nil, err
+	}
+	files := []string{}
+	for _, l := range strings.Split(strings.TrimSpace(string(out)), "\n") {
+		if l != "" {
+			files = append(files, filepath.ToSlash(strings.TrimPrefix(l, "./")))
+		}
+	}
+	return files, nil
 }
 
 // run executa o ripgrep com o padrão nas notas .md do vault e monta os trechos.
