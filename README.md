@@ -62,6 +62,13 @@ no unit; quem está na rede acessa sem login.
 - Colar ou arrastar uma imagem a grava na pasta de anexos do Obsidian e insere `![[…]]`.
 - **↩ N** na barra superior lista os backlinks. Divisórias arrastáveis; duplo clique restaura.
 
+## App de desktop (Omarchy)
+
+`make install` instala `notas-app`, o atalho "Notas" do launcher e o ícone. `notas-app` abre o Notas numa janela
+de app do Chromium (sem barra de endereço), sobe o serviço systemd se ele estiver parado e, se a janela já
+existir, só foca nela. No Hyprland: `SUPER+SHIFT+L` (em `~/.config/hypr/bindings.lua`:
+`o.bind("SUPER + SHIFT + L", "Notas", { launch = "notas-app" })`). O app também pode ser instalado como PWA.
+
 ## Aparência
 
 Tema claro "papel" (☾/☀ alterna para o escuro) e EB Garamond embutida. Cores: `web/src/lib/theme.ts` e `web/src/app.css`.

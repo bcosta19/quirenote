@@ -1,0 +1,17 @@
+#!/bin/bash
+# Abre o Notas numa janela de app (Chromium sem barra de endereço), no Omarchy.
+# Se a janela já existe, só foca nela; se o servidor está parado, sobe o serviço.
+url=${NOTAS_URL:-http://127.0.0.1:8080}
+
+if ! curl -fs -o /dev/null "$url/api/tree"; then
+  systemctl --user start notas
+  for _ in $(seq 50); do
+    curl -fs -o /dev/null "$url/api/tree" && break
+    sleep 0.2
+  done
+fi
+
+# A janela de app do Chromium tem a classe chrome-<host>__-Default (sem a porta).
+host=${url#*//}
+host=${host%%[:/]*}
+exec omarchy-launch-or-focus-webapp "chrome-${host}__" "$url"

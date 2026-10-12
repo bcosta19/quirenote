@@ -1,0 +1,10 @@
+[Desktop Entry]
+Version=1.0
+Name=Notas
+Comment=Notas em markdown com leitor de PDF e EPUB
+Exec=notas-app
+Icon=notas
+Terminal=false
+Type=Application
+Categories=Office;
+StartupNotify=true

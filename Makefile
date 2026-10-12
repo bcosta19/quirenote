@@ -32,8 +32,11 @@ check:
 install: build
 	install -Dm755 bin/notas $(HOME)/.local/bin/notas
 	install -Dm644 deploy/notas.service $(HOME)/.config/systemd/user/notas.service
+	install -Dm755 deploy/notas-app $(HOME)/.local/bin/notas-app
+	install -Dm644 deploy/notas.desktop $(HOME)/.local/share/applications/notas.desktop
+	install -Dm644 web/public/icon-512.png $(HOME)/.local/share/icons/hicolor/512x512/apps/notas.png
 	systemctl --user daemon-reload
-	@echo "Pronto. Ative com: systemctl --user enable --now notas"
+	@echo "Pronto. Ative com: systemctl --user enable --now notas (o atalho 'Notas' já está no launcher)"
 
 clean:
-	rm -rf bin web/dist/assets web/dist/index.html web/dist/favicon.svg
+	rm -rf bin web/dist/assets web/dist/index.html web/dist/icon.svg web/dist/icon-512.png web/dist/manifest.webmanifest
