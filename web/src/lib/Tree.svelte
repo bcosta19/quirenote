@@ -1,4 +1,9 @@
 <script lang="ts">
+  import FileIcon from './FileIcon.svelte'
+  import ChevronDown from '@lucide/svelte/icons/chevron-down'
+  import ChevronRight from '@lucide/svelte/icons/chevron-right'
+  import FilePlus from '@lucide/svelte/icons/file-plus'
+  import FolderPlus from '@lucide/svelte/icons/folder-plus'
   import { untrack } from 'svelte'
   import type { Entry } from './api'
   import Tree from './Tree.svelte'
@@ -46,7 +51,6 @@
       if (pending.every((a) => list.some((e) => e.dir && a.startsWith(e.path + '/')))) revealed = key
     })
   })
-  const icon = (name: string) => (/\.pdf$/i.test(name) ? '📕' : /\.epub$/i.test(name) ? '📗' : '📝')
 </script>
 
 <ul>
@@ -63,7 +67,7 @@
               oncontext(e, ev)
             }}
           >
-            {open[e.path] || expandAll ? '▾' : '▸'} {e.name}
+            {#if open[e.path] || expandAll}<ChevronDown size={14} />{:else}<ChevronRight size={14} />{/if} {e.name}
           </button>
           <button
             class="new"
@@ -71,7 +75,7 @@
             onclick={() => {
               open[e.path] = true
               onnew(e.path)
-            }}>+</button
+            }} aria-label="Nova nota"><FilePlus size={14} /></button
           >
           <button
             class="new"
@@ -79,7 +83,7 @@
             onclick={() => {
               open[e.path] = true
               onnewdir(e.path)
-            }}>📁+</button
+            }} aria-label="Nova subpasta"><FolderPlus size={14} /></button
           >
         </div>
         {#if open[e.path] || expandAll}
@@ -97,7 +101,7 @@
             oncontext(e, ev)
           }}
         >
-          {icon(e.name)} {e.name.replace(/\.md$/, '')}
+          <FileIcon name={e.name} /> {e.name.replace(/\.md$/, '')}
         </button>
       {/if}
     </li>
@@ -124,6 +128,10 @@
     text-overflow: ellipsis;
     cursor: pointer;
     border-radius: 4px;
+  }
+  .item :global(svg) {
+    vertical-align: -2px;
+    margin-right: 3px;
   }
   .item:hover {
     background: var(--hover);

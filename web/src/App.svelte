@@ -1,4 +1,20 @@
 <script lang="ts">
+  import FilePlus from '@lucide/svelte/icons/file-plus'
+  import FolderPlus from '@lucide/svelte/icons/folder-plus'
+  import FolderOpen from '@lucide/svelte/icons/folder-open'
+  import PanelLeft from '@lucide/svelte/icons/panel-left'
+  import Search from '@lucide/svelte/icons/search'
+  import CornerUpLeft from '@lucide/svelte/icons/corner-up-left'
+  import Pencil from '@lucide/svelte/icons/pencil'
+  import Eye from '@lucide/svelte/icons/eye'
+  import Link from '@lucide/svelte/icons/link'
+  import PanelLeftClose from '@lucide/svelte/icons/panel-left-close'
+  import PanelLeftOpen from '@lucide/svelte/icons/panel-left-open'
+  import PanelRightClose from '@lucide/svelte/icons/panel-right-close'
+  import PanelRightOpen from '@lucide/svelte/icons/panel-right-open'
+  import X from '@lucide/svelte/icons/x'
+  import Moon from '@lucide/svelte/icons/moon'
+  import Sun from '@lucide/svelte/icons/sun'
   import { onMount, untrack } from 'svelte'
   import {
     ExistsError,
@@ -526,7 +542,7 @@
       if (chosen?.trim()) await createAndOpen(chosen)
       return
     }
-    flash(`Não encontrado: ${target}${/\.(pdf|epub)$/i.test(target) ? ' (se for um arquivo local, abra-o com 📂)' : ''}`)
+    flash(`Não encontrado: ${target}${/\.(pdf|epub)$/i.test(target) ? ' (se for um arquivo local, abra-o pelo botão de abrir arquivo)' : ''}`)
   }
 
   function allPaths(entries: Entry[]): Set<string> {
@@ -765,9 +781,9 @@
     <aside class="sidebar">
       <div class="sidebar-head">
         <input placeholder="Filtrar…" title="Filtra a árvore pelo nome · Ctrl+O busca rápida · Ctrl+Shift+F busca no conteúdo" bind:value={filter} />
-        <button onclick={() => newNote()} title="Nova nota">+</button>
-        <button onclick={() => newFolder()} title="Nova pasta">📁+</button>
-        <button onclick={() => fileInput.click()} title="Abrir PDF ou EPUB deste dispositivo">📂</button>
+        <button onclick={() => newNote()} title="Nova nota" aria-label="Nova nota"><FilePlus size={16} /></button>
+        <button onclick={() => newFolder()} title="Nova pasta" aria-label="Nova pasta"><FolderPlus size={16} /></button>
+        <button onclick={() => fileInput.click()} title="Abrir PDF ou EPUB deste dispositivo" aria-label="Abrir PDF ou EPUB"><FolderOpen size={16} /></button>
       </div>
       <div class="tree">
         <Tree entries={visibleTree} active={[note, doc]} onopen={(e) => openPath(e.path)} onnew={newNote} onnewdir={newFolder} oncontext={openMenu} expandAll={!!filter} />
@@ -787,22 +803,22 @@
 
   <main class="workspace">
     <div class="topbar">
-      <button onclick={() => (sidebarOpen = !sidebarOpen)} title="Arquivos (Ctrl+Shift+\)">☰</button>
-      <button onclick={() => (searchOpen = true)} title="Buscar no conteúdo das notas (Ctrl+Shift+F)">🔍</button>
+      <button onclick={() => (sidebarOpen = !sidebarOpen)} title="Arquivos (Ctrl+Shift+\)" aria-label="Arquivos"><PanelLeft size={16} /></button>
+      <button onclick={() => (searchOpen = true)} title="Buscar no conteúdo das notas (Ctrl+Shift+F)" aria-label="Buscar"><Search size={16} /></button>
       <span class="crumb">{note ?? ''}</span>
       {#if note && backlinks}
         <button onclick={() => (backlinksOpen = true)} title="Notas que apontam para esta (backlinks)" disabled={!backlinks.length}>
-          ↩ {new Set(backlinks.map((b) => b.path)).size}
+          <CornerUpLeft size={16} /> {new Set(backlinks.map((b) => b.path)).size}
         </button>
       {/if}
       {#if note}
         <button onclick={togglePreview} title="Alternar preview / edição (Ctrl+E)" class:active={preview}>
-          {preview ? '✎ Editar' : '👁 Preview'}
+          {#if preview}<Pencil size={16} /> Editar{:else}<Eye size={16} /> Preview{/if}
         </button>
       {/if}
       {#if reader && note && notesOpen}
         <button onclick={insertPageLink} title="Inserir link da posição atual (Ctrl+Shift+L)">
-          ⇥ {reader.kind === 'epub'
+          <Link size={16} /> {reader.kind === 'epub'
             ? epubLoc?.id === reader.id
               ? Math.round(epubLoc.fraction * 100) + '%'
               : '…'
@@ -810,20 +826,21 @@
         </button>
       {/if}
       {#if !sidebarOpen}
-        <button onclick={() => fileInput.click()} title="Abrir PDF ou EPUB deste dispositivo">📂</button>
+        <button onclick={() => fileInput.click()} title="Abrir PDF ou EPUB deste dispositivo" aria-label="Abrir PDF ou EPUB"><FolderOpen size={16} /></button>
       {/if}
       {#if reader}
         <button onclick={toggleReader} title="Recolher/mostrar o leitor sem fechar (Alt+\)">
-          {readerOpen ? '⟨ Recolher leitor' : 'Leitor ⟩'}
+          {#if readerOpen}<PanelLeftClose size={16} /> Recolher leitor{:else}Leitor <PanelLeftOpen size={16} />{/if}
         </button>
-        <button onclick={closeReader} title="Fechar leitor">✕</button>
+        <button onclick={closeReader} title="Fechar leitor" aria-label="Fechar leitor"><X size={16} /></button>
       {/if}
       <button
         onclick={() => (theme = theme === 'light' ? 'dark' : 'light')}
-        title={theme === 'light' ? 'Tema escuro' : 'Tema claro (papel)'}>{theme === 'light' ? '☾' : '☀'}</button
+        title={theme === 'light' ? 'Tema escuro' : 'Tema claro (papel)'}
+        aria-label="Alternar tema">{#if theme === 'light'}<Moon size={16} />{:else}<Sun size={16} />{/if}</button
       >
       <button onclick={toggleNotes} title="Notas (Ctrl+\)">
-        {notesOpen ? 'Recolher notas ⟩' : '⟨ Notas'}
+        {#if notesOpen}Recolher notas <PanelRightClose size={16} />{:else}<PanelRightOpen size={16} /> Notas{/if}
       </button>
     </div>
 
@@ -890,7 +907,7 @@
           {/if}
         {:else}
           <div class="empty">
-            <p>Abra uma nota na barra lateral ou crie uma com <kbd>+</kbd>. Para ler um PDF ou EPUB deste dispositivo (fora do vault), use <kbd>📂</kbd>.</p>
+            <p>Abra uma nota na barra lateral ou crie uma com <kbd>+</kbd>. Para ler um PDF ou EPUB deste dispositivo (fora do vault), use o botão de pasta aberta ao lado de <kbd>+</kbd>.</p>
             <p class="muted">
               <kbd>Ctrl+O</kbd> busca rápida · <kbd>Ctrl+Shift+F</kbd> busca no conteúdo · <kbd>Ctrl+Shift+O</kbd> sumário · <kbd>Ctrl+E</kbd> preview ·  <kbd>Ctrl+\</kbd> recolhe as notas · <kbd>Alt+\</kbd> recolhe o PDF · <kbd>Ctrl+Shift+\</kbd> barra lateral · <kbd>Ctrl+Shift+L</kbd> insere link da página ·
               <kbd>Alt+↑/↓</kbd> rola o PDF · <kbd>Alt+Shift+↑/↓</kbd> muda de página · <kbd>Ctrl+clique</kbd> ou <kbd>Ctrl+Enter</kbd> segue um <code>[[link]]</code> · <kbd>:w</kbd> salva

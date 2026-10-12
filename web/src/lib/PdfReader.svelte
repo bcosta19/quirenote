@@ -1,4 +1,7 @@
 <script lang="ts">
+  import Minus from '@lucide/svelte/icons/minus'
+  import Plus from '@lucide/svelte/icons/plus'
+  import MoveHorizontal from '@lucide/svelte/icons/move-horizontal'
   import { onMount, untrack } from 'svelte'
   import { loadViewer, pdfjsLib } from './pdf'
 
@@ -130,9 +133,9 @@
     <span class="title" {title}>{title.split('/').pop()}</span>
     <input type="number" min="1" max={total} value={page} onchange={goTo} aria-label="Página" />
     <span class="muted">/ {total || '…'}</span>
-    <button onclick={() => zoom(1 / 1.15)} title="Diminuir zoom">−</button>
-    <button onclick={() => zoom(1.15)} title="Aumentar zoom">+</button>
-    <button onclick={() => viewer && (viewer.currentScaleValue = 'page-width')} title="Ajustar à largura">↔</button>
+    <button onclick={() => zoom(1 / 1.15)} title="Diminuir zoom" aria-label="Diminuir zoom"><Minus size={15} /></button>
+    <button onclick={() => zoom(1.15)} title="Aumentar zoom" aria-label="Aumentar zoom"><Plus size={15} /></button>
+    <button onclick={() => viewer && (viewer.currentScaleValue = 'page-width')} title="Ajustar à largura" aria-label="Ajustar à largura"><MoveHorizontal size={15} /></button>
   </div>
   {#if error}<div class="error">Erro ao abrir o PDF: {error}</div>{/if}
   <div class="viewport">

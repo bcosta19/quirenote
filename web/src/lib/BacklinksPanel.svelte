@@ -1,4 +1,5 @@
 <script lang="ts">
+  import CornerUpLeft from '@lucide/svelte/icons/corner-up-left'
   import { onMount, tick } from 'svelte'
   import type { SearchResult } from './api'
 
@@ -67,7 +68,7 @@
     aria-label="Notas que apontam para esta"
     tabindex="-1"
   >
-    <div class="head">↩ Notas que apontam para <b>{name(note)}</b> <span class="muted">({results.length})</span></div>
+    <div class="head"><CornerUpLeft size={16} /> Notas que apontam para <b>{name(note)}</b> <span class="muted">({results.length})</span></div>
     <ul bind:this={list}>
       {#each results as r, i (r.path + ':' + r.line)}
         <li>

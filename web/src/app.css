@@ -74,6 +74,19 @@ button {
   cursor: pointer;
 }
 
+.topbar button,
+.sidebar-head button,
+.toolbar button,
+.new {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+svg {
+  flex: none;
+}
+
 button:hover {
   border-color: var(--muted);
 }

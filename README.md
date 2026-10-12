@@ -72,3 +72,5 @@ Go (`net/http`, `os.Root` confina o acesso ao vault, escrita atômica, conflito 
 `cmd/` e `internal/`; front Svelte 5 + CodeMirror 6 + PDF.js + foliate-js em `web/`. O `mtime` vai como string
 no JSON porque em nanossegundos perde precisão no `Number` do JS. A página tem CSP `script-src 'self'`, que
 também bloqueia JavaScript embutido em EPUBs.
+
+Ícones: [Lucide](https://lucide.dev) (licença ISC), herdam a cor do tema.

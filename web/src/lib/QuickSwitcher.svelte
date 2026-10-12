@@ -1,4 +1,5 @@
 <script lang="ts">
+  import FileIcon from './FileIcon.svelte'
   import { onMount, tick } from 'svelte'
   import { score } from './fuzzy'
 
@@ -86,7 +87,6 @@
 
   const name = (p: string) => p.split('/').pop()!.replace(/\.md$/i, '')
   const dir = (p: string) => (p.includes('/') ? p.slice(0, p.lastIndexOf('/')) : '')
-  const icon = (p: string) => (/\.pdf$/i.test(p) ? '📕' : /\.epub$/i.test(p) ? '📗' : '📝')
 
   onMount(() => input.focus())
 </script>
@@ -108,7 +108,7 @@
               <span class="name">＋ Criar nota “{name(item.path)}”</span>
               <span class="dir">{dir(item.path) || 'raiz do vault'}</span>
             {:else}
-              <span class="name">{icon(item.path)} {name(item.path)}</span>
+              <span class="name"><FileIcon name={item.path} /> {name(item.path)}</span>
               <span class="dir">{dir(item.path)}</span>
             {/if}
           </button>

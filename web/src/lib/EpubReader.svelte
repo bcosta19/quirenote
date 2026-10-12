@@ -8,6 +8,8 @@
 </script>
 
 <script lang="ts">
+  import ChevronLeft from '@lucide/svelte/icons/chevron-left'
+  import ChevronRight from '@lucide/svelte/icons/chevron-right'
   import { onMount, untrack } from 'svelte'
   import type { Theme } from './theme'
 
@@ -191,9 +193,9 @@
         {/each}
       </select>
     {/if}
-    <button onclick={prev} title="Página anterior (←)">‹</button>
+    <button onclick={prev} title="Página anterior (←)" aria-label="Página anterior"><ChevronLeft size={16} /></button>
     <span class="muted">{location ? Math.round(location.fraction * 100) + '%' : '…'}</span>
-    <button onclick={next} title="Próxima página (→)">›</button>
+    <button onclick={next} title="Próxima página (→)" aria-label="Próxima página"><ChevronRight size={16} /></button>
   </div>
   {#if error}<div class="error">Erro no EPUB: {error}</div>{/if}
   <!-- svelte-ignore a11y_no_static_element_interactions -->
