@@ -202,9 +202,19 @@
   })
 
   // Browser Back/Forward (or Alt+←/→) restores the note, PDF and page.
-  function onPopState() {
-    reveal = null
+  async function onPopState() {
     const params = new URLSearchParams(location.hash.slice(1))
+    if (!(await canLeaveNote(params.get('note')))) {
+      const current = new URLSearchParams()
+      if (note) current.set('note', note)
+      if (doc) {
+        current.set('doc', doc)
+        current.set('page', String(page))
+      }
+      history.pushState(null, '', `#${current}`)
+      return
+    }
+    reveal = null
     note = params.get('note')
     const nextDoc = params.get('doc')
     if (nextDoc !== doc) forgetEpub()
@@ -262,11 +272,11 @@
   let searchPanel: ReturnType<typeof SearchPanel> | undefined = $state()
   let lastSearch = $state('')
   let reveal = $state<{ path: string; line: number; n: number } | null>(null)
-  function openAtLine(path: string, line: number) {
+  async function openAtLine(path: string, line: number) {
     preview = false
     const n = (reveal?.n ?? 0) + 1
-    openPath(path) // limpa pedidos antigos; o novo vem logo abaixo
-    reveal = { path, line, n }
+    await openPath(path) // limpa pedidos antigos; o novo vem logo abaixo
+    if (note === path) reveal = { path, line, n }
   }
 
   // Text dialog with the app look (instead of the browser's prompt()).
@@ -524,7 +534,21 @@
     toastTimer = setTimeout(() => (toast = ''), 3000)
   }
 
-  function openPath(path: string, targetPage?: number, targetCfi?: string) {
+  async function canLeaveNote(next: string | null): Promise<boolean> {
+    const ed = editor
+    if (next === note || !ed) return true
+    ed.setLocked(true)
+    try {
+      if (await ed.flush()) return true
+      flash('Resolve the conflict or save error before leaving this note.')
+      return false
+    } finally {
+      ed.setLocked(false)
+    }
+  }
+
+  async function openPath(path: string, targetPage?: number, targetCfi?: string) {
+    if (/\.md$/i.test(path) && !(await canLeaveNote(path))) return
     // Opening by any other path cancels the positioning requested by the search.
     reveal = null
     if (/\.(md|pdf|epub)$/i.test(path)) remember(path)
