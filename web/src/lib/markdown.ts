@@ -52,9 +52,11 @@ function wikilinks(md: MD, ctx: RenderContext) {
   })
 }
 
-// "- [ ] tarefa" / "- [x] feita" viram caixas de seleção (só leitura).
+// "- [ ] tarefa" / "- [x] feita" viram caixas de seleção. data-line é a linha da
+// tarefa na nota (1 = primeira), para o clique no preview alternar a linha certa.
 function taskLists(md: MD) {
   md.core.ruler.push('task_lists', (state: StateCore) => {
+    const offset = Number(state.env?.lineOffset ?? 0)
     const tokens = state.tokens
     for (let i = 2; i < tokens.length; i++) {
       const inline = tokens[i]
@@ -65,7 +67,8 @@ function taskLists(md: MD) {
       if (!m || !first || first.type !== 'text') continue
       first.content = first.content.slice(m[0].length)
       const box = new state.Token('html_inline', '', 0)
-      box.content = `<input type="checkbox" disabled${m[1] === ' ' ? '' : ' checked'}> `
+      const line = (tokens[i - 2].map?.[0] ?? -1) + offset + 1
+      box.content = `<input type="checkbox" class="task-box" data-line="${line}"${m[1] === ' ' ? '' : ' checked'}> `
       inline.children!.unshift(box)
       tokens[i - 2].attrJoin('class', 'task')
     }
@@ -82,15 +85,35 @@ function relativeImages(md: MD, ctx: RenderContext) {
 }
 
 /** Frontmatter simples (chave: valor) exibido como as "propriedades" do Obsidian. */
-function splitFrontmatter(text: string): { props: [string, string][]; body: string } {
+function splitFrontmatter(text: string): { props: [string, string][]; body: string; lines: number } {
   const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---\r?\n?/)
-  if (!m) return { props: [], body: text }
+  if (!m) return { props: [], body: text, lines: 0 }
   const props: [string, string][] = []
   for (const line of m[1].split(/\r?\n/)) {
     const kv = line.match(/^([\w-]+):\s*(.*)$/)
     if (kv) props.push([kv[1], kv[2].replace(/^["']|["']$/g, '')])
   }
-  return { props, body: text.slice(m[0].length) }
+  // lines: quantas linhas o frontmatter ocupa (o corpo começa depois delas).
+  return { props, body: text.slice(m[0].length), lines: m[0].split('\n').length - 1 }
+}
+
+export interface Heading {
+  level: number
+  title: string
+  line: number // 1 = primeira linha da nota
+}
+
+/** Títulos da nota pelo próprio parser (ATX, setext, recuados; ignora código e frontmatter). */
+export function headings(text: string): Heading[] {
+  const { body, lines } = splitFrontmatter(text)
+  const tokens = new MarkdownIt().parse(body, {})
+  const out: Heading[] = []
+  tokens.forEach((t, i) => {
+    if (t.type === 'heading_open' && t.map) {
+      out.push({ level: Number(t.tag.slice(1)), title: tokens[i + 1]?.content ?? '', line: t.map[0] + lines + 1 })
+    }
+  })
+  return out
 }
 
 export function createRenderer(ctx: RenderContext) {
@@ -98,14 +121,14 @@ export function createRenderer(ctx: RenderContext) {
   md.use(wikilinks, ctx).use(taskLists).use(relativeImages, ctx)
 
   return (text: string): string => {
-    const { props, body } = splitFrontmatter(text)
+    const { props, body, lines } = splitFrontmatter(text)
     let html = ''
     if (props.length) {
       html += '<dl class="props">'
       for (const [k, v] of props) html += `<dt>${escapeHtml(k)}</dt><dd>${md.renderInline(v)}</dd>`
       html += '</dl>'
     }
-    html += md.render(body)
+    html += md.render(body, { lineOffset: lines })
     // As notas podem ter HTML; sanitiza para nada executar script na página.
     return DOMPurify.sanitize(html)
   }

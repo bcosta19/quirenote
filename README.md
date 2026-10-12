@@ -31,6 +31,8 @@ Flags/variáveis: `-vault` / `NOTAS_VAULT` (padrão `~/Documents/NotasObsidian/N
 | `Ctrl+clique` / `Ctrl+Enter` | seguir `[[link]]` (se a nota não existir, oferece criar) |
 | `[[` | autocompletar links (Enter ou Tab aceita) |
 | `Ctrl+O` / `Ctrl+P` | busca rápida de notas e PDFs (Shift+Enter cria) |
+| `Ctrl+Shift+O` | sumário da nota (ir para um título) |
+| `Ctrl+Enter` numa tarefa | alterna `[ ]`/`[x]` (no preview, basta clicar na caixa) |
 | `Ctrl+Shift+F` | busca no conteúdo de todas as notas (sem diferenciar acentos; requer ripgrep) |
 | `:w` / `Ctrl+S` | salvar (também salva sozinho após 1 s) |
 

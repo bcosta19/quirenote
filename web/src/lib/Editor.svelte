@@ -99,12 +99,21 @@
         lockSlot.of(EditorState.readOnly.of(locked)),
         EditorView.lineWrapping,
         EditorView.contentAttributes.of({ spellcheck: 'true', lang: 'pt-BR' }),
+        // Mantém a quebra de linha original (CRLF de notas vindas do Windows):
+        // sem isso, qualquer edição regravaria a nota inteira em LF.
+        EditorState.lineSeparator.of(doc.includes('\r\n') ? '\r\n' : '\n'),
         // Prec.highest: senão o modo vim captura as teclas antes.
         Prec.highest(
           keymap.of([
             { key: 'Mod-s', run: () => (save(), true) },
-            // Segue o [[link]] sob o cursor.
-            { key: 'Mod-Enter', run: (v) => followLinkAt(v.state.selection.main.head) },
+            // Segue o [[link]] sob o cursor; numa linha de tarefa sem link, alterna [ ]/[x].
+            {
+              key: 'Mod-Enter',
+              run: (v) => {
+                const head = v.state.selection.main.head
+                return followLinkAt(head) || toggleTask(v.state.doc.lineAt(head).number)
+              },
+            },
             ...keys,
           ]),
         ),
@@ -134,9 +143,9 @@
           },
         }),
         EditorView.updateListener.of((u) => {
-          if (u.docChanged) oncontent?.(u.state.doc.toString())
+          if (u.docChanged) oncontent?.(u.state.sliceDoc())
           if (!u.docChanged || !base) return
-          if (u.state.doc.toString() === base.content) {
+          if (u.state.sliceDoc() === base.content) {
             if (status === 'dirty') status = 'saved'
             return
           }
@@ -183,12 +192,12 @@
   async function save() {
     clearTimeout(timer)
     if (!view || !base || status === 'conflict' || status === 'saving') return
-    const content = view.state.doc.toString()
+    const content = view.state.sliceDoc()
     if (content === base.content) return
     status = 'saving'
     try {
       base = await saveNote(base.path, content, base.mtime)
-      status = view.state.doc.toString() === base.content ? 'saved' : 'dirty'
+      status = view.state.sliceDoc() === base.content ? 'saved' : 'dirty'
       if (status === 'dirty') timer = setTimeout(save, AUTOSAVE_MS)
     } catch (e) {
       if (e instanceof ConflictError) {
@@ -281,6 +290,18 @@
     while (status === 'saving') await new Promise((r) => setTimeout(r, 30))
     if (status === 'dirty' || status === 'error') await save() // só retorna depois de gravar
     return status === 'saved'
+  }
+
+  /** Alterna "- [ ]" / "- [x]" na linha (1 = primeira). Devolve false se não for tarefa. */
+  export function toggleTask(n: number): boolean {
+    if (!view || locked || n < 1 || n > view.state.doc.lines) return false
+    const line = view.state.doc.line(n)
+    // Aceita tarefas dentro de citações ("> - [ ] x"), como o preview mostra.
+    const m = line.text.match(/^(\s*(?:>\s*)*(?:[-*+]|\d+[.)])\s+\[)([ xX])\]/)
+    if (!m) return false
+    const at = line.from + m[1].length
+    view.dispatch({ changes: { from: at, to: at + 1, insert: m[2] === ' ' ? 'x' : ' ' }, userEvent: 'input' })
+    return true
   }
 
   export function focus() {

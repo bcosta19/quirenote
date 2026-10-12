@@ -6,10 +6,13 @@
     fileUrl,
     exists,
     onlink,
+    ontoggle,
   }: {
     text: string
     fileUrl: (target: string) => string
     exists: (target: string) => boolean
+    /** Clique numa caixa de tarefa: alterna a linha na nota (via editor). */
+    ontoggle?: (line: number) => void
     onlink: (target: string, page?: number) => void
   } = $props()
 
@@ -17,6 +20,14 @@
   const html = $derived(render(text))
 
   function onclick(e: MouseEvent) {
+    const box = (e.target as HTMLElement).closest<HTMLInputElement>('input.task-box')
+    if (box) {
+      // O preview é redesenhado a partir do texto; quem muda a nota é o editor.
+      e.preventDefault()
+      const line = Number(box.dataset.line)
+      if (line > 0) ontoggle?.(line)
+      return
+    }
     const a = (e.target as HTMLElement).closest('a')
     if (!a) return
     e.preventDefault()
@@ -120,6 +131,10 @@
   article :global(li.task) {
     list-style: none;
     margin-left: -1.2em;
+  }
+  article :global(input.task-box) {
+    cursor: pointer;
+    accent-color: var(--accent);
   }
   article :global(li > p) {
     margin: 0;

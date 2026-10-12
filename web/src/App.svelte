@@ -9,6 +9,7 @@
   import PromptDialog from './lib/PromptDialog.svelte'
   import { IMAGE } from './lib/markdown'
   import SearchPanel from './lib/SearchPanel.svelte'
+  import Outline from './lib/Outline.svelte'
   import ContextMenu, { type MenuItem } from './lib/ContextMenu.svelte'
   import Tree from './lib/Tree.svelte'
   import type { Theme } from './lib/theme'
@@ -120,6 +121,7 @@
   let switcherOpen = $state(false)
   // Busca no conteúdo (Ctrl+Shift+F); guarda o último termo para reabrir com ele.
   let searchOpen = $state(false)
+  let outlineOpen = $state(false) // sumário da nota (Ctrl+Shift+O)
   let searchPanel: ReturnType<typeof SearchPanel> | undefined = $state()
   let lastSearch = $state('')
   let reveal = $state<{ path: string; line: number; n: number } | null>(null)
@@ -477,6 +479,13 @@
   // e Ctrl+O (voltar na lista de saltos).
   function onKeyCapture(e: KeyboardEvent) {
     if (dialog) return
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey && e.key.toLowerCase() === 'o' && note) {
+      e.preventDefault()
+      e.stopPropagation()
+      switcherOpen = searchOpen = false
+      outlineOpen = !outlineOpen
+      return
+    }
     if ((e.ctrlKey || e.metaKey) && e.shiftKey && !e.altKey && e.key.toLowerCase() === 'f') {
       e.preventDefault()
       e.stopPropagation()
@@ -560,6 +569,17 @@
 
 {#if menu}
   <ContextMenu x={menu.x} y={menu.y} items={menu.items} onclose={() => (menu = null)} />
+{/if}
+
+{#if outlineOpen && note}
+  <Outline
+    text={noteText}
+    onjump={(line) => note && openAtLine(note, line)}
+    onclose={() => {
+      outlineOpen = false
+      setTimeout(() => editor?.focus())
+    }}
+  />
 {/if}
 
 {#if searchOpen}
@@ -685,13 +705,19 @@
             />
           </div>
           {#if preview}
-            <Preview text={noteText} fileUrl={previewFileUrl} exists={(t) => !!resolveLink(tree, t)} onlink={openLink} />
+            <Preview
+              text={noteText}
+              fileUrl={previewFileUrl}
+              exists={(t) => !!resolveLink(tree, t)}
+              onlink={openLink}
+              ontoggle={(line) => editor?.toggleTask(line) || flash('Não foi possível alternar esta tarefa pelo preview; edite-a no editor.')}
+            />
           {/if}
         {:else}
           <div class="empty">
             <p>Abra uma nota na barra lateral ou crie uma com <kbd>+</kbd>. Para ler um PDF deste dispositivo (fora do vault), use <kbd>📂</kbd>.</p>
             <p class="muted">
-              <kbd>Ctrl+O</kbd> busca rápida · <kbd>Ctrl+Shift+F</kbd> busca no conteúdo · <kbd>Ctrl+E</kbd> preview ·  <kbd>Ctrl+\</kbd> recolhe as notas · <kbd>Alt+\</kbd> recolhe o PDF · <kbd>Ctrl+Shift+\</kbd> barra lateral · <kbd>Ctrl+Shift+L</kbd> insere link da página ·
+              <kbd>Ctrl+O</kbd> busca rápida · <kbd>Ctrl+Shift+F</kbd> busca no conteúdo · <kbd>Ctrl+Shift+O</kbd> sumário · <kbd>Ctrl+E</kbd> preview ·  <kbd>Ctrl+\</kbd> recolhe as notas · <kbd>Alt+\</kbd> recolhe o PDF · <kbd>Ctrl+Shift+\</kbd> barra lateral · <kbd>Ctrl+Shift+L</kbd> insere link da página ·
               <kbd>Alt+↑/↓</kbd> rola o PDF · <kbd>Alt+Shift+↑/↓</kbd> muda de página · <kbd>Ctrl+clique</kbd> ou <kbd>Ctrl+Enter</kbd> segue um <code>[[link]]</code> · <kbd>:w</kbd> salva
             </p>
           </div>
