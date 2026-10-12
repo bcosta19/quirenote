@@ -2,9 +2,10 @@
 
 *[Leia em português](README.pt-BR.md)*
 
-A PDF/EPUB reader and a markdown note editor (with vim mode) side by side, on top of an Obsidian vault,
-served by a single Go binary. The vault's `.md` files are the source of truth (no database): Neovim, Obsidian
-and the browser all edit the same files.
+Markdown notes with a PDF/EPUB reader side by side, served by a single Go binary, with an editor that has a
+vim mode. Your notes are plain `.md` files in a folder (no database), so Neovim, Obsidian or any editor can
+work on the same files. Obsidian vaults work as is: `[[links]]`, `![[images]]`, the attachment folder and
+the `.trash` are compatible.
 
 ![Editor with the PDF reader beside it](docs/img/editor-and-reader.png)
 
@@ -29,6 +30,22 @@ collapse and resize. `Ctrl+Shift+L` inserts a link to the current page, and clic
 
 ![Dark theme](docs/img/dark-theme.png)
 
+## First run
+
+Without a configured vault, the app opens a setup screen with two options:
+
+- **Start fresh**: creates a folder (default `~/Quirenote`) with a welcome note.
+- **Use an existing folder**: any folder of markdown notes. An Obsidian vault is detected and used in place;
+  nothing is copied, so your notes keep working in Obsidian.
+
+The choice is saved to `~/.config/quirenote/config.toml`. Once a vault is configured, the browser can no
+longer change it (so nobody on the network can point the server at other folders); use the terminal:
+
+```sh
+quirenote init ~/Notes   # an existing folder is used as is; a missing one is created
+quirenote init           # shows the current vault
+```
+
 ## Usage
 
 ```sh
@@ -39,7 +56,7 @@ systemctl --user enable --now quirenote
 make check      # gofmt, vet, staticcheck, errcheck, nilaway, tests with -race, svelte-check
 ```
 
-Flags/variables: `-vault` / `QUIRENOTE_VAULT` (default `~/Documents/NotasObsidian/Notas`),
+The vault comes from `-vault`, then `QUIRENOTE_VAULT`, then the config file. The address comes from
 `-addr` / `QUIRENOTE_ADDR` (default `127.0.0.1:8080`). For remote access, set `QUIRENOTE_ADDR` in the unit to
 the machine's NetBird IP; anyone on that network can access it without logging in.
 

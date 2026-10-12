@@ -2,8 +2,10 @@
 
 *[Read in English](README.md)*
 
-Leitor de PDF/EPUB + editor de notas (modo vim) sobre o vault markdown do Obsidian, servido por um binário Go.
-Os `.md` do vault são a fonte da verdade (sem banco): Neovim, Obsidian e o navegador editam os mesmos arquivos.
+Notas em markdown com um leitor de PDF/EPUB ao lado, servidas por um binário Go, com editor em modo vim.
+As notas são arquivos `.md` comuns numa pasta (sem banco), então Neovim, Obsidian ou qualquer editor trabalham
+nos mesmos arquivos. Vaults do Obsidian funcionam como estão: `[[links]]`, `![[imagens]]`, a pasta de anexos e
+a `.trash` são compatíveis.
 
 ![Editor com o leitor de PDF ao lado](docs/img/editor-and-reader.png)
 
@@ -28,6 +30,22 @@ redimensionam. `Ctrl+Shift+L` insere um link para a página atual, e clicar nele
 
 ![Tema escuro](docs/img/dark-theme.png)
 
+## Primeiro acesso
+
+Sem vault configurado, o app abre uma tela de configuração com duas opções:
+
+- **Start fresh** (começar do zero): cria uma pasta (padrão `~/Quirenote`) com uma nota de boas-vindas.
+- **Use an existing folder** (usar uma pasta existente): qualquer pasta de notas em markdown. Um vault do
+  Obsidian é detectado e usado no lugar; nada é copiado, e as notas continuam funcionando no Obsidian.
+
+A escolha fica em `~/.config/quirenote/config.toml`. Depois de configurado, o navegador não consegue mais trocar
+o vault (assim ninguém na rede aponta o servidor para outras pastas); use o terminal:
+
+```sh
+quirenote init ~/Notas   # pasta existente é usada como está; inexistente é criada
+quirenote init           # mostra o vault atual
+```
+
 ## Uso
 
 ```sh
@@ -38,7 +56,7 @@ systemctl --user enable --now quirenote
 make check      # gofmt, vet, staticcheck, errcheck, nilaway, testes -race, svelte-check
 ```
 
-Flags/variáveis: `-vault` / `QUIRENOTE_VAULT` (padrão `~/Documents/NotasObsidian/Notas`),
+O vault vem de `-vault`, depois `QUIRENOTE_VAULT`, depois do arquivo de configuração. O endereço vem de
 `-addr` / `QUIRENOTE_ADDR` (padrão `127.0.0.1:8080`). Para acesso remoto, ponha o IP do NetBird em `QUIRENOTE_ADDR`
 no unit; quem está na rede acessa sem login.
 

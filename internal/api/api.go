@@ -11,23 +11,46 @@ import (
 	"net/http"
 	"path"
 	"strings"
+	"sync"
+	"sync/atomic"
 	"time"
 
 	"quirenote/internal/relink"
 	"quirenote/internal/search"
+	"quirenote/internal/setup"
 	"quirenote/internal/vault"
 	"quirenote/internal/watch"
 )
 
 type Server struct {
-	vault  *vault.Vault
+	vault  atomic.Pointer[vault.Vault] // nil until a vault is configured (first run)
 	broker *watch.Broker
 	static fs.FS // frontend build; nil in dev (Vite serves the frontend)
+
+	setupMu sync.Mutex
+	home    string                   // for "~" and the suggested folder on first run
+	apply   func(setup.Result) error // opens and saves the vault chosen on first run
 }
 
+// New creates the server. v may be nil: the API then only answers the first-run setup.
 func New(v *vault.Vault, b *watch.Broker, static fs.FS) *Server {
-	return &Server{vault: v, broker: b, static: static}
+	s := &Server{broker: b, static: static}
+	if v != nil {
+		s.vault.Store(v)
+	}
+	return s
 }
+
+// EnableSetup allows choosing the vault from the browser while none is configured.
+// apply receives the prepared folder and must open it (calling SetVault) and save it.
+func (s *Server) EnableSetup(home string, apply func(setup.Result) error) {
+	s.home, s.apply = home, apply
+}
+
+// SetVault starts serving v.
+func (s *Server) SetVault(v *vault.Vault) { s.vault.Store(v) }
+
+func (s *Server) v() *vault.Vault { return s.vault.Load() }
 
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
@@ -45,10 +68,70 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("GET /api/events", s.events)
 	mux.HandleFunc("GET /api/search", s.search)
 	mux.HandleFunc("GET /api/backlinks", s.backlinks)
+	mux.HandleFunc("GET /api/setup", s.setupStatus)
+	mux.HandleFunc("POST /api/setup", s.setup)
 	if s.static != nil {
 		mux.Handle("GET /", spa(s.static))
 	}
-	return logRequests(requireJSON(mux))
+	return logRequests(requireJSON(s.requireVault(mux)))
+}
+
+// requireVault answers the vault endpoints with 409 {"setup": true} until a vault is
+// configured, so the frontend shows the first-run screen.
+func (s *Server) requireVault(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		p := r.URL.Path
+		if s.v() == nil && strings.HasPrefix(p, "/api/") && p != "/api/setup" && p != "/api/events" {
+			writeJSON(w, http.StatusConflict, map[string]any{"error": "no vault configured yet", "setup": true})
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
+}
+
+// setupStatus tells whether a vault is configured and, if not, which folder to suggest.
+func (s *Server) setupStatus(w http.ResponseWriter, r *http.Request) {
+	if s.v() != nil {
+		writeJSON(w, http.StatusOK, map[string]any{"configured": true})
+		return
+	}
+	writeJSON(w, http.StatusOK, map[string]any{
+		"configured": false,
+		"allowed":    s.apply != nil,
+		"suggested":  setup.DefaultPath,
+	})
+}
+
+type setupRequest struct {
+	Mode setup.Mode `json:"mode"`
+	Path string     `json:"path"`
+}
+
+// setup picks the vault on first run. Once a vault is configured it is refused: changing
+// it is done from the terminal (quirenote init), so a browser cannot point the server at
+// other folders of the machine.
+func (s *Server) setup(w http.ResponseWriter, r *http.Request) {
+	s.setupMu.Lock()
+	defer s.setupMu.Unlock()
+	if s.v() != nil || s.apply == nil {
+		writeJSON(w, http.StatusForbidden, map[string]string{"error": "the vault is already configured; change it with `quirenote init <folder>`"})
+		return
+	}
+	var req setupRequest
+	if err := json.NewDecoder(http.MaxBytesReader(w, r.Body, 64<<10)).Decode(&req); err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON"})
+		return
+	}
+	res, err := setup.Prepare(req.Mode, req.Path, s.home)
+	if err != nil {
+		writeJSON(w, http.StatusBadRequest, map[string]string{"error": err.Error()})
+		return
+	}
+	if err := s.apply(res); err != nil {
+		writeErr(w, err)
+		return
+	}
+	writeJSON(w, http.StatusOK, res)
 }
 
 // requireJSON rejects requests that change the vault without a JSON Content-Type.
@@ -68,7 +151,7 @@ func requireJSON(next http.Handler) http.Handler {
 }
 
 func (s *Server) tree(w http.ResponseWriter, r *http.Request) {
-	entries, err := s.vault.Tree()
+	entries, err := s.v().Tree()
 	if err != nil {
 		writeErr(w, err)
 		return
@@ -77,7 +160,7 @@ func (s *Server) tree(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) readNote(w http.ResponseWriter, r *http.Request) {
-	note, err := s.vault.Read(r.PathValue("path"))
+	note, err := s.v().Read(r.PathValue("path"))
 	if err != nil {
 		writeErr(w, err)
 		return
@@ -96,7 +179,7 @@ func (s *Server) saveNote(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON"})
 		return
 	}
-	note, err := s.vault.Save(r.PathValue("path"), req.Content, req.Mtime)
+	note, err := s.v().Save(r.PathValue("path"), req.Content, req.Mtime)
 	if errors.Is(err, vault.ErrConflict) {
 		// Return the version on disk so the frontend can decide (reload or overwrite).
 		writeJSON(w, http.StatusConflict, note)
@@ -120,7 +203,7 @@ func (s *Server) createNote(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON"})
 		return
 	}
-	note, err := s.vault.Create(r.PathValue("path"), req.Content)
+	note, err := s.v().Create(r.PathValue("path"), req.Content)
 	if errors.Is(err, vault.ErrExists) {
 		writeJSON(w, http.StatusConflict, map[string]string{"error": err.Error()})
 		return
@@ -144,7 +227,7 @@ func (s *Server) move(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON"})
 		return
 	}
-	p, err := s.vault.Move(req.From, req.To)
+	p, err := s.v().Move(req.From, req.To)
 	if errors.Is(err, vault.ErrExists) {
 		writeJSON(w, http.StatusConflict, map[string]string{"error": err.Error()})
 		return
@@ -159,7 +242,7 @@ func (s *Server) move(w http.ResponseWriter, r *http.Request) {
 // relinkPreview tells which notes would have their [[links]] updated (nothing is written).
 func (s *Server) relinkPreview(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
-	plan, err := relink.Preview(r.Context(), s.vault, q.Get("from"), q.Get("to"))
+	plan, err := relink.Preview(r.Context(), s.v(), q.Get("from"), q.Get("to"))
 	if err != nil {
 		writeRelinkErr(w, err)
 		return
@@ -174,7 +257,7 @@ func (s *Server) relink(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON"})
 		return
 	}
-	res, err := relink.Run(r.Context(), s.vault, req.From, req.To)
+	res, err := relink.Run(r.Context(), s.v(), req.From, req.To)
 	if err != nil {
 		writeRelinkErr(w, err)
 		return
@@ -204,7 +287,7 @@ func (s *Server) trash(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid JSON"})
 		return
 	}
-	p, err := s.vault.Trash(req.Path)
+	p, err := s.v().Trash(req.Path)
 	if err != nil {
 		writeErr(w, err)
 		return
@@ -234,7 +317,7 @@ func (s *Server) saveImage(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "invalid base64 image"})
 		return
 	}
-	p, err := s.vault.SaveImage(req.Note, data)
+	p, err := s.v().SaveImage(req.Note, data)
 	if err != nil {
 		if errors.Is(err, vault.ErrNotImage) {
 			writeJSON(w, http.StatusUnsupportedMediaType, map[string]string{"error": err.Error()})
@@ -247,7 +330,7 @@ func (s *Server) saveImage(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) mkdir(w http.ResponseWriter, r *http.Request) {
-	p, err := s.vault.Mkdir(r.PathValue("path"))
+	p, err := s.v().Mkdir(r.PathValue("path"))
 	if err != nil {
 		writeErr(w, err)
 		return
@@ -256,7 +339,7 @@ func (s *Server) mkdir(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) file(w http.ResponseWriter, r *http.Request) {
-	f, err := s.vault.OpenFile(r.PathValue("path"))
+	f, err := s.v().OpenFile(r.PathValue("path"))
 	if err != nil {
 		writeErr(w, err)
 		return
@@ -281,7 +364,7 @@ func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusBadRequest, map[string]string{"error": "query too long"})
 		return
 	}
-	res, err := search.Search(r.Context(), s.vault.Dir(), q)
+	res, err := search.Search(r.Context(), s.v().Dir(), q)
 	if errors.Is(err, search.ErrNoRipgrep) {
 		writeJSON(w, http.StatusServiceUnavailable, map[string]string{"error": err.Error()})
 		return
@@ -295,7 +378,7 @@ func (s *Server) search(w http.ResponseWriter, r *http.Request) {
 
 // backlinks lists the snippets of other notes with a [[link]] to ?note=.
 func (s *Server) backlinks(w http.ResponseWriter, r *http.Request) {
-	res, err := search.Backlinks(r.Context(), s.vault.Dir(), r.URL.Query().Get("note"))
+	res, err := search.Backlinks(r.Context(), s.v().Dir(), r.URL.Query().Get("note"))
 	if errors.Is(err, search.ErrNoRipgrep) {
 		writeJSON(w, http.StatusServiceUnavailable, map[string]string{"error": err.Error()})
 		return

@@ -132,3 +132,25 @@ export function subscribe(onEvent: (e: VaultEvent) => void): () => void {
   es.onmessage = (m) => onEvent(JSON.parse(m.data))
   return () => es.close()
 }
+
+export interface SetupStatus {
+  configured: boolean
+  allowed?: boolean // the server accepts choosing the vault from the browser
+  suggested?: string // folder suggested for a fresh start
+}
+
+/** Whether a vault is configured (first run shows the setup screen otherwise). */
+export async function getSetup(): Promise<SetupStatus> {
+  return json(await fetch('/api/setup'))
+}
+
+/** Chooses the vault on first run: a new folder or an existing one (e.g. an Obsidian vault). */
+export async function runSetup(mode: 'new' | 'existing', path: string): Promise<{ dir: string; obsidian: boolean }> {
+  return json(
+    await fetch('/api/setup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ mode, path }),
+    }),
+  )
+}

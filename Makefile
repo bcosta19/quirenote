@@ -1,4 +1,5 @@
-VAULT ?= $(HOME)/Documents/NotasObsidian/Notas
+# Empty: use the vault from ~/.config/quirenote/config.toml (or the first-run screen).
+VAULT ?=
 ADDR  ?= 127.0.0.1:8080
 
 .PHONY: dev dev-api dev-web build front check install clean
@@ -8,7 +9,7 @@ dev:
 	@$(MAKE) -j2 dev-api dev-web
 
 dev-api:
-	./scripts/dev-api.sh -vault "$(VAULT)" -addr $(ADDR) -debug
+	./scripts/dev-api.sh $(if $(VAULT),-vault "$(VAULT)") -addr $(ADDR) -debug
 
 dev-web:
 	cd web && npm run dev
