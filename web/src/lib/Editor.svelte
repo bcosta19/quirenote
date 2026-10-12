@@ -72,6 +72,7 @@
   let errorMsg = $state('')
   let conflict = $state<Note | null>(null)
   let timer: ReturnType<typeof setTimeout> | undefined
+  let loadRequest = 0
 
   const AUTOSAVE_MS = 1000
 
@@ -96,7 +97,7 @@
         visualLineNumbers,
         linkCompletion(() => linkTargets()),
         themeSlot.of(editorTheme(theme)),
-        lockSlot.of(EditorState.readOnly.of(locked)),
+        lockSlot.of(EditorState.readOnly.of(locked || !base)),
         EditorView.lineWrapping,
         EditorView.contentAttributes.of({ spellcheck: 'true', lang: 'pt-BR' }),
         // Keeps the original line endings (CRLF from notes created on Windows):
@@ -211,12 +212,18 @@
   }
 
   async function load(p: string) {
-    if (base && base.path !== p && status === 'dirty') await save()
+    const request = ++loadRequest
+    if (base && base.path !== p && !(await flush())) return
+    if (request !== loadRequest || p !== path) return
+    clearTimeout(timer)
+    base = null
     status = 'loading'
     conflict = null
+    view?.setState(newState(''))
+    oncontent?.('')
     try {
       const note = await getNote(p)
-      if (p !== path) return // the user already switched notes
+      if (request !== loadRequest || p !== path) return // the user already switched notes
       base = note
       view?.setState(newState(note.content))
       oncontent?.(note.content)
@@ -224,6 +231,7 @@
       view?.focus()
       if (reveal?.path === p) revealLine(reveal)
     } catch (e) {
+      if (request !== loadRequest || p !== path) return
       errorMsg = (e as Error).message
       status = 'error'
     }
@@ -284,7 +292,7 @@
    */
   export function setLocked(value: boolean) {
     locked = value
-    view?.dispatch({ effects: lockSlot.reconfigure(EditorState.readOnly.of(value)) })
+    view?.dispatch({ effects: lockSlot.reconfigure(EditorState.readOnly.of(value || !base)) })
   }
 
   /** Saves anything pending (before renaming, moving or deleting the note). */
@@ -292,7 +300,7 @@
     clearTimeout(timer)
     while (status === 'saving') await new Promise((r) => setTimeout(r, 30))
     if (status === 'dirty' || status === 'error') await save() // only returns after saving
-    return status === 'saved'
+    return !base || status === 'saved'
   }
 
   /** Toggles "- [ ]" / "- [x]" on the line (1 = first). Returns false if it is not a task. */
@@ -363,7 +371,7 @@
     </div>
   {/if}
   {#if status === 'error'}
-    <div class="banner error">{errorMsg} <button onclick={save}>try again</button></div>
+    <div class="banner error">{errorMsg} <button onclick={() => base ? save() : load(path)}>try again</button></div>
   {/if}
   <div class="cm" bind:this={host}></div>
   <div class="status" class:warn={status === 'conflict' || status === 'error'}>{labels[status]}</div>
