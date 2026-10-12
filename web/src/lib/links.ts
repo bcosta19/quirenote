@@ -9,14 +9,20 @@ export interface WikiLink {
   cfi?: string // position in an EPUB: [[book.epub#cfi=epubcfi(...)]]
 }
 
+export function parseWikiLink(raw: string): WikiLink & { ref: string; alias?: string } {
+  const [ref, alias] = raw.replace(/\\([|#])/g, '$1').split('|')
+  const page = ref.match(/#page=(\d+)/)?.[1]
+  const cfi = ref.match(/#cfi=(.+)$/)?.[1]
+  return { ref, alias, target: ref.split('#')[0].trim(), page: page ? Number(page) : undefined, cfi }
+}
+
 /** Finds the wikilink that contains position `col` of the line. */
 export function linkAt(line: string, col: number): WikiLink | null {
   for (const m of line.matchAll(WIKILINK)) {
     const start = m.index!
     if (col >= start && col <= start + m[0].length) {
-      const page = m[2]?.match(/page=(\d+)/)?.[1]
-      const cfi = m[2]?.match(/cfi=(.+)$/)?.[1]
-      return { target: m[1].trim(), page: page ? Number(page) : undefined, cfi }
+      const { target, page, cfi } = parseWikiLink(m[0].slice(2, -2))
+      return { target, page, cfi }
     }
   }
   return null

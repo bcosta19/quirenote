@@ -146,6 +146,19 @@ test('an explicit first-page PDF link takes precedence over the remembered page'
   await expect(page.getByRole('spinbutton', { name: 'Page', exact: true })).toHaveValue('1')
 })
 
+for (const preview of [false, true]) {
+  test(`escaped wikilink aliases resolve in ${preview ? 'preview' : 'the editor'}`, async ({ page }) => {
+    await mockVault(page, { 'A.md': '[[Target\\|alias]]', 'Target.md': 'target content' })
+    await page.goto('/#note=A.md')
+    await expect(page.locator('.editor .status')).toHaveText('saved')
+    if (preview) {
+      await page.getByRole('button', { name: 'Preview', exact: true }).click()
+      await page.getByRole('link', { name: 'alias', exact: true }).click()
+    } else await page.keyboard.press('Control+Enter')
+    await expect(page.locator('.crumb')).toHaveText('Target.md')
+  })
+}
+
 test('switching notes waits for an in-flight save and keeps each note separate', async ({ page }) => {
   const vault = await mockVault(page, { 'A.md': 'alpha', 'B.md': 'beta' })
   const started = deferred()

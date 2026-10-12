@@ -1,5 +1,6 @@
 import MarkdownIt, { type MarkdownIt as MD, type StateCore, type StateInline } from 'markdown-it'
 import DOMPurify from 'dompurify'
+import { parseWikiLink } from './links'
 
 // Preview rendering, with the Obsidian extensions most common in notes:
 // [[links]], ![[images]], task lists and frontmatter.
@@ -24,11 +25,7 @@ function wikilinks(md: MD, ctx: RenderContext) {
     const end = src.indexOf(']]', start)
     if (end < 0) return false
     if (!silent) {
-      const raw = src.slice(start, end)
-      const [ref, alias] = raw.split('|')
-      const target = ref.split('#')[0].trim()
-      const page = ref.match(/#page=(\d+)/)?.[1]
-      const cfi = ref.match(/#cfi=(.+)$/)?.[1]
+      const { ref, alias, target, page, cfi } = parseWikiLink(src.slice(start, end))
       if (embed && IMAGE.test(target)) {
         // ![[photo.png|300]]: the number after | is the width, like in Obsidian.
         const width = /^\d+$/.test(alias ?? '') ? ` width="${alias}"` : ''
@@ -42,7 +39,7 @@ function wikilinks(md: MD, ctx: RenderContext) {
           ['class', ['wikilink', embed && 'embed', target && ctx.exists && !ctx.exists(target) && 'missing'].filter(Boolean).join(' ')],
           ['data-target', target],
         ]
-        if (page) open.attrs.push(['data-page', page])
+        if (page) open.attrs.push(['data-page', String(page)])
         if (cfi) open.attrs.push(['data-cfi', cfi])
         const text = state.push('text', '', 0)
         text.content = (alias ?? (page ? `${target} · p.${page}` : cfi ? `${target} · saved position` : ref)).trim()
