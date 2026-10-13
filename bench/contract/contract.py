@@ -516,7 +516,7 @@ def run_cases(c: Client, R: Recorder, vault: str, only=None):
         open(cfg, "w").write("not json")
         R.rec("image with broken app.json", c.j("POST", "/api/images", {"note": "Livros/nota.md", "data": png}))
         open(cfg, "w").write("{}")
-        R.rec("tree includes images and bmp", c.get("/api/tree"), sort_json=lambda t: sorted(tree_paths(t)))
+        R.rec("tree includes images and bmp", c.get("/api/tree"), sort_json=lambda t: sorted(PASTED.sub("Pasted image <ts>", x) for x in tree_paths(t)))
 
     section("images", images)
 
