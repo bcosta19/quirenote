@@ -1,5 +1,7 @@
 # Quirenote backend: Go vs Rust (Axum), side by side
 
+*[Leia o resumo em português](RELATORIO.pt-BR.md)*
+
 An experiment: the Go backend (`cmd/` + `internal/`, 1,909 non-test lines) reimplemented in Rust with
 Axum (`rust/`, 3,941 non-test lines, rustfmt layout), compared on HTTP-contract parity, correctness under
 concurrency, speed and memory. Same Svelte frontend, embedded in both binaries.
