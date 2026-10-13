@@ -154,7 +154,7 @@ fn event_loop(
                     if rel.is_empty() || hidden(&rel) {
                         continue;
                     }
-                    if op == "create" && path.is_dir() {
+                    if op == "create" && std::fs::symlink_metadata(path).is_ok_and(|m| m.is_dir()) {
                         add_tree(&mut watcher, path, &dir);
                     }
                     pending.insert(

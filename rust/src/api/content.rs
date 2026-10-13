@@ -2,8 +2,9 @@
 //! (or sniffed), `Last-Modified`, `Accept-Ranges`, a single `Range`, 304 and 416.
 
 use std::borrow::Cow;
+use std::collections::HashMap;
 use std::io::{Read, Seek, SeekFrom};
-use std::sync::Arc;
+use std::sync::{Arc, OnceLock};
 use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use axum::body::{Body, Bytes};
@@ -16,41 +17,98 @@ use super::json::text_response;
 use crate::golike;
 use crate::vault::{self, Vault};
 
-/// Go's built-in `mime` table; anything else falls back to the shared MIME database.
-fn builtin(ext: &str) -> Option<&'static str> {
-    Some(match ext {
-        ".avif" => "image/avif",
-        ".css" => "text/css; charset=utf-8",
-        ".gif" => "image/gif",
-        ".htm" | ".html" => "text/html; charset=utf-8",
-        ".jpeg" | ".jpg" => "image/jpeg",
-        ".js" | ".mjs" => "text/javascript; charset=utf-8",
-        ".json" => "application/json",
-        ".pdf" => "application/pdf",
-        ".png" => "image/png",
-        ".svg" => "image/svg+xml",
-        ".wasm" => "application/wasm",
-        ".webp" => "image/webp",
-        ".xml" => "text/xml; charset=utf-8",
-        _ => return None,
+/// Go's `mime.TypeByExtension` table: the built-in entries plus, like Go on Unix, the local
+/// shared-MIME database (`globs2`) or, failing that, the `mime.types` files. The first entry
+/// seen for an extension wins; `text/*` types get `; charset=utf-8`.
+struct MimeTable {
+    exact: HashMap<String, String>,
+    lower: HashMap<String, String>,
+}
+
+impl MimeTable {
+    fn set(&mut self, ext: &str, mime: &str) {
+        let mut m = mime.to_string();
+        if m.starts_with("text/") && !m.contains("charset") {
+            m.push_str("; charset=utf-8");
+        }
+        self.exact.insert(ext.to_string(), m.clone());
+        self.lower.insert(ext.to_lowercase(), m);
+    }
+
+    fn load_globs(&mut self, path: &str) -> bool {
+        let Ok(text) = std::fs::read_to_string(path) else {
+            return false;
+        };
+        for line in text.lines() {
+            let f: Vec<&str> = line.split(':').collect();
+            if f.len() < 3 || f[0].is_empty() || f[2].len() < 3 {
+                continue;
+            }
+            if f[0].starts_with('#') || !f[2].starts_with("*.") {
+                continue;
+            }
+            let ext = &f[2][1..];
+            if ext.contains(['?', '*', '[']) || self.exact.contains_key(ext) {
+                continue;
+            }
+            self.set(ext, f[1]);
+        }
+        true
+    }
+
+    fn load_types(&mut self, path: &str) {
+        let Ok(text) = std::fs::read_to_string(path) else {
+            return;
+        };
+        for line in text.lines() {
+            let f: Vec<&str> = line.split_whitespace().collect();
+            if f.len() <= 1 || f[0].starts_with('#') {
+                continue;
+            }
+            for ext in &f[1..] {
+                if ext.starts_with('#') {
+                    break;
+                }
+                self.set(&format!(".{ext}"), f[0]);
+            }
+        }
+    }
+}
+
+fn mime_table() -> &'static MimeTable {
+    static T: OnceLock<MimeTable> = OnceLock::new();
+    T.get_or_init(|| {
+        let mut t = MimeTable {
+            exact: HashMap::new(),
+            lower: HashMap::new(),
+        };
+        for (k, v) in super::mime_builtin::BUILTIN {
+            t.exact.insert((*k).to_string(), (*v).to_string());
+            t.lower.insert((*k).to_string(), (*v).to_string());
+        }
+        let globs = ["/usr/local/share/mime/globs2", "/usr/share/mime/globs2"];
+        if !globs.iter().any(|g| t.load_globs(g)) {
+            for f in [
+                "/etc/mime.types",
+                "/etc/apache2/mime.types",
+                "/etc/apache/mime.types",
+                "/etc/httpd/conf/mime.types",
+            ] {
+                t.load_types(f);
+            }
+        }
+        t
     })
 }
 
-/// `mime.TypeByExtension`.
+/// `mime.TypeByExtension`: exact match first, then case-insensitive.
 fn type_by_extension(name: &str) -> Option<String> {
-    let ext = golike::ext(name).to_ascii_lowercase();
-    if let Some(t) = builtin(&ext) {
-        return Some(t.to_string());
-    }
-    let guess = mime_guess::from_ext(ext.trim_start_matches('.')).first()?;
-    let essence = guess.essence_str().to_string();
-    Some(
-        if essence.starts_with("text/") && !essence.contains("charset") {
-            format!("{essence}; charset=utf-8")
-        } else {
-            essence
-        },
-    )
+    let ext = golike::ext(name);
+    let t = mime_table();
+    t.exact
+        .get(ext)
+        .or_else(|| t.lower.get(&ext.to_lowercase()))
+        .cloned()
 }
 
 /// A small `http.DetectContentType`: the signatures that matter for vault attachments, then
@@ -277,7 +335,6 @@ fn plan(headers: &HeaderMap, method: &Method, size: u64, mtime: Option<SystemTim
     {
         h.insert(header::LAST_MODIFIED, v);
     }
-    h.insert(header::ACCEPT_RANGES, HeaderValue::from_static("bytes"));
 
     // If-Modified-Since (GET/HEAD only).
     if let (Some(t), Some(ims)) = (
@@ -300,6 +357,8 @@ fn plan(headers: &HeaderMap, method: &Method, size: u64, mtime: Option<SystemTim
         }
     }
 
+    res.headers_mut()
+        .insert(header::ACCEPT_RANGES, HeaderValue::from_static("bytes"));
     let mut range_hdr = headers
         .get(header::RANGE)
         .and_then(|v| v.to_str().ok())
@@ -328,7 +387,10 @@ fn plan(headers: &HeaderMap, method: &Method, size: u64, mtime: Option<SystemTim
                 "invalid range: failed to overlap\n"
             };
             let mut r = text_response(StatusCode::RANGE_NOT_SATISFIABLE, msg);
-            if let Ok(v) = HeaderValue::from_str(&format!("bytes */{size}")) {
+            // Go only sets Content-Range when no range overlaps the content.
+            if matches!(spec, RangeSpec::NoOverlap)
+                && let Ok(v) = HeaderValue::from_str(&format!("bytes */{size}"))
+            {
                 r.headers_mut().insert(header::CONTENT_RANGE, v);
             }
             Plan::Early(r)

@@ -4,6 +4,7 @@
 
 mod content;
 mod json;
+mod mime_builtin;
 mod spa;
 
 use std::sync::{Arc, RwLock};
@@ -11,14 +12,14 @@ use std::time::Duration;
 
 use axum::Router;
 use axum::body::{Body, Bytes};
-use axum::extract::{Path, Request, State};
+use axum::extract::{FromRequestParts, Request, State};
+use axum::http::request::Parts;
 use axum::http::{HeaderValue, Method, StatusCode, header};
 use axum::middleware::{self, Next};
 use axum::response::Response;
 use axum::routing::{get, post};
 use base64::Engine;
 use futures_util::stream;
-use serde::Deserialize;
 use tokio_util::sync::CancellationToken;
 
 use crate::relink;
@@ -27,7 +28,10 @@ use crate::setup;
 use crate::vault::{self, MAX_ATTACHMENT, Vault};
 use crate::watch::Broker;
 
-use json::{decode, json_response, text_response};
+use json::{
+    CreateRequest, ImageRequest, MoveRequest, SaveRequest, SetupRequest, TrashRequest, decode,
+    json_response, text_response,
+};
 
 /// Opens and saves the vault chosen on first run (it must call `AppState::set_vault`).
 pub type ApplyFn = dyn Fn(setup::Prepared) -> Result<(), String> + Send + Sync;
@@ -95,6 +99,32 @@ impl AppState {
 }
 
 type S = State<Arc<AppState>>;
+
+/// The `{path...}` of the Go routes: whatever follows `/api/<kind>/`, percent-decoded. Bytes
+/// that are not UTF-8 make the path invalid (`None`), as `fs.ValidPath` does in Go.
+pub struct Tail(Option<String>);
+
+impl Tail {
+    fn empty() -> Tail {
+        Tail(Some(String::new()))
+    }
+
+    /// The decoded path, or the `invalid path` answer.
+    fn get(self) -> Option<String> {
+        self.0
+    }
+}
+
+impl<St: Send + Sync> FromRequestParts<St> for Tail {
+    type Rejection = std::convert::Infallible;
+
+    async fn from_request_parts(parts: &mut Parts, _: &St) -> Result<Self, Self::Rejection> {
+        let mut it = parts.uri.path().splitn(4, '/');
+        let raw = it.nth(3).unwrap_or("");
+        let bytes: Vec<u8> = percent_encoding::percent_decode_str(raw).collect();
+        Ok(Tail(String::from_utf8(bytes).ok()))
+    }
+}
 
 /// The vault for a handler. `require_vault` guarantees one exists on every `/api/` route
 /// except setup and events, so the `None` arm is only a defensive answer.
@@ -188,7 +218,7 @@ pub fn router(state: Arc<AppState>) -> Router {
             route(&["GET", "POST"], get(setup_status).post(setup_vault), st),
         );
     inner = if st {
-        inner.fallback(spa::fallback)
+        inner.fallback(static_fallback)
     } else {
         inner.fallback(not_found)
     };
@@ -198,6 +228,7 @@ pub fn router(state: Arc<AppState>) -> Router {
     // inner router (as the fallback of the outer one), so they run before routing.
     Router::new()
         .fallback_service(inner)
+        .layer(middleware::map_response(normalize_allow))
         .layer(middleware::from_fn(mux_redirects))
         .layer(middleware::from_fn_with_state(
             Arc::clone(&state),
@@ -205,6 +236,51 @@ pub fn router(state: Arc<AppState>) -> Router {
         ))
         .layer(middleware::from_fn(require_json))
         .layer(middleware::from_fn_with_state(state, log_requests))
+        .layer(middleware::from_fn(require_host))
+}
+
+/// The SPA fallback, except for the subtree roots (`/api/notes`, ...) where the mux lists the
+/// methods of the subtree in its 405.
+async fn static_fallback(req: Request) -> Response {
+    let m = req.method();
+    if m != Method::GET && m != Method::HEAD {
+        match req.uri().path() {
+            "/api/notes" => return method_not_allowed("GET, HEAD, POST, PUT"),
+            "/api/dirs" => return method_not_allowed("GET, HEAD, POST"),
+            _ => {}
+        }
+    }
+    spa::fallback(req).await
+}
+
+/// Axum adds its own `Allow` to anything routed through a method router; keep only the Go-style
+/// one on 405 and none elsewhere.
+async fn normalize_allow(mut res: Response) -> Response {
+    let first = res.headers().get(header::ALLOW).cloned();
+    res.headers_mut().remove(header::ALLOW);
+    if res.status() == StatusCode::METHOD_NOT_ALLOWED
+        && let Some(v) = first
+    {
+        res.headers_mut().insert(header::ALLOW, v);
+    }
+    res
+}
+
+/// `net/http` refuses an HTTP/1.1 request without a Host header.
+async fn require_host(req: Request, next: Next) -> Response {
+    if req.version() == axum::http::Version::HTTP_11
+        && !req.headers().contains_key(header::HOST)
+        && req.uri().authority().is_none()
+    {
+        let mut res = text_response(
+            StatusCode::BAD_REQUEST,
+            "400 Bad Request: missing required Host header",
+        );
+        res.headers_mut()
+            .insert(header::CONNECTION, HeaderValue::from_static("close"));
+        return res;
+    }
+    next.run(req).await
 }
 
 async fn not_found() -> Response {
@@ -400,7 +476,7 @@ async fn read_body(req: Request, limit: usize) -> Result<Bytes, BodyError> {
 }
 
 /// Reads and decodes a JSON request body, answering 400 `invalid JSON` like the Go handlers.
-async fn json_body<T: serde::de::DeserializeOwned>(
+async fn json_body<T: serde::de::DeserializeOwned + Default>(
     req: Request,
     limit: usize,
 ) -> Result<T, Response> {
@@ -468,14 +544,6 @@ async fn setup_status(State(s): S) -> Response {
     )
 }
 
-#[derive(Deserialize, Default)]
-struct SetupRequest {
-    #[serde(default)]
-    mode: Option<String>,
-    #[serde(default)]
-    path: Option<String>,
-}
-
 /// Picks the vault on first run. Once a vault is configured it is refused: changing it is
 /// done from the terminal (`quirenote init`), so a browser cannot point the server at other
 /// folders of the machine.
@@ -521,35 +589,32 @@ async fn tree(State(s): S) -> Response {
 }
 
 async fn read_note_empty(state: S) -> Response {
-    read_note(state, Path(String::new())).await
+    read_note(state, Tail::empty()).await
 }
 
-async fn read_note(State(s): S, Path(path): Path<String>) -> Response {
+async fn read_note(State(s): S, tail: Tail) -> Response {
     let v = vault_or_409!(s);
+    let Some(path) = tail.get() else {
+        return write_err(&vault::Error::InvalidPath);
+    };
     match v.read(&path).await {
         Ok(note) => json_response(StatusCode::OK, &note),
         Err(e) => write_err(&e),
     }
 }
 
-#[derive(Deserialize, Default)]
-struct SaveRequest {
-    #[serde(default)]
-    content: Option<String>,
-    /// `mtime,string` in Go: a number inside a JSON string.
-    #[serde(default, deserialize_with = "json::de_i64_string")]
-    mtime: i64,
-}
-
 async fn save_note_empty(state: S, req: Request) -> Response {
-    save_note(state, Path(String::new()), req).await
+    save_note(state, Tail::empty(), req).await
 }
 
-async fn save_note(State(s): S, Path(path): Path<String>, req: Request) -> Response {
+async fn save_note(State(s): S, tail: Tail, req: Request) -> Response {
     let v = vault_or_409!(s);
     let body: SaveRequest = match json_body(req, 10 << 20).await {
         Ok(b) => b,
         Err(r) => return r,
+    };
+    let Some(path) = tail.get() else {
+        return write_err(&vault::Error::InvalidPath);
     };
     match v
         .save(&path, &body.content.unwrap_or_default(), body.mtime)
@@ -562,36 +627,25 @@ async fn save_note(State(s): S, Path(path): Path<String>, req: Request) -> Respo
     }
 }
 
-#[derive(Deserialize, Default)]
-struct CreateRequest {
-    #[serde(default)]
-    content: Option<String>,
-}
-
 async fn create_note_empty(state: S, req: Request) -> Response {
-    create_note(state, Path(String::new()), req).await
+    create_note(state, Tail::empty(), req).await
 }
 
 /// Creates a new note; 409 if it already exists (never overwrites).
-async fn create_note(State(s): S, Path(path): Path<String>, req: Request) -> Response {
+async fn create_note(State(s): S, tail: Tail, req: Request) -> Response {
     let v = vault_or_409!(s);
     let body: CreateRequest = match json_body(req, 10 << 20).await {
         Ok(b) => b,
         Err(r) => return r,
+    };
+    let Some(path) = tail.get() else {
+        return write_err(&vault::Error::InvalidPath);
     };
     match v.create(&path, &body.content.unwrap_or_default()).await {
         Ok(note) => json_response(StatusCode::CREATED, &note),
         Err(e @ vault::Error::Exists) => error_json(StatusCode::CONFLICT, &e.to_string()),
         Err(e) => write_err(&e),
     }
-}
-
-#[derive(Deserialize, Default)]
-struct MoveRequest {
-    #[serde(default)]
-    from: Option<String>,
-    #[serde(default)]
-    to: Option<String>,
 }
 
 /// Renames/moves a file or folder; 409 if the destination already exists.
@@ -634,12 +688,6 @@ async fn relink_run(State(s): S, req: Request) -> Response {
     }
 }
 
-#[derive(Deserialize, Default)]
-struct TrashRequest {
-    #[serde(default)]
-    path: Option<String>,
-}
-
 /// Moves to the vault trash (`.trash`), deleting nothing.
 async fn trash(State(s): S, req: Request) -> Response {
     let v = vault_or_409!(s);
@@ -651,16 +699,6 @@ async fn trash(State(s): S, req: Request) -> Response {
         Ok(p) => json_response(StatusCode::OK, &serde_json::json!({ "path": p })),
         Err(e) => write_err(&e),
     }
-}
-
-#[derive(Deserialize, Default)]
-struct ImageRequest {
-    /// Note where the image was pasted (determines the attachment folder).
-    #[serde(default)]
-    note: Option<String>,
-    /// Base64; JSON because of the anti-CSRF protection.
-    #[serde(default)]
-    data: Option<String>,
 }
 
 /// Stores an image pasted/dropped into the editor and returns its path.
@@ -691,11 +729,14 @@ async fn save_image(State(s): S, req: Request) -> Response {
 }
 
 async fn mkdir_empty(state: S) -> Response {
-    mkdir(state, Path(String::new())).await
+    mkdir(state, Tail::empty()).await
 }
 
-async fn mkdir(State(s): S, Path(path): Path<String>) -> Response {
+async fn mkdir(State(s): S, tail: Tail) -> Response {
     let v = vault_or_409!(s);
+    let Some(path) = tail.get() else {
+        return write_err(&vault::Error::InvalidPath);
+    };
     match v.mkdir(&path).await {
         Ok(p) => json_response(StatusCode::CREATED, &serde_json::json!({ "path": p })),
         Err(e) => write_err(&e),
@@ -705,11 +746,14 @@ async fn mkdir(State(s): S, Path(path): Path<String>) -> Response {
 // ---- files -------------------------------------------------------------------------
 
 async fn file_empty(state: S, req: Request) -> Response {
-    file(state, Path(String::new()), req).await
+    file(state, Tail::empty(), req).await
 }
 
-async fn file(State(s): S, Path(path): Path<String>, req: Request) -> Response {
+async fn file(State(s): S, tail: Tail, req: Request) -> Response {
     let v = vault_or_409!(s);
+    let Some(path) = tail.get() else {
+        return write_err(&vault::Error::InvalidPath);
+    };
     let opened = match content::open(&v, &path).await {
         Ok(o) => o,
         Err(e) => return write_err(&e),

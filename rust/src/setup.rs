@@ -122,7 +122,13 @@ fn writable(dir: &str) -> Result<(), String> {
         .write(true)
         .create_new(true)
         .open(&p)
-        .map_err(|e| format!("cannot write to {dir}: {}", crate::vault::go_errno(&e)))?;
+        .map_err(|e| {
+            format!(
+                "cannot write to {dir}: open {}: {}",
+                p.display(),
+                crate::vault::go_errno(&e)
+            )
+        })?;
     fs::remove_file(&p).map_err(|e| e.to_string())
 }
 

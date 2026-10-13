@@ -77,18 +77,108 @@ pub fn text_response(status: StatusCode, body: &str) -> Response {
 }
 
 /// `json.NewDecoder(r).Decode(&v)`: decodes the first JSON value and ignores whatever
-/// follows it. `None` for an empty or invalid body.
-pub fn decode<T: DeserializeOwned>(bytes: &[u8]) -> Option<T> {
-    serde_json::Deserializer::from_slice(bytes)
-        .into_iter::<T>()
+/// follows it. A JSON `null` leaves the zero value, like Go. `None` for an empty or invalid body.
+pub fn decode<T: DeserializeOwned + Default>(bytes: &[u8]) -> Option<T> {
+    let v = serde_json::Deserializer::from_slice(bytes)
+        .into_iter::<Option<T>>()
         .next()?
-        .ok()
+        .ok()?;
+    Some(v.unwrap_or_default())
 }
 
-/// A number carried in a JSON string (Go's `json:",string"`); `null` and a missing key are 0.
-pub fn de_i64_string<'de, D: Deserializer<'de>>(d: D) -> Result<i64, D::Error> {
-    match Option::<String>::deserialize(d)? {
-        None => Ok(0),
-        Some(s) => s.parse::<i64>().map_err(serde::de::Error::custom),
+/// Walks the keys of a JSON object matching them case-insensitively, like `encoding/json`
+/// does for struct fields (`{"Content": ...}` fills `content`). Unknown keys are ignored.
+fn visit_ci_map<'de, A, F>(mut map: A, keys: &[&'static str], mut on_key: F) -> Result<(), A::Error>
+where
+    A: serde::de::MapAccess<'de>,
+    F: FnMut(&'static str, &mut A) -> Result<(), A::Error>,
+{
+    while let Some(k) = map.next_key::<std::borrow::Cow<'de, str>>()? {
+        match keys.iter().find(|x| x.eq_ignore_ascii_case(&k)) {
+            Some(name) => on_key(name, &mut map)?,
+            None => {
+                map.next_value::<serde::de::IgnoredAny>()?;
+            }
+        }
+    }
+    Ok(())
+}
+
+/// A request struct whose fields are all optional strings, decoded like Go would.
+macro_rules! ci_struct {
+    ($name:ident { $($field:ident),+ }) => {
+        #[derive(Default)]
+        pub struct $name {
+            $(pub $field: Option<String>),+
+        }
+
+        impl<'de> serde::Deserialize<'de> for $name {
+            fn deserialize<D: serde::Deserializer<'de>>(d: D) -> Result<Self, D::Error> {
+                struct V;
+                impl<'de> serde::de::Visitor<'de> for V {
+                    type Value = $name;
+                    fn expecting(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                        f.write_str("a JSON object")
+                    }
+                    fn visit_map<A: serde::de::MapAccess<'de>>(
+                        self,
+                        map: A,
+                    ) -> Result<$name, A::Error> {
+                        let mut out = $name::default();
+                        visit_ci_map(map, &[$(stringify!($field)),+], |name, m| {
+                            match name {
+                                $(stringify!($field) => out.$field = m.next_value()?,)+
+                                _ => {}
+                            }
+                            Ok(())
+                        })?;
+                        Ok(out)
+                    }
+                }
+                d.deserialize_map(V)
+            }
+        }
+    };
+}
+
+ci_struct!(CreateRequest { content });
+ci_struct!(MoveRequest { from, to });
+ci_struct!(TrashRequest { path });
+ci_struct!(ImageRequest { note, data });
+ci_struct!(SetupRequest { mode, path });
+
+/// `{"content": ..., "mtime": "123"}`; `mtime` is `json:",string"` in Go: a number inside a
+/// JSON string (`null` and a missing key are 0, a bare number is an error).
+#[derive(Default)]
+pub struct SaveRequest {
+    pub content: Option<String>,
+    pub mtime: i64,
+}
+
+impl<'de> Deserialize<'de> for SaveRequest {
+    fn deserialize<D: Deserializer<'de>>(d: D) -> Result<Self, D::Error> {
+        struct V;
+        impl<'de> serde::de::Visitor<'de> for V {
+            type Value = SaveRequest;
+            fn expecting(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+                f.write_str("a JSON object")
+            }
+            fn visit_map<A: serde::de::MapAccess<'de>>(
+                self,
+                map: A,
+            ) -> Result<SaveRequest, A::Error> {
+                let mut out = SaveRequest::default();
+                visit_ci_map(map, &["content", "mtime"], |name, m| {
+                    if name == "content" {
+                        out.content = m.next_value()?;
+                    } else if let Some(s) = m.next_value::<Option<String>>()? {
+                        out.mtime = s.parse::<i64>().map_err(serde::de::Error::custom)?;
+                    }
+                    Ok(())
+                })?;
+                Ok(out)
+            }
+        }
+        d.deserialize_map(V)
     }
 }

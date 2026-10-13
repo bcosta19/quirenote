@@ -24,7 +24,10 @@ async fn call(
     ct: Option<&str>,
     body: &str,
 ) -> (StatusCode, String, axum::http::HeaderMap) {
-    let mut req = Request::builder().method(method).uri(path);
+    let mut req = Request::builder()
+        .method(method)
+        .uri(path)
+        .header(header::HOST, "x");
     if let Some(ct) = ct {
         req = req.header(header::CONTENT_TYPE, ct);
     }
@@ -249,6 +252,7 @@ async fn ranges_and_images() {
     let range = |r: &str| {
         Request::builder()
             .uri("/api/files/a.md")
+            .header(header::HOST, "x")
             .header(header::RANGE, r.to_string())
             .body(Body::empty())
             .unwrap()

@@ -16,9 +16,9 @@ use std::sync::Arc;
 use cap_std::ambient_authority;
 use cap_std::fs::{
     Dir, DirBuilder, DirBuilderExt, File, Metadata, MetadataExt, OpenOptions, OpenOptionsExt,
-    Permissions, PermissionsExt,
 };
 use serde::{Serialize, Serializer};
+use std::os::unix::fs::PermissionsExt;
 
 use crate::golike;
 
@@ -128,6 +128,9 @@ pub struct Vault {
     dir: PathBuf,
     root: Dir,
     mu: tokio::sync::Mutex<()>,
+    /// Give every accepted save a strictly newer mtime than the version it replaces (see
+    /// `save_locked`). On by default; `set_strict_mtime(false)` restores the Go behaviour.
+    strict_mtime: bool,
 }
 
 #[derive(Debug, Serialize, PartialEq, Eq)]
@@ -204,7 +207,13 @@ impl Vault {
             dir,
             root,
             mu: tokio::sync::Mutex::new(()),
+            strict_mtime: true,
         })
+    }
+
+    /// Turns the strictly-increasing mtime of saves on or off (benchmark switch).
+    pub fn set_strict_mtime(&mut self, on: bool) {
+        self.strict_mtime = on;
     }
 
     pub fn dir(&self) -> &Path {
@@ -218,7 +227,62 @@ impl Vault {
         b.recursive(true).mode(0o755);
         self.root
             .create_dir_with(p, &b)
-            .map_err(|e| Error::io("openat", p, e))
+            .map_err(|e| self.mkdir_error(p, e))
+    }
+
+    /// Words the failure of `mkdir -p` like Go's `os.Root.MkdirAll`: `openat <prefix>` when a
+    /// path element is not a directory, `mkdirat <path>` otherwise.
+    fn mkdir_error(&self, p: &str, e: io::Error) -> Error {
+        if is_escape(&e) {
+            return Error::io("mkdirat", p, e);
+        }
+        let comps: Vec<&str> = p.split('/').collect();
+        let mut prefix = String::new();
+        for (i, c) in comps.iter().enumerate() {
+            if !prefix.is_empty() {
+                prefix.push('/');
+            }
+            prefix.push_str(c);
+            let Ok(md) = self.root.symlink_metadata(&prefix) else {
+                break;
+            };
+            if md.is_dir() || md.file_type().is_symlink() {
+                continue;
+            }
+            return if i + 1 == comps.len() {
+                Error::io("mkdirat", &prefix, io::Error::from_raw_os_error(17))
+            } else {
+                Error::io("openat", &prefix, io::Error::from_raw_os_error(20))
+            };
+        }
+        Error::io("mkdirat", p, e)
+    }
+
+    /// `renameat2(RENAME_NOREPLACE)` confined to the vault: `Exists` if the destination appeared
+    /// since the caller looked. (Go's `os.Root` has no such call, so a file created in that window
+    /// is silently overwritten there.) Filesystems without support fall back to a plain rename.
+    fn rename_noreplace(&self, from: &str, to: &str) -> Result<()> {
+        use rustix::fs::{RenameFlags, renameat_with};
+        let open_parent = |p: &str| -> io::Result<Dir> {
+            match golike::dir(p).as_str() {
+                "." => self.root.try_clone(),
+                d => self.root.open_dir(d),
+            }
+        };
+        let (fd, td) = (
+            open_parent(from).map_err(|e| Error::io("renameat", from, e))?,
+            open_parent(to).map_err(|e| Error::io("renameat", to, e))?,
+        );
+        let (fname, tname) = (golike::base(from), golike::base(to));
+        match renameat_with(&fd, fname, &td, tname, RenameFlags::NOREPLACE) {
+            Ok(()) => Ok(()),
+            Err(rustix::io::Errno::EXIST) => Err(Error::Exists),
+            Err(rustix::io::Errno::INVAL | rustix::io::Errno::NOSYS) => self
+                .root
+                .rename(from, &self.root, to)
+                .map_err(|e| Error::io("renameat", from, e)),
+            Err(e) => Err(Error::io("renameat", from, io::Error::from(e))),
+        }
     }
 
     /// `Exists` of the Go version: does the path exist in the vault (symlinks not followed)?
@@ -326,13 +390,31 @@ impl Vault {
             &dir,
             &format!(".{}.quirenote-{}.tmp", golike::base(&p), rand_hex()),
         ]);
+        // Strictly newer than the version being replaced: the kernel stamps files with a coarse
+        // clock (a few ms), so two saves in the same tick would get the *same* mtime and the
+        // second client's stale `mtime` would still match. Go has no such guard (lost updates).
+        let new_mtime = match (&info, self.strict_mtime) {
+            (Some(m), true) => {
+                let prev = std::time::UNIX_EPOCH
+                    + std::time::Duration::new(
+                        m.mtime().max(0) as u64,
+                        m.mtime_nsec().max(0) as u32,
+                    );
+                let now = std::time::SystemTime::now();
+                Some(now.max(prev + std::time::Duration::from_nanos(1)))
+            }
+            _ => None,
+        };
         let written = (|| -> io::Result<()> {
             let mut opts = OpenOptions::new();
             opts.write(true).create_new(true).mode(mode);
-            let mut f = self.root.open_with(&tmp, &opts)?;
+            let mut f = self.root.open_with(&tmp, &opts)?.into_std();
             f.write_all(content.as_bytes())?;
             if info.is_some() {
-                f.set_permissions(Permissions::from_mode(mode))?;
+                f.set_permissions(std::fs::Permissions::from_mode(mode))?;
+            }
+            if let Some(t) = new_mtime {
+                f.set_modified(t)?;
             }
             Ok(())
         })();
@@ -476,9 +558,7 @@ impl Vault {
         if dir != "." {
             self.mkdir_all(&dir)?;
         }
-        self.root
-            .rename(&from, &self.root, &to)
-            .map_err(|e| Error::io("renameat", &from, e))?;
+        self.rename_noreplace(&from, &to)?;
         Ok(to)
     }
 
@@ -507,15 +587,12 @@ impl Vault {
                 };
                 dest = golike::join(&[TRASH_DIR, &format!("{stem} {suffix}{ext}")]);
             }
-            match self.root.symlink_metadata(&dest) {
-                Err(e) if e.kind() == io::ErrorKind::NotFound => break,
-                Err(e) => return Err(Error::io("statat", &dest, e)),
-                Ok(_) => i += 1,
+            match self.rename_noreplace(&p, &dest) {
+                Ok(()) => break,
+                Err(Error::Exists) => i += 1,
+                Err(e) => return Err(e),
             }
         }
-        self.root
-            .rename(&p, &self.root, &dest)
-            .map_err(|e| Error::io("renameat", &p, e))?;
         Ok(dest)
     }
 

@@ -36,6 +36,16 @@ Flags:
 }
 
 /// slog's text handler quotes values that contain spaces or quotes.
+/// Opens the vault; `QUIRENOTE_RS_COARSE_MTIME=1` turns off the strictly-increasing mtime of
+/// saves (restores Go's behaviour, used by the benchmark to price the guard).
+fn open_vault(dir: &str) -> std::io::Result<Vault> {
+    let mut v = Vault::open(dir)?;
+    if std::env::var("QUIRENOTE_RS_COARSE_MTIME").is_ok_and(|x| x == "1") {
+        v.set_strict_mtime(false);
+    }
+    Ok(v)
+}
+
 fn kv(v: &str) -> String {
     if v.is_empty() || v.contains([' ', '"', '=']) {
         config::go_quote(v)
@@ -233,7 +243,7 @@ async fn run(addr: &str, dir: &str, cfg_path: &std::path::Path, debug: bool) -> 
 
     let mut vault = None;
     if !dir.is_empty() {
-        let v = Vault::open(dir).map_err(|e| {
+        let v = open_vault(dir).map_err(|e| {
             format!(
                 "opening the vault: open {dir}: {} (choose another one with `quirenote init <folder>`)",
                 go_errno(&e)
@@ -257,7 +267,7 @@ async fn run(addr: &str, dir: &str, cfg_path: &std::path::Path, debug: bool) -> 
         state.enable_setup(
             home,
             Box::new(move |res: setup::Prepared| {
-                let nv = Vault::open(&res.dir)
+                let nv = open_vault(&res.dir)
                     .map_err(|e| format!("open {}: {}", res.dir, go_errno(&e)))?;
                 config::save(
                     &cfg_file,
