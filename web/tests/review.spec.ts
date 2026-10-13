@@ -309,16 +309,93 @@ test('the saved fonts are applied before the app starts, and an injected stack i
   await expect(page.locator('#app')).toBeEmpty()
 })
 
-test('the font settings suggest the fonts installed on this device', async ({ page }) => {
-  await page.addInitScript(() => {
-    ;(window as any).queryLocalFonts = async () => [{ family: 'Fira Code' }, { family: 'Fira Sans' }, { family: 'Fira Sans' }]
-  })
+/** Opens the fonts dialog on a device that lists the given installed fonts. */
+async function openFontsWith(page: Page, families: string[]) {
+  await page.addInitScript((families) => {
+    ;(window as any).queryLocalFonts = async () => families.map((family) => ({ family }))
+  }, families)
   await mockVault(page, { 'A.md': 'alpha' })
   await page.goto('/#note=A.md')
   await openFonts(page)
-  const options = page.locator('datalist#system-fonts option')
-  await expect(options).toHaveCount(2)
+}
+
+test('the font settings suggest the fonts installed on this device', async ({ page }) => {
+  await openFontsWith(page, ['Fira Code', 'Fira Sans', 'Fira Sans'])
+  await fontField(page, 'Notes').focus()
+  const options = page.getByRole('option')
   await expect(options).toHaveText(['Fira Code', 'Fira Sans'])
+  // Each name is drawn in its own font, so the choice can be seen before it is made.
+  for (const name of ['Fira Code', 'Fira Sans']) {
+    expect(await options.filter({ hasText: name }).evaluate((el) => getComputedStyle(el).fontFamily)).toContain(name)
+  }
+})
+
+test('typing filters the font suggestions, and the arrows with Enter pick one', async ({ page }) => {
+  await openFontsWith(page, ['Fira Code', 'Fira Sans', 'Literata', 'Inter'])
+  const field = fontField(page, 'Notes')
+  await field.focus()
+  await expect(page.getByRole('option')).toHaveCount(4)
+  await field.fill('FIRA')
+  await expect(page.getByRole('option')).toHaveText(['Fira Code', 'Fira Sans'])
+  await field.fill('zzz')
+  await expect(page.getByRole('listbox')).toBeHidden()
+  await field.fill('fira')
+  await page.keyboard.press('ArrowDown')
+  await page.keyboard.press('ArrowDown')
+  await expect(page.getByRole('option', { name: 'Fira Sans' })).toHaveAttribute('aria-selected', 'true')
+  await expect(field).toHaveAttribute('aria-activedescendant', /font-editor-option-1/)
+  await page.keyboard.press('Enter')
+  await expect(field).toHaveValue('Fira Sans')
+  await expect(page.getByRole('listbox')).toBeHidden()
+  await expect(page.getByRole('dialog', { name: 'Fonts' })).toBeVisible()
+  expect(await fontOf(page, '.cm-scroller')).toContain('Fira Sans')
+})
+
+test('clicking a font suggestion picks it and keeps one list open at a time', async ({ page }) => {
+  await openFontsWith(page, ['Fira Code', 'Fira Sans', 'Literata'])
+  await fontField(page, 'Interface').click()
+  await expect(page.getByRole('listbox')).toHaveCount(1)
+  await fontField(page, 'Code').focus()
+  await expect(page.getByRole('listbox')).toHaveCount(1)
+  await expect(fontField(page, 'Interface')).toHaveAttribute('aria-expanded', 'false')
+  await expect(fontField(page, 'Code')).toHaveAttribute('aria-expanded', 'true')
+  await page.getByRole('option', { name: 'Fira Code' }).click()
+  await expect(fontField(page, 'Code')).toHaveValue('Fira Code')
+  await expect(page.getByRole('listbox')).toBeHidden()
+  expect(await fontOf(page, '.cm-gutters')).toContain('Fira Code')
+})
+
+test('Escape closes the font suggestions first and the fonts dialog second', async ({ page }) => {
+  await openFontsWith(page, ['Fira Code', 'Fira Sans'])
+  const dialog = page.getByRole('dialog', { name: 'Fonts' })
+  await fontField(page, 'Notes').focus()
+  await expect(page.getByRole('listbox')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('listbox')).toBeHidden()
+  await expect(dialog).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(dialog).toBeHidden()
+})
+
+test('the font suggestions use the colors of the app in the dark theme', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('quirenote:theme', 'dark'))
+  await openFontsWith(page, ['Fira Code', 'Fira Sans'])
+  await fontField(page, 'Notes').focus()
+  const list = page.getByRole('listbox')
+  await expect(list).toBeVisible()
+  const look = await list.evaluate((el) => {
+    const probe = document.createElement('div')
+    probe.style.background = 'var(--bg)'
+    document.body.append(probe)
+    const bg = getComputedStyle(probe).backgroundColor
+    probe.remove()
+    const style = getComputedStyle(el)
+    return { bg, listBg: style.backgroundColor, color: style.color, text: getComputedStyle(document.body).color }
+  })
+  expect(look.listBg).toBe(look.bg)
+  expect(look.color).toBe(look.text)
+  // Dark, not the pale native popup.
+  expect(look.listBg).toBe('rgb(30, 31, 34)')
 })
 
 test('without the font access API the settings still take a typed name', async ({ page }) => {
@@ -433,4 +510,51 @@ test('a font name typed with CSS punctuation keeps only the name', async ({ page
   )
   expect(await fontOf(page, 'html')).toContain('Inter body display none')
   expect(await page.evaluate(() => getComputedStyle(document.body).display)).not.toBe('none')
+})
+
+test('the fonts dialog uses the app colors and the interface font, not those of pdf.js', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('quirenote:theme', 'dark'))
+  await mockVault(page, { 'A.md': 'alpha' })
+  await page.goto('/#note=A.md')
+  await openFonts(page)
+  await fontField(page, 'Interface').fill('Fira Sans')
+  const look = () =>
+    page.evaluate(() => {
+      const title = getComputedStyle(document.querySelector('[role=dialog] h2')!)
+      return { color: title.color, font: title.fontFamily, text: getComputedStyle(document.body).color }
+    })
+  const { color, font, text } = await look()
+  expect(color).toBe(text)
+  expect(font).toContain('Fira Sans')
+})
+
+test('the font settings say when a typed font is not on this device', async ({ page }) => {
+  await mockVault(page, { 'A.md': 'alpha' })
+  await page.goto('/#note=A.md')
+  await openFonts(page)
+  const notice = page.getByText('Not found on this device')
+  await fontField(page, 'Notes').fill('No Such Font Anywhere')
+  await expect(notice).toBeVisible()
+  // The app's own font counts as available, even before the browser draws it.
+  await fontField(page, 'Notes').fill('EB Garamond')
+  await expect(notice).toBeHidden()
+  await fontField(page, 'Code').fill('monospace')
+  await expect(notice).toBeHidden()
+})
+
+test('a wrapped list item stays aligned when the notes font changes', async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 700 })
+  await mockVault(page, { 'A.md': `- ${'a long list item that wraps '.repeat(12)}` })
+  await page.goto('/#note=A.md')
+  await expect(page.locator('.editor .status')).toHaveText('saved')
+  const indent = () => page.locator('.cm-line').first().evaluate((line) => (line as HTMLElement).style.paddingLeft)
+  const before = await indent()
+  await openFonts(page)
+  await fontField(page, 'Notes').fill('monospace')
+  await page.getByRole('button', { name: 'Done' }).click()
+  await expect.poll(indent).not.toBe(before)
+  const after = await indent()
+  await page.reload()
+  await expect(page.locator('.editor .status')).toHaveText('saved')
+  expect(await indent()).toBe(after)
 })

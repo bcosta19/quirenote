@@ -56,6 +56,21 @@ const hangingIndent = ViewPlugin.fromClass(
         widths.clear()
         view.dispatch({ effects: remeasure.of(null) })
       })
+      // A font picked in the settings changes a CSS variable on <html>, which CodeMirror does not
+      // see: without this the continuation stays aligned to the old font until the next edit.
+      this.font = getComputedStyle(view.contentDOM).font
+      this.fontWatch.observe(document.documentElement, { attributes: true, attributeFilter: ['style'] })
+    }
+    font: string
+    fontWatch = new MutationObserver(() => {
+      const font = getComputedStyle(this.view.contentDOM).font
+      if (font === this.font) return
+      this.font = font
+      this.view.requestMeasure()
+      this.view.dispatch({ effects: remeasure.of(null) })
+    })
+    destroy() {
+      this.fontWatch.disconnect()
     }
     update(u: ViewUpdate) {
       const again = u.transactions.some((tr) => tr.effects.some((e) => e.is(remeasure)))

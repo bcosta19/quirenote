@@ -19,13 +19,14 @@
   --error-bg: #4a1717;
   /* Fonts. Each role has a default chain (--font-<role>-tail) and an optional custom choice
      (--font-<role>-choice, written by lib/fonts.ts as `'My Font', var(--font-<role>-tail)`).
-     Without a choice the default chain applies; with one it comes first. */
+     Without a choice the default chain applies; with one it comes first, and what the custom
+     font lacks (accents, Nerd Font icons) still comes from the default fonts. */
   --font-ui-tail: system-ui, sans-serif;
-  --font-editor-tail: Garamond, Georgia, serif;
-  --font-mono-tail: 'JetBrains Mono', ui-monospace, monospace;
+  --font-editor-tail: 'EB Garamond', Garamond, Georgia, serif;
+  --font-mono-tail: 'JetBrainsMono Nerd Font', 'JetBrains Mono', ui-monospace, monospace;
   --ui-font: var(--font-ui-choice, var(--font-ui-tail));
-  --mono: var(--font-mono-choice, 'JetBrainsMono Nerd Font', var(--font-mono-tail));
-  --editor-font: var(--font-editor-choice, 'EB Garamond', var(--font-editor-tail));
+  --mono: var(--font-mono-choice, var(--font-mono-tail));
+  --editor-font: var(--font-editor-choice, var(--font-editor-tail));
   color-scheme: dark;
   font-family: var(--ui-font);
   color: var(--text);
