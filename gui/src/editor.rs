@@ -67,8 +67,6 @@ struct Completion {
 
 #[derive(Default)]
 struct LayoutCache {
-    key: u64,
-    galley: Option<Arc<Galley>>,
     text_key: u64,
     job: Option<Arc<egui::text::LayoutJob>>,
     code_lines: Vec<Range<usize>>,
@@ -578,16 +576,8 @@ impl Editor {
                         layout.code_lines = h.code_lines;
                         layout.text_key = text_key;
                     }
-                    let mut kh = DefaultHasher::new();
-                    text_key.hash(&mut kh);
-                    wrap.to_bits().hash(&mut kh);
-                    search.hash(&mut kh);
-                    let key = kh.finish();
-                    if layout.key == key {
-                        if let Some(g) = &layout.galley {
-                            return g.clone();
-                        }
-                    }
+                    // No galley is kept across frames: a galley points into the font atlas,
+                    // which egui rebuilds (theme, fonts, new glyphs); epaint caches per frame.
                     let mut job = layout.job.as_deref().cloned().unwrap_or_default();
                     job.wrap.max_width = wrap;
                     if let Some(pat) = &search {
@@ -596,10 +586,7 @@ impl Editor {
                             highlight::mark_ranges(&mut job, &ranges, colors.search_match);
                         }
                     }
-                    let g = crate::hanging::layout(ui, &job, wrap);
-                    layout.key = key;
-                    layout.galley = Some(g.clone());
-                    g
+                    crate::hanging::layout(ui, &job, wrap)
                 };
                 let mut style_scope = |ui: &mut Ui| {
                     let v = ui.visuals_mut();
@@ -657,7 +644,8 @@ impl Editor {
 
         // Text changed by typing (insert mode) or by vim before the layout.
         let text_now_hash = hash_str(&self.text);
-        if text_now_hash != self.last_text_hash {
+        let text_changed = text_now_hash != self.last_text_hash;
+        if text_changed {
             self.last_text_hash = text_now_hash;
             if self.base.is_some() {
                 self.changed(&ctx);
@@ -668,7 +656,7 @@ impl Editor {
         let range = TextEdit::load_state(&ctx, id).and_then(|s| s.cursor.char_range());
         if let Some(r) = range {
             let head = r.primary.index.0;
-            if head != self.cursor {
+            if head != self.cursor || text_changed {
                 self.cursor = head;
                 if self.vim.mode == Mode::Insert {
                     self.update_completion(files);
@@ -755,7 +743,14 @@ impl Editor {
         if let Some(comp) = &self.completion {
             if focused && self.vim.mode == Mode::Insert {
                 let c = galley.pos_from_cursor(CCursor::new(self.cursor));
-                let at = gpos + c.min.to_vec2() + Vec2::new(0.0, c.height() + 2.0);
+                let below = gpos + c.min.to_vec2() + Vec2::new(0.0, c.height() + 2.0);
+                // Like CodeMirror's tooltip: above the line when it does not fit below.
+                let popup_h = (comp.items.len() as f32 * 22.0 + 4.0).min(18.0 * 14.0 * 1.2);
+                let at = if below.y + popup_h > ctx.content_rect().bottom() {
+                    gpos + c.min.to_vec2() - Vec2::new(0.0, popup_h + 2.0)
+                } else {
+                    below
+                };
                 if let Some(i) = completion_popup(&ctx, comp, at, ec) {
                     self.accept_completion(&ctx, i, files);
                 }
@@ -902,6 +897,7 @@ impl Editor {
         }
         let in_cmdline = self.vim.cmdline.is_some();
         if self.vim.mode == Mode::Insert && !in_cmdline {
+            self.close_brackets(ctx);
             // Insert mode: the text field types; we keep Escape and the undo keys.
             let mut leave = false;
             let mut undo = 0i32;
@@ -1014,6 +1010,86 @@ impl Editor {
         if self.save_requested {
             self.save_requested = false;
             self.save(bridge, api);
+        }
+    }
+
+    /// CodeMirror's closeBrackets: typing ( [ { " ' inserts the pair (or wraps the selection),
+    /// typing the closer in front of the same closer steps over it, Backspace between an empty
+    /// pair deletes both.
+    fn close_brackets(&mut self, ctx: &egui::Context) {
+        let id = self.id();
+        let events = ctx.input(|i| i.events.clone());
+        let mut handled = Vec::new();
+        for (n, e) in events.iter().enumerate() {
+            let range = TextEdit::load_state(ctx, id).and_then(|s| s.cursor.char_range());
+            let Some(r) = range else { continue };
+            let (a, z) = {
+                let (x, y) = (r.primary.index.0, r.secondary.index.0);
+                (x.min(y), x.max(y))
+            };
+            let chars: Vec<char> = self.text.chars().collect();
+            let next = chars.get(z).copied();
+            let prev = a.checked_sub(1).and_then(|i| chars.get(i)).copied();
+            let closer = |c: char| match c {
+                '(' => Some(')'),
+                '[' => Some(']'),
+                '{' => Some('}'),
+                '"' => Some('"'),
+                '\'' => Some('\''),
+                _ => None,
+            };
+            match e {
+                Event::Text(t) if t.chars().count() == 1 => {
+                    let c = t.chars().next().unwrap_or(' ');
+                    // Step over a closer that is already there.
+                    if a == z && matches!(c, ')' | ']' | '}' | '"' | '\'') && next == Some(c) {
+                        self.set_cursor_state(ctx, a + 1, None);
+                        handled.push(n);
+                        continue;
+                    }
+                    let Some(close) = closer(c) else { continue };
+                    let quote = c == '"' || c == '\'';
+                    if a != z {
+                        let inner: String = chars[a..z].iter().collect();
+                        let (ba, bz) = (char_to_byte(&self.text, a), char_to_byte(&self.text, z));
+                        self.text.replace_range(ba..bz, &format!("{c}{inner}{close}"));
+                        self.set_cursor_state(ctx, z + 1, Some(a + 1));
+                        handled.push(n);
+                        continue;
+                    }
+                    // Only before whitespace, the end or a closer; quotes not right after a word.
+                    let free_after = next.is_none_or(|ch| ch.is_whitespace() || ")]}".contains(ch));
+                    let word_before = prev.is_some_and(|ch| ch.is_alphanumeric());
+                    if !free_after || (quote && word_before) {
+                        continue;
+                    }
+                    let b = char_to_byte(&self.text, a);
+                    self.text.insert_str(b, &format!("{c}{close}"));
+                    self.set_cursor_state(ctx, a + 1, None);
+                    handled.push(n);
+                }
+                Event::Key { key: Key::Backspace, pressed: true, modifiers, .. } if modifiers.is_none() && a == z => {
+                    if let (Some(p), Some(nx)) = (prev, next) {
+                        if closer(p) == Some(nx) {
+                            let (ba, bz) = (char_to_byte(&self.text, a - 1), char_to_byte(&self.text, a + 1));
+                            self.text.replace_range(ba..bz, "");
+                            self.set_cursor_state(ctx, a - 1, None);
+                            handled.push(n);
+                        }
+                    }
+                }
+                _ => {}
+            }
+        }
+        if !handled.is_empty() {
+            ctx.input_mut(|i| {
+                let mut n = 0;
+                i.events.retain(|_| {
+                    let keep = !handled.contains(&n);
+                    n += 1;
+                    keep
+                });
+            });
         }
     }
 

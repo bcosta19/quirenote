@@ -347,7 +347,7 @@ fn inline(cx: &mut Ctx<'_>, s: &str, style: Span) {
                         flush(cx, plain_start, i);
                         let link = Span { color: c.link, underline: c.link_underline, ..style };
                         cx.push(&s[i..close + 1], link);
-                        cx.push(&s[close + 1..end + 1], Span { color: c.url, ..style });
+                        cx.push(&s[close + 1..end + 1], link);
                         i = end + 1;
                         plain_start = i;
                         continue;

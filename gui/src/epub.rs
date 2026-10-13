@@ -757,6 +757,8 @@ pub struct EpubReader {
     offset: f32,
     content_h: f32,
     scroll_by: f32,
+    /// The book has the keyboard (clicked into it), like focus inside foliate's iframe.
+    focused: bool,
 }
 
 /// Wheel "push" past the end/start of a chapter before turning, so trackpad inertia does not
@@ -785,6 +787,7 @@ impl EpubReader {
             offset: 0.0,
             content_h: 0.0,
             scroll_by: 0.0,
+            focused: false,
         }
     }
 
@@ -946,13 +949,16 @@ impl EpubReader {
             ui.set_width(ui.available_width());
             ui.horizontal(|ui| {
                 ui.spacing_mut().item_spacing = Vec2::new(6.0, 0.0);
-                let toc_w = if self.book.as_ref().is_some_and(|b| !b.toc.is_empty()) { (ui.available_width() * 0.4).min(260.0) } else { 0.0 };
+                // The chapters list is as wide as its label (max-width: 40%), like the <select>.
+                let current_label = self.location.as_ref().map(|l| l.chapter.clone()).filter(|c| !c.is_empty()).unwrap_or_else(|| "Chapters".into());
+                let label_w = ui.fonts_mut(|f| f.layout_no_wrap(current_label.clone(), fonts::ui(12.0), p.text)).size().x + 28.0;
+                let toc_w = if self.book.as_ref().is_some_and(|b| !b.toc.is_empty()) { label_w.min(ui.available_width() * 0.4) } else { 0.0 };
                 let w = (ui.available_width() - toc_w - 2.0 * 32.0 - 40.0 - 24.0).max(40.0);
                 let (r, resp) = ui.allocate_exact_size(Vec2::new(w, 22.0), Sense::hover());
                 crate::tree::paint_truncated(ui, r, crate::links::file_name(&self.title), fonts::ui(13.0), p.text);
                 resp.on_hover_text(&self.title);
                 if toc_w > 0.0 {
-                    let current = self.location.as_ref().map(|l| l.chapter.clone()).filter(|c| !c.is_empty()).unwrap_or_else(|| "Chapters".into());
+                    let current = current_label.clone();
                     let mut chosen = None;
                     egui::ComboBox::from_id_salt(("epub-toc", &self.id))
                         .width(toc_w)
@@ -998,13 +1004,20 @@ impl EpubReader {
         };
         let area = ui.available_rect_before_wrap();
         ui.painter().rect_filled(area, 0.0, bg);
-        let focus_id = Id::new(("epub-view", &self.id));
-        let bg_resp = ui.interact(area, focus_id, Sense::click());
-        if bg_resp.clicked() {
-            bg_resp.request_focus();
+        // A click inside the book gives it the keyboard; a click elsewhere takes it away.
+        if let Some(pos) = ui.input(|i| if i.pointer.primary_pressed() { i.pointer.interact_pos() } else { None }) {
+            self.focused = area.contains(pos);
+            if self.focused {
+                ui.memory_mut(|m| {
+                    if let Some(f) = m.focused() {
+                        m.surrender_focus(f);
+                    }
+                });
+            }
         }
+        let typing = ui.memory(|m| m.focused().is_some());
         // Arrow keys inside the book also turn the page.
-        if ui.memory(|m| m.has_focus(focus_id)) {
+        if self.focused && !typing {
             let (n, pv) = ui.input_mut(|i| {
                 let n = i.consume_key(Modifiers::NONE, Key::ArrowRight) || i.consume_key(Modifiers::NONE, Key::PageDown) || i.consume_key(Modifiers::NONE, Key::Space);
                 let pv = i.consume_key(Modifiers::NONE, Key::ArrowLeft) || i.consume_key(Modifiers::NONE, Key::PageUp);
@@ -1023,7 +1036,11 @@ impl EpubReader {
             }
             return None;
         };
-        let mut sa = ScrollArea::vertical().id_salt(("epub-scroll", &self.id, self.chapter)).auto_shrink([false, false]);
+        // foliate's scrolled view moves about a third of what a page does per wheel notch.
+        let mut sa = ScrollArea::vertical()
+            .id_salt(("epub-scroll", &self.id, self.chapter))
+            .auto_shrink([false, false])
+            .wheel_scroll_multiplier(Vec2::splat(1.0 / 3.0));
         match self.scroll_to.take() {
             Some(Scroll::Top) => sa = sa.vertical_scroll_offset(0.0),
             Some(Scroll::Bottom) => sa = sa.vertical_scroll_offset(f32::MAX / 4.0),

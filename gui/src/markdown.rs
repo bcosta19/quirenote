@@ -919,7 +919,7 @@ impl Painter<'_> {
         for run in runs(inl) {
             match run {
                 Ok(text) => {
-                    let text = trim_breaks(text);
+                    let text = trim_around_breaks(trim_breaks(text));
                     if !text.is_empty() {
                         self.text(ui, &text, size, color, base, width);
                     }
@@ -931,61 +931,93 @@ impl Painter<'_> {
 
     /// Draws the blocks top to bottom; returns the top y of each one (for the EPUB position).
     pub fn blocks(&mut self, ui: &mut Ui, blocks: &[Block], width: f32, depth: usize) -> Vec<f32> {
+        let (tops, trailing) = self.blocks_in(ui, blocks, width, depth, false, false);
+        if depth == 0 {
+            ui.add_space(trailing);
+        }
+        tops
+    }
+
+    /// Top and bottom margins of a block, as the preview's CSS sets them (em of the text size).
+    fn margins(b: &Block, size: f32, in_li: bool) -> (f32, f32) {
+        match b {
+            // li > p { margin: 0 }; p { margin: 0 0 .8em }
+            Block::Para(_) if in_li => (0.0, 0.0),
+            Block::Para(_) | Block::Quote(_) | Block::List { .. } | Block::Table { .. } => (0.0, size * 0.8),
+            Block::Heading(level, _) => {
+                let hs = size * heading_scale(*level);
+                match level {
+                    // h5/h6 keep the browser defaults.
+                    5 => (hs * 1.67, hs * 1.67),
+                    6 => (hs * 2.33, hs * 2.33),
+                    _ => (hs * 1.2, hs * 0.4),
+                }
+            }
+            Block::Code(_) => (size, size),
+            Block::Rule => (size * 1.5, size * 1.5),
+            Block::Props(_) => (0.0, size * 1.4),
+        }
+    }
+
+    /// The blocks with collapsing margins (the larger of two adjacent margins, like CSS).
+    /// Returns the tops and the bottom margin left after the last block.
+    fn blocks_in(&mut self, ui: &mut Ui, blocks: &[Block], width: f32, depth: usize, in_li: bool, italic: bool) -> (Vec<f32>, f32) {
         let look = self.look;
         let size = look.size;
-        let gap = size * 0.8;
+        ui.spacing_mut().item_spacing = Vec2::ZERO;
         let mut tops = Vec::with_capacity(blocks.len());
+        let mut pending: Option<f32> = None;
         for (i, b) in blocks.iter().enumerate() {
+            let (mt, mb) = Self::margins(b, size, in_li);
+            let space = match pending {
+                None if depth == 0 || !in_li => mt,
+                None => 0.0,
+                Some(prev) => prev.max(mt),
+            };
+            if space > 0.0 {
+                ui.add_space(space);
+            }
             tops.push(ui.cursor().top());
-            let last = i + 1 == blocks.len();
             match b {
                 Block::Para(inl) => {
-                    self.inlines(ui, inl, size, look.text, Style::default(), width);
-                    if !last || depth == 0 {
-                        ui.add_space(gap);
-                    }
+                    self.inlines(ui, inl, size, look.text, Style { italic, ..Style::default() }, width);
                 }
                 Block::Heading(level, inl) => {
-                    let scale = match level {
-                        1 => 1.8,
-                        2 => 1.45,
-                        3 => 1.2,
-                        _ => 1.0,
-                    };
-                    let hs = size * scale;
-                    ui.add_space(hs * 1.2);
-                    let color = if look.colored_headings { look.heading } else { look.text };
+                    let hs = size * heading_scale(*level);
+                    let color = if look.colored_headings && *level <= 4 { look.heading } else { look.text };
                     let tmp = Look { line_height: 1.25, ..clone_look(look) };
                     let mut p = Painter { look: &tmp, images: self.images, click: None, hovered_link: false };
-                    p.inlines(ui, inl, hs, color, Style { bold: true, ..Style::default() }, width);
+                    p.inlines(ui, inl, hs, color, Style { bold: true, italic, ..Style::default() }, width);
                     if p.click.is_some() {
                         self.click = p.click;
                     }
                     self.hovered_link |= p.hovered_link;
-                    ui.add_space(hs * 0.4);
                 }
                 Block::Quote(inner) => {
+                    // border-left: 3px; padding: .1em 1em; muted and italic.
                     let start = ui.cursor().top();
                     let x = ui.cursor().left();
                     let pad = size;
                     let inner_w = width - pad - 3.0;
-                    ui.add_space(size * 0.1);
-                    let r = ui.horizontal(|ui| {
+                    let r = ui.horizontal_top(|ui| {
+                        ui.spacing_mut().item_spacing = Vec2::ZERO;
                         ui.add_space(3.0 + pad);
                         ui.vertical(|ui| {
                             ui.set_width(inner_w);
+                            ui.add_space(size * 0.1);
                             let tmp = Look { text: look.muted, ..clone_look(look) };
                             let mut p = Painter { look: &tmp, images: self.images, click: None, hovered_link: false };
-                            p.quote_blocks(ui, inner, inner_w, depth + 1);
+                            // The padding keeps the last paragraph's margin inside the quote.
+                            let (_, trailing) = p.blocks_in(ui, inner, inner_w, depth + 1, false, true);
+                            ui.add_space(trailing + size * 0.1);
                             if p.click.is_some() {
                                 self.click = p.click;
                             }
                             self.hovered_link |= p.hovered_link;
                         });
                     });
-                    let end = r.response.rect.bottom() + size * 0.1;
+                    let end = r.response.rect.bottom();
                     ui.painter().rect_filled(Rect::from_min_max(Pos2::new(x, start), Pos2::new(x + 3.0, end)), 0.0, look.border);
-                    ui.add_space(size * 0.1 + gap);
                 }
                 Block::Code(code) => {
                     let frame = egui::Frame::new().fill(look.code_bg).corner_radius(6).inner_margin(egui::Margin::symmetric(
@@ -996,56 +1028,27 @@ impl Painter<'_> {
                         ui.set_width(width - 2.0 * size);
                         egui::ScrollArea::horizontal().id_salt(("code", ui.cursor().top() as i64, i)).show(ui, |ui| {
                             let mut job = LayoutJob::simple(code.clone(), fonts::mono(size * 0.8), look.text, f32::INFINITY);
-                            job.sections.iter_mut().for_each(|s| s.format.line_height = Some(size * 0.8 * 1.5));
+                            job.sections.iter_mut().for_each(|s| s.format.line_height = Some(size * 0.8 * look.line_height));
                             ui.add(egui::Label::new(job).extend());
                         });
                     });
-                    ui.add_space(gap);
                 }
                 Block::Rule => {
-                    ui.add_space(size * 1.5);
                     let y = ui.cursor().top();
                     ui.painter().hline(ui.cursor().left()..=ui.cursor().left() + width, y, Stroke::new(1.0, look.border));
-                    ui.add_space(size * 1.5);
+                    ui.add_space(1.0);
                 }
-                Block::List { ordered, start, items } => {
-                    self.list(ui, *ordered, *start, items, width, depth);
-                    if depth == 0 || !last {
-                        ui.add_space(gap);
-                    }
-                }
-                Block::Table { head, rows } => {
-                    self.table(ui, head, rows, width);
-                    ui.add_space(gap);
-                }
-                Block::Props(props) => {
-                    self.props(ui, props, width);
-                    ui.add_space(size * 1.4);
-                }
+                Block::List { ordered, start, items } => self.list(ui, *ordered, *start, items, width, depth),
+                Block::Table { head, rows } => self.table(ui, head, rows, width),
+                Block::Props(props) => self.props(ui, props, width),
             }
+            pending = Some(mb);
         }
-        tops
-    }
-
-    fn quote_blocks(&mut self, ui: &mut Ui, blocks: &[Block], width: f32, depth: usize) {
-        // Quotes are italic: draw their paragraphs with an italic base style.
-        for (i, b) in blocks.iter().enumerate() {
-            match b {
-                Block::Para(inl) => {
-                    let look = self.look;
-                    self.inlines(ui, inl, look.size, look.text, Style { italic: true, ..Style::default() }, width);
-                    if i + 1 < blocks.len() {
-                        ui.add_space(look.size * 0.8);
-                    }
-                }
-                other => {
-                    self.blocks(ui, std::slice::from_ref(other), width, depth);
-                }
-            }
-        }
+        (tops, pending.unwrap_or(0.0))
     }
 
     fn list(&mut self, ui: &mut Ui, ordered: bool, start: u64, items: &[Item], width: f32, depth: usize) {
+        ui.spacing_mut().item_spacing = Vec2::ZERO;
         let look = self.look;
         let size = look.size;
         let indent = size * 1.4;
@@ -1080,22 +1083,24 @@ impl Painter<'_> {
                         self.click = Some(Click::Task(line));
                     }
                 } else {
-                    let marker = if ordered {
-                        format!("{}.", start + n as u64)
+                    if ordered {
+                        ui.painter().text(
+                            Pos2::new(marker_rect.right() - size * 0.35, marker_rect.center().y),
+                            Align2::RIGHT_CENTER,
+                            format!("{}.", start + n as u64),
+                            fonts::editor(size),
+                            look.text,
+                        );
                     } else {
+                        // disc, circle, square: drawn, the book fonts may lack ◦ and ▪.
+                        let c = Pos2::new(marker_rect.right() - size * 0.55, marker_rect.center().y);
+                        let r = size * 0.13;
                         match depth % 3 {
-                            0 => "•".into(),
-                            1 => "◦".into(),
-                            _ => "▪".into(),
-                        }
-                    };
-                    ui.painter().text(
-                        Pos2::new(marker_rect.right() - size * 0.35, marker_rect.center().y),
-                        Align2::RIGHT_CENTER,
-                        marker,
-                        fonts::editor(size),
-                        look.text,
-                    );
+                            0 => ui.painter().circle_filled(c, r, look.text),
+                            1 => ui.painter().circle_stroke(c, r, Stroke::new(1.0, look.text)),
+                            _ => ui.painter().rect_filled(Rect::from_center_size(c, Vec2::splat(r * 1.8)), 0.0, look.text),
+                        };
+                    }
                 }
                 ui.allocate_space(Vec2::new(indent, 1.0));
                 ui.vertical(|ui| {
@@ -1103,7 +1108,10 @@ impl Painter<'_> {
                     if item.blocks.is_empty() {
                         ui.allocate_space(Vec2::new(1.0, size * look.line_height));
                     }
-                    self.blocks(ui, &item.blocks, width - indent, depth + 1);
+                    let (_, trailing) = self.blocks_in(ui, &item.blocks, width - indent, depth + 1, true, false);
+                    if n + 1 < items.len() {
+                        ui.add_space(trailing);
+                    }
                 });
             });
         }
@@ -1210,6 +1218,41 @@ impl Painter<'_> {
             }
         });
     }
+}
+
+fn heading_scale(level: u8) -> f32 {
+    match level {
+        1 => 1.8,
+        2 => 1.45,
+        3 => 1.2,
+        4 => 1.0,
+        5 => 0.83,
+        _ => 0.67,
+    }
+}
+
+/// Like HTML: spaces next to a line break do not show.
+fn trim_around_breaks(v: Vec<Inline>) -> Vec<Inline> {
+    let mut out: Vec<Inline> = Vec::with_capacity(v.len());
+    for i in v {
+        match i {
+            Inline::Break => {
+                if let Some(Inline::Text(t, _)) = out.last_mut() {
+                    let n = t.trim_end_matches(' ').len();
+                    t.truncate(n);
+                }
+                out.push(Inline::Break);
+            }
+            Inline::Text(t, s) if matches!(out.last(), Some(Inline::Break)) => {
+                let t = t.trim_start_matches(' ').to_string();
+                if !t.is_empty() {
+                    out.push(Inline::Text(t, s));
+                }
+            }
+            other => out.push(other),
+        }
+    }
+    out
 }
 
 fn clone_look(l: &Look) -> Look {

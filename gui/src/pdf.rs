@@ -194,6 +194,8 @@ pub struct PdfReader {
 }
 
 const GAP: f32 = 10.0;
+/// pdf.js "page-width": the page is the container minus its scroll bar padding and borders.
+const FIT_PADDING: f32 = 65.0;
 const SCROLL_STEP: f32 = 60.0;
 static GENERATION: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
 
@@ -379,7 +381,7 @@ impl PdfReader {
         let width = area.width();
         if (width - self.last_width).abs() > 0.5 {
             if self.last_width == 0.0 {
-                self.fit_scale = ((width - 40.0) / self.max_page_width()).max(0.1);
+                self.fit_scale = ((width - FIT_PADDING) / self.max_page_width()).max(0.1);
             } else {
                 self.resize_due = Some(Instant::now() + Duration::from_millis(120));
             }
@@ -388,7 +390,7 @@ impl PdfReader {
         if let Some(due) = self.resize_due {
             if Instant::now() >= due {
                 self.resize_due = None;
-                self.fit_scale = ((width - 40.0) / self.max_page_width()).max(0.1);
+                self.fit_scale = ((width - FIT_PADDING) / self.max_page_width()).max(0.1);
                 if self.zoom == Zoom::Width {
                     self.keep_page();
                 }
@@ -421,7 +423,7 @@ impl PdfReader {
         if let Some((pg, frac)) = self.goto.take() {
             if let Some(&top) = tops.get(pg as usize - 1) {
                 let h = self.sizes.get(pg as usize - 1).map_or(0.0, |s| s.y * scale);
-                sa = sa.vertical_scroll_offset((top - GAP + frac * h).max(0.0));
+                sa = sa.vertical_scroll_offset((top - 1.0 + frac * h).max(0.0));
             } else if !self.loaded {
                 self.goto = Some((pg, frac));
             }
@@ -517,7 +519,7 @@ impl PdfReader {
             }
         }
         if let (Some(&top), Some(s)) = (tops.get(self.page as usize - 1), self.sizes.get(self.page as usize - 1)) {
-            self.page_fraction = ((offset - (top - GAP)) / (s.y * scale)).clamp(0.0, 1.0);
+            self.page_fraction = ((offset - (top - 1.0)) / (s.y * scale)).clamp(0.0, 1.0);
         }
         // Textures far from the view are dropped (pdf.js keeps a small page cache too).
         let keep: HashSet<usize> = visible.iter().flat_map(|(i, _)| i.saturating_sub(1)..=i + 1).collect();

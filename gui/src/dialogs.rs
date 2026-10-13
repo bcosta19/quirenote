@@ -47,6 +47,13 @@ fn list_move(ctx: &egui::Context, letters: bool) -> i32 {
     d
 }
 
+/// The scrolling list of a panel. An egui Area lays its content out in last frame's size, so
+/// the list asks for the height its rows need (up to the max) instead of growing a row a frame.
+fn list_area(max_h: f32, rows: usize, row_h: f32) -> ScrollArea {
+    let want = (rows as f32 * row_h + 12.0).min(max_h);
+    ScrollArea::vertical().max_height(max_h).min_scrolled_height(want).auto_shrink([false, true])
+}
+
 fn wrap(selected: usize, delta: i32, len: usize) -> usize {
     if len == 0 {
         return 0;
@@ -206,13 +213,14 @@ pub enum MenuAction {
 pub struct ContextMenu {
     pub pos: Pos2,
     pub items: Vec<MenuItem>,
-    focused: usize,
+    /// The highlighted item: by the pointer, or by the keyboard after an arrow key.
+    focused: Option<usize>,
     opened_at: u64,
 }
 
 impl ContextMenu {
     pub fn new(pos: Pos2, items: Vec<MenuItem>, frame: u64) -> Self {
-        ContextMenu { pos, items, focused: 0, opened_at: frame }
+        ContextMenu { pos, items, focused: None, opened_at: frame }
     }
 
     /// Ok(Some(action)) when an item was chosen, Ok(None) while open, Err(()) when closed.
@@ -229,7 +237,13 @@ impl ContextMenu {
         } else {
             0
         };
-        self.focused = wrap(self.focused, d, self.items.len());
+        if d != 0 {
+            self.focused = Some(match self.focused {
+                None if d > 0 => 0,
+                None => self.items.len().saturating_sub(1),
+                Some(f) => wrap(f, d, self.items.len()),
+            });
+        }
         let enter = take(ctx, Modifiers::NONE, Key::Enter);
         let screen = ctx.content_rect();
         // Keeps the menu inside the window (its size is known after the first frame).
@@ -247,15 +261,17 @@ impl ContextMenu {
                 .inner_margin(Margin::same(4))
                 .shadow(egui::Shadow { offset: [0, 8], blur: 28, spread: 0, color: Color32::from_black_alpha(51) })
                 .show(ui, |ui| {
-                    ui.set_min_width(200.0);
                     ui.spacing_mut().item_spacing = Vec2::ZERO;
+                    // min-width: 200px, or the longest label.
+                    let widest = self.items.iter().map(|it| ui.fonts_mut(|f| f.layout_no_wrap(it.label.clone(), fonts::ui(13.0), p.text)).size().x).fold(0.0, f32::max);
+                    let w = (widest + 20.0).max(192.0);
                     for (i, item) in self.items.iter().enumerate() {
                         let color = if item.danger { p.error } else { p.text };
-                        let (rect, r) = ui.allocate_exact_size(Vec2::new(ui.available_width().max(192.0), 28.0), Sense::click());
+                        let (rect, r) = ui.allocate_exact_size(Vec2::new(w, 28.0), Sense::click());
                         if r.hovered() {
-                            self.focused = i;
+                            self.focused = Some(i);
                         }
-                        if i == self.focused {
+                        if Some(i) == self.focused {
                             ui.painter().rect_filled(rect, 5, p.accent_bg);
                         }
                         ui.painter().text(
@@ -265,7 +281,7 @@ impl ContextMenu {
                             fonts::ui(13.0),
                             color,
                         );
-                        if r.clicked() || (enter && i == self.focused) {
+                        if r.clicked() || (enter && Some(i) == self.focused) {
                             chosen = Some(item.action.clone());
                         }
                     }
@@ -303,6 +319,7 @@ pub enum SwitchOutcome {
 }
 
 pub struct Switcher {
+    shown: usize,
     query: String,
     selected: usize,
     opened: bool,
@@ -313,7 +330,7 @@ const SWITCH_MAX: usize = 50;
 
 impl Switcher {
     pub fn new() -> Self {
-        Switcher { query: String::new(), selected: 0, opened: false, scroll_to_selected: false }
+        Switcher { shown: usize::MAX, query: String::new(), selected: 0, opened: false, scroll_to_selected: false }
     }
 
     pub fn items(&self, files: &[String], recent: &[String]) -> Vec<SwitchItem> {
@@ -337,6 +354,10 @@ impl Switcher {
     pub fn show(&mut self, ctx: &egui::Context, files: &[String], recent: &[String]) -> SwitchOutcome {
         let p = palette_ctx(ctx);
         let items = self.items(files, recent);
+        if items.len() != self.shown {
+            self.shown = items.len();
+            ctx.request_repaint();
+        }
         let d = list_move(ctx, false);
         if d != 0 && !items.is_empty() {
             self.selected = wrap(self.selected, d, items.len());
@@ -382,8 +403,9 @@ impl Switcher {
                 }
             });
             let max_h = ui.ctx().content_rect().height() * 0.5;
-            ScrollArea::vertical().max_height(max_h).auto_shrink([false, true]).show(ui, |ui| {
+            list_area(max_h, items.len(), 30.0).show(ui, |ui| {
                 Frame::new().inner_margin(Margin::same(6)).show(ui, |ui| {
+                    ui.spacing_mut().interact_size.y = 0.0;
                     if items.is_empty() {
                         ui.add_space(4.0);
                         ui.label(RichText::new("No notes in the vault.").color(p.muted).font(fonts::ui(13.0)));
@@ -395,6 +417,7 @@ impl Switcher {
                             .show(ui, |ui| {
                                 ui.set_width(ui.available_width());
                                 ui.horizontal(|ui| {
+                                    ui.spacing_mut().item_spacing.x = 5.0;
                                     let (name, dir) = match item {
                                         SwitchItem::Create(path) => {
                                             let dir = dir_of(path);
@@ -493,6 +516,7 @@ pub enum PanelOutcome {
 }
 
 pub struct SearchPanel {
+    shown: usize,
     pub query: String,
     pub results: Vec<SearchResult>,
     pub status: String,
@@ -508,6 +532,7 @@ pub const SEARCH_LIMIT: usize = 200; // search.MaxTotal on the server
 impl SearchPanel {
     pub fn new(initial: String) -> Self {
         SearchPanel {
+            shown: usize::MAX,
             due: Some(Instant::now()),
             query: initial,
             results: Vec::new(),
@@ -544,6 +569,10 @@ impl SearchPanel {
     /// Returns the query to search now (after the 200 ms pause), if any.
     pub fn show(&mut self, ctx: &egui::Context) -> (PanelOutcome, Option<String>) {
         let p = palette_ctx(ctx);
+        if self.results.len() != self.shown {
+            self.shown = self.results.len();
+            ctx.request_repaint();
+        }
         let d = list_move(ctx, false);
         if d != 0 && !self.results.is_empty() {
             self.selected = wrap(self.selected, d, self.results.len());
@@ -585,8 +614,9 @@ impl SearchPanel {
                 });
             });
             let max_h = ui.ctx().content_rect().height() * 0.6;
-            ScrollArea::vertical().max_height(max_h).auto_shrink([false, true]).show(ui, |ui| {
+            list_area(max_h, self.results.len(), 52.0).show(ui, |ui| {
                 Frame::new().inner_margin(Margin::same(6)).show(ui, |ui| {
+                    ui.spacing_mut().interact_size.y = 0.0;
                     for (i, r) in self.results.iter().enumerate() {
                         let sel = i == self.selected;
                         let resp = result_row(ui, r, i, sel, p, "search-row");
@@ -636,17 +666,22 @@ impl SearchPanel {
 // ---------------------------------------------------------------- BacklinksPanel
 
 pub struct BacklinksPanel {
+    shown: usize,
     selected: usize,
     scroll_to_selected: bool,
 }
 
 impl BacklinksPanel {
     pub fn new() -> Self {
-        BacklinksPanel { selected: 0, scroll_to_selected: false }
+        BacklinksPanel { shown: usize::MAX, selected: 0, scroll_to_selected: false }
     }
 
     pub fn show(&mut self, ctx: &egui::Context, note: &str, results: &[SearchResult]) -> PanelOutcome {
         let p = palette_ctx(ctx);
+        if results.len() != self.shown {
+            self.shown = results.len();
+            ctx.request_repaint();
+        }
         let d = list_move(ctx, true);
         if d != 0 && !results.is_empty() {
             self.selected = wrap(self.selected, d, results.len());
@@ -675,8 +710,9 @@ impl BacklinksPanel {
             let y = ui.cursor().top();
             ui.painter().hline(ui.min_rect().x_range(), y, Stroke::new(1.0, p.border));
             let max_h = ui.ctx().content_rect().height() * 0.6;
-            ScrollArea::vertical().max_height(max_h).auto_shrink([false, true]).show(ui, |ui| {
+            list_area(max_h, results.len(), 52.0).show(ui, |ui| {
                 Frame::new().inner_margin(Margin::same(6)).show(ui, |ui| {
+                    ui.spacing_mut().interact_size.y = 0.0;
                     if results.is_empty() {
                         ui.label(RichText::new("No notes link here yet.").color(p.muted).font(fonts::ui(13.0)));
                     }
@@ -713,6 +749,7 @@ pub enum OutlineOutcome {
 }
 
 pub struct Outline {
+    shown: usize,
     query: String,
     selected: usize,
     opened: bool,
@@ -721,13 +758,17 @@ pub struct Outline {
 
 impl Outline {
     pub fn new() -> Self {
-        Outline { query: String::new(), selected: 0, opened: false, scroll_to_selected: false }
+        Outline { shown: usize::MAX, query: String::new(), selected: 0, opened: false, scroll_to_selected: false }
     }
 
     pub fn show(&mut self, ctx: &egui::Context, all: &[Heading]) -> OutlineOutcome {
         let p = palette_ctx(ctx);
         let items: Vec<&Heading> =
             if self.query.trim().is_empty() { all.iter().collect() } else { fuzzy::rank(&self.query, all, |h| h.title.as_str()) };
+        if items.len() != self.shown {
+            self.shown = items.len();
+            ctx.request_repaint();
+        }
         let d = list_move(ctx, false);
         if d != 0 && !items.is_empty() {
             self.selected = wrap(self.selected, d, items.len());
@@ -754,8 +795,9 @@ impl Outline {
                 }
             });
             let max_h = ui.ctx().content_rect().height() * 0.55;
-            ScrollArea::vertical().max_height(max_h).auto_shrink([false, true]).show(ui, |ui| {
+            list_area(max_h, items.len(), 30.0).show(ui, |ui| {
                 Frame::new().inner_margin(Margin::same(6)).show(ui, |ui| {
+                    ui.spacing_mut().interact_size.y = 0.0;
                     if items.is_empty() {
                         let msg = if all.is_empty() { "This note has no headings." } else { "No heading matches." };
                         ui.label(RichText::new(msg).color(p.muted).font(fonts::ui(13.0)));

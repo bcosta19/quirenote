@@ -494,6 +494,8 @@ impl App {
             s.text_styles.insert(egui::TextStyle::Monospace, fonts::mono(13.0));
             s.spacing.scroll = egui::style::ScrollStyle::thin();
         });
+        // A wheel notch scrolls about as far as in Chromium.
+        ctx.options_mut(|o| o.input_options.line_scroll_speed = 120.0);
     }
 
     // ------------------------------------------------------------ reader
