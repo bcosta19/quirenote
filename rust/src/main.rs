@@ -39,11 +39,8 @@ Flags:
 /// Opens the vault; `QUIRENOTE_RS_COARSE_MTIME=1` turns off the strictly-increasing mtime of
 /// saves (restores Go's behaviour, used by the benchmark to price the guard).
 fn open_vault(dir: &str) -> std::io::Result<Vault> {
-    let mut v = Vault::open(dir)?;
-    if std::env::var("QUIRENOTE_RS_COARSE_MTIME").is_ok_and(|x| x == "1") {
-        v.set_strict_mtime(false);
-    }
-    Ok(v)
+    let coarse = std::env::var("QUIRENOTE_RS_COARSE_MTIME").is_ok_and(|x| x == "1");
+    Vault::open_with(dir, !coarse)
 }
 
 fn kv(v: &str) -> String {

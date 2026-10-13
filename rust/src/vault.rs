@@ -4,14 +4,18 @@
 //! coming from the browser cannot escape the vault directory (`../`, symlinks, absolute
 //! paths), the kernel resolves them relative to an open directory descriptor.
 //!
-//! The filesystem calls are blocking, so the async wrappers run them on Tokio's blocking pool.
-//! Operations that must be serialised (save, move, trash) take `Vault::mu`, an async mutex
-//! acquired *before* hopping to the blocking pool, so thousands of waiting requests do not
-//! each pin an OS thread.
+//! The filesystem calls are blocking, so the async wrappers run them off the async workers:
+//! reads, listings, creates and image saves on Tokio's blocking pool; the operations that must
+//! be serialised (save, move, trash: they check-then-write) on ONE dedicated writer thread fed
+//! by a queue. A single consumer gives the mutual exclusion of Go's `sync.Mutex` with FIFO
+//! fairness and without any lock hand-off: an earlier version took an async mutex and then hopped
+//! to the blocking pool, and under 1000 contending clients the critical section itself waited in
+//! the pool's queue behind hundreds of reads (see bench/RESULTS.md).
 
 use std::io::{self, Read, Write};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
+use std::sync::mpsc;
 
 use cap_std::ambient_authority;
 use cap_std::fs::{
@@ -123,14 +127,30 @@ pub const MAX_ATTACHMENT: usize = 20 << 20;
 /// The vault trash, the same one Obsidian uses.
 pub const TRASH_DIR: &str = ".trash";
 
+/// The blocking half of the vault: every filesystem operation, synchronously.
 #[derive(Debug)]
-pub struct Vault {
+pub struct Core {
     dir: PathBuf,
     root: Dir,
-    mu: tokio::sync::Mutex<()>,
     /// Give every accepted save a strictly newer mtime than the version it replaces (see
     /// `save_locked`). On by default; `set_strict_mtime(false)` restores the Go behaviour.
     strict_mtime: bool,
+}
+
+type Job = Box<dyn FnOnce(&Core) + Send>;
+
+/// The vault as the API sees it: the blocking `Core` plus the writer thread's queue.
+#[derive(Debug)]
+pub struct Vault {
+    core: Arc<Core>,
+    writer: mpsc::Sender<Job>,
+}
+
+impl std::ops::Deref for Vault {
+    type Target = Core;
+    fn deref(&self) -> &Core {
+        &self.core
+    }
 }
 
 #[derive(Debug, Serialize, PartialEq, Eq)]
@@ -201,21 +221,36 @@ fn rand_hex() -> String {
 
 impl Vault {
     pub fn open(dir: impl AsRef<Path>) -> io::Result<Vault> {
+        Self::open_with(dir, true)
+    }
+
+    /// `strict_mtime`: give every accepted save a strictly newer mtime than the version it
+    /// replaces (`false` restores Go's behaviour; used by the benchmark to price the guard).
+    pub fn open_with(dir: impl AsRef<Path>, strict_mtime: bool) -> io::Result<Vault> {
         let dir = dir.as_ref().to_path_buf();
         let root = Dir::open_ambient_dir(&dir, ambient_authority())?;
-        Ok(Vault {
+        let core = Arc::new(Core {
             dir,
             root,
-            mu: tokio::sync::Mutex::new(()),
-            strict_mtime: true,
-        })
+            strict_mtime,
+        });
+        let (tx, rx) = mpsc::channel::<Job>();
+        let worker = Arc::clone(&core);
+        std::thread::Builder::new()
+            .name("vault-writer".into())
+            .spawn(move || {
+                // Ends when the `Vault` (the only sender) is dropped.
+                for job in rx {
+                    // A panicking job must not take the writer down with it: its reply channel
+                    // is dropped, which the caller reports as an internal error.
+                    let _ = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| job(&worker)));
+                }
+            })?;
+        Ok(Vault { core, writer: tx })
     }
+}
 
-    /// Turns the strictly-increasing mtime of saves on or off (benchmark switch).
-    pub fn set_strict_mtime(&mut self, on: bool) {
-        self.strict_mtime = on;
-    }
-
+impl Core {
     pub fn dir(&self) -> &Path {
         &self.dir
     }
@@ -360,7 +395,7 @@ impl Vault {
         })
     }
 
-    /// Atomic write (temporary file + rename). The caller holds `mu`.
+    /// Atomic write (temporary file + rename). It only runs on the writer thread.
     ///
     /// `base_mtime` is the mtime the client read; `0` forces the write.
     fn save_locked(&self, p: &str, content: &str, base_mtime: i64) -> Result<Note> {
@@ -530,7 +565,7 @@ impl Vault {
     }
 
     /// Renames or moves a file or folder inside the vault, creating the destination folders.
-    /// `Exists` if the destination is there (never overwrites). The caller holds `mu`.
+    /// `Exists` if the destination is there (never overwrites). It only runs on the writer thread.
     fn move_locked(&self, from: &str, to: &str) -> Result<String> {
         let from = clean(from)?;
         let to = clean(to)?;
@@ -563,7 +598,7 @@ impl Vault {
     }
 
     /// Moves a file or folder to the vault trash, deleting nothing. If the trash already has
-    /// something with that name, date and time are appended. The caller holds `mu`.
+    /// something with that name, date and time are appended. It only runs on the writer thread.
     fn trash_locked(&self, p: &str) -> Result<String> {
         let p = clean(p)?;
         self.root
@@ -601,18 +636,37 @@ impl Vault {
         let p = clean(p)?;
         self.root.open(&p).map_err(|e| Error::io("openat", &p, e))
     }
+}
 
+impl Vault {
     // ---- async API -----------------------------------------------------------------
 
+    /// Runs `f` on Tokio's blocking pool (independent operations).
     async fn blocking<T, F>(self: &Arc<Self>, f: F) -> Result<T>
     where
         T: Send + 'static,
-        F: FnOnce(&Vault) -> Result<T> + Send + 'static,
+        F: FnOnce(&Core) -> Result<T> + Send + 'static,
     {
-        let v = Arc::clone(self);
-        tokio::task::spawn_blocking(move || f(&v))
+        let core = Arc::clone(&self.core);
+        tokio::task::spawn_blocking(move || f(&core))
             .await
             .map_err(|e| Error::Internal(format!("vault task failed: {e}")))?
+    }
+
+    /// Runs `f` on the writer thread: operations queued here never overlap.
+    async fn serialised<T, F>(self: &Arc<Self>, f: F) -> Result<T>
+    where
+        T: Send + 'static,
+        F: FnOnce(&Core) -> Result<T> + Send + 'static,
+    {
+        let (tx, rx) = tokio::sync::oneshot::channel();
+        self.writer
+            .send(Box::new(move |c: &Core| {
+                let _ = tx.send(f(c));
+            }))
+            .map_err(|_| Error::Internal("vault writer stopped".into()))?;
+        rx.await
+            .map_err(|_| Error::Internal("vault writer failed".into()))?
     }
 
     pub async fn tree(self: &Arc<Self>) -> Result<Vec<Entry>> {
@@ -639,9 +693,8 @@ impl Vault {
 
     /// Atomic save; `Err(Conflict(current))` when `base_mtime` is stale.
     pub async fn save(self: &Arc<Self>, p: &str, content: &str, base_mtime: i64) -> Result<Note> {
-        let _guard = self.mu.lock().await;
         let (p, content) = (p.to_string(), content.to_string());
-        self.blocking(move |v| v.save_locked(&p, &content, base_mtime))
+        self.serialised(move |v| v.save_locked(&p, &content, base_mtime))
             .await
     }
 
@@ -662,15 +715,13 @@ impl Vault {
     }
 
     pub async fn move_to(self: &Arc<Self>, from: &str, to: &str) -> Result<String> {
-        let _guard = self.mu.lock().await;
         let (from, to) = (from.to_string(), to.to_string());
-        self.blocking(move |v| v.move_locked(&from, &to)).await
+        self.serialised(move |v| v.move_locked(&from, &to)).await
     }
 
     pub async fn trash(self: &Arc<Self>, p: &str) -> Result<String> {
-        let _guard = self.mu.lock().await;
         let p = p.to_string();
-        self.blocking(move |v| v.trash_locked(&p)).await
+        self.serialised(move |v| v.trash_locked(&p)).await
     }
 
     pub async fn open_file(self: &Arc<Self>, p: &str) -> Result<File> {

@@ -117,13 +117,17 @@ pub fn spawn(dir: PathBuf, broker: Broker) -> std::io::Result<Handle> {
         let _ = tx.send(res);
     })
     .map_err(std::io::Error::other)?;
-    add_tree(&mut watcher, &dir, &dir);
 
     let stop = Arc::new(AtomicBool::new(false));
     let stop2 = Arc::clone(&stop);
+    // The directories are registered on the watcher thread (like Go's goroutine), so a large
+    // vault does not delay the moment the server starts listening.
     std::thread::Builder::new()
         .name("watch".into())
-        .spawn(move || event_loop(watcher, rx, dir, broker, stop2))?;
+        .spawn(move || {
+            add_tree(&mut watcher, &dir, &dir);
+            event_loop(watcher, rx, dir, broker, stop2);
+        })?;
     Ok(Handle { stop })
 }
 
