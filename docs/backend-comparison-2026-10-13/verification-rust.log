@@ -1,0 +1,11 @@
+rs-current-front frontend.log exit 0
+9/9 steps passed
+rs-current-front contract.log exit 0
+rs-current-front contract 378 checks 46 46
+rs-current-front lost-update.log exit 0
+SUMMARY: 0/5 rounds lost updates; 0 accepted writes lost in total
+rs-current-front create-move.log exit 0
+0/200 rounds: create answered 201 AND move answered 200 (one of the two files was silently destroyed)
+rs-current-front setup.log exit 0
+rs-current-front setup 33 checks 3 3
+artifacts /tmp/qbench/review-codex/rs-current-front-3agctqj1

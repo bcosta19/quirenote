@@ -10,6 +10,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"net/http"
 	"os"
@@ -142,11 +143,18 @@ func (v *Vault) Read(p string) (Note, error) {
 	if err != nil {
 		return Note{}, err
 	}
-	data, err := v.root.ReadFile(p)
+	f, err := v.root.Open(p)
 	if err != nil {
 		return Note{}, err
 	}
-	info, err := v.root.Stat(p)
+	defer func() { _ = f.Close() }()
+	data, err := io.ReadAll(f)
+	if err != nil {
+		return Note{}, err
+	}
+	// A save replaces the inode. Stat the descriptor we read, so the content
+	// cannot be paired with the version of a later replacement at the same path.
+	info, err := f.Stat()
 	if err != nil {
 		return Note{}, err
 	}
@@ -226,6 +234,8 @@ func (v *Vault) Mkdir(p string) (string, error) {
 // Create creates a new note; it fails with ErrExists if the file already exists
 // (even if the browser does not know about it yet), never overwriting.
 func (v *Vault) Create(p, content string) (Note, error) {
+	v.mu.Lock()
+	defer v.mu.Unlock()
 	p, err := clean(p)
 	if err != nil {
 		return Note{}, err
@@ -366,9 +376,8 @@ func (v *Vault) Move(from, to string) (string, error) {
 	if strings.HasPrefix(to, from+"/") {
 		return "", ErrInvalidPath
 	}
-	// Known limitation: between this Lstat and the Rename there is a tiny window in which
-	// another program (e.g. Syncthing) could create the destination; os.Root has no
-	// RENAME_NOREPLACE. Acceptable for a personal app.
+	// This check reports existing destinations early. The rename also rejects
+	// destinations created in the meantime on platforms with atomic no-replace.
 	if _, err := v.root.Lstat(to); err == nil {
 		return "", ErrExists
 	} else if !errors.Is(err, fs.ErrNotExist) {
@@ -379,7 +388,7 @@ func (v *Vault) Move(from, to string) (string, error) {
 			return "", err
 		}
 	}
-	if err := v.root.Rename(from, to); err != nil {
+	if err := v.renameNoReplace(from, to); err != nil {
 		return "", err
 	}
 	return to, nil
@@ -416,15 +425,16 @@ func (v *Vault) Trash(p string) (string, error) {
 			dest = path.Join(TrashDir, fmt.Sprintf("%s %s%s", strings.TrimSuffix(name, ext), suffix, ext))
 		}
 		if _, err := v.root.Lstat(dest); errors.Is(err, fs.ErrNotExist) {
-			break
+			if err := v.renameNoReplace(p, dest); errors.Is(err, ErrExists) {
+				continue // an external writer claimed this name; choose another
+			} else if err != nil {
+				return "", err
+			}
+			return dest, nil
 		} else if err != nil {
 			return "", err
 		}
 	}
-	if err := v.root.Rename(p, dest); err != nil {
-		return "", err
-	}
-	return dest, nil
 }
 
 // OpenFile opens a vault file for reading (PDF, EPUB, images).

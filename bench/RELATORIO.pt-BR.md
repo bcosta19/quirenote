@@ -1,10 +1,14 @@
 # Backend do Quirenote: Go vs Rust (Axum)
 
+**Campanha histórica, com o Go anterior às correções de integridade.** Esta branch agora contém
+as correções e a [nova comparação com Go corrigido](../docs/backend-comparison-2026-10-13.md),
+incluindo medições completas e as falhas de consistência do relink Rust.
+
 Relatório do experimento que reimplementou o backend Go (`cmd/` + `internal/`) em Rust com Axum
 (`rust/`, binário `quirenote-rs`) e comparou os dois lado a lado. A versão completa, com todas as
 tabelas, variações entre execuções e dados brutos, está em [`RESULTS.md`](RESULTS.md) (em inglês).
 
-- **Base:** commit `2bc1018`. O código Go não foi alterado nesta branch.
+- **Base medida:** commit `2bc1018`. O código Go não foi alterado nessa campanha original.
 - **Builds:** o Go foi compilado como no Makefile (`go build -trimpath -ldflags="-s -w"`, go1.27.0). O Rust
   1.98.1 usou `cargo build --release` com `lto = "fat"`, `codegen-units = 1`, `opt-level = 3`,
   `strip = true` e o alocador da glibc.

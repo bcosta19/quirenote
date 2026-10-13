@@ -5,8 +5,9 @@ written as an **experiment**: same HTTP contract, side by side with the Go serve
 be compared on correctness and cost. The Svelte frontend (`web/`) is served unchanged, embedded in
 the binary exactly as the Go version does with `go:embed`.
 
-It is not wired into the Makefile, the systemd unit or the installer, and nothing in the Go tree
-was changed.
+It is not wired into the Makefile, the systemd unit or the installer. The original experiment
+left the Go tree unchanged; this branch now includes Go integrity fixes and the
+[comparison with corrected Go](../docs/backend-comparison-2026-10-13.md).
 
 ```
 cd web && npm ci && npm run build        # fills web/dist, which gets embedded
@@ -103,7 +104,11 @@ documented items (`bench/contract/known_divergences.json`). Notably reproduced o
   (`.<name>.quirenote-<hex>.tmp` + rename), file permissions preserved, trash names, Obsidian
   attachment-folder rules, the first-run setup flow and config file format.
 
-### Where it deliberately differs (better than Go)
+### Integrity choices compared with the original Go baseline
+
+The corrected Go on this branch also reads through one descriptor and uses no-replace
+rename on Linux. The descriptions below refer to the original Go baseline; the
+[new report](../docs/backend-comparison-2026-10-13.md) records the remaining limits and Rust relink failures.
 
 1. **`GET /api/notes/<path>` reads content and mtime from the same file descriptor.** Go reads the
    file and then `stat`s the path, so a save landing in between pairs *old content with the new

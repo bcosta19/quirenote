@@ -1,0 +1,14 @@
+{
+ "notes": 10000,
+ "pdfs": 40,
+ "images": 80,
+ "files": 10120,
+ "bytes": 23163746,
+ "sha256": "be213fceba4ff13b78985f99e30a119454ae808c1576f6972e5f880cbc52b67e",
+ "layout": {
+  "top": 10,
+  "mid": 10,
+  "sub": 10
+ },
+ "seed": 20261013
+}

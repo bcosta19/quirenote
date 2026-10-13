@@ -1,0 +1,28 @@
+{
+  "go_base_commit": "bee0c18f2bcf968cd562f1cb98b5a4de9eea8633",
+  "rust_commit": "6aa4c7f62e939295bde57f55a02731cfa8d20fab",
+  "go_version": "go version go1.27.0-X:nodwarf5 linux/amd64",
+  "rust_version": "rustc 1.98.1 (48a229cea 2026-09-01) (Arch Linux rust 1:1.98.1-1)",
+  "linux": "7.2.5-3-omarchy",
+  "go_source_sha256": {
+    "cmd/quirenote/main.go": "281a5bb2973299ab2853f7b6db3a7b20fff696d4c37b0196c25c20c65367a5ee",
+    "internal/vault/vault.go": "9fc51c1cc8d62772172ca327a595e2006559b98955a9637b7506ee685f588276",
+    "internal/vault/rename_linux.go": "34c0cc55d426a8659fcf93cc5271ee45abe20f056de7893f458256b2f2167ac4",
+    "internal/vault/rename_other.go": "886c2811111b44fd4fe76aa4fd468c3ff5e9028c07b6902b34b81ca082d5cd1b",
+    "internal/watch/watch.go": "a8c5eee93d876ce92af505f1bdce991d0c3daf30c5078d70529116235df4b1df",
+    "internal/api/api.go": "d1a699255537d1b835abfb1ccf403fbe1af0216278aee41c8fb8a0b8a565462f",
+    "internal/relink/relink.go": "82ddcf51042d1c7d125532f1fcfa93021b12c71dc746636ecba5ef0c8cd435e4",
+    "internal/search/search.go": "76295a059ca237bc221ad033958aaf9ae12b3b2b9de9cb39f7fbb311cc3a961f",
+    "internal/config/config.go": "c71214652d233252083ef9fc1ea74a3299169e84a25024f6e188d7b256f40a38",
+    "internal/setup/setup.go": "cdc2e0d2c5ca8223d14c1c79d63f29f64619f0f4fe9a7390e3ee4a5ee8b602dc",
+    "go.mod": "8a30708d47af0d56aaeb42604ecd249a95236e82e674b2a4119298c086c92dd6",
+    "go.sum": "eb2a7a14a8e111dd1fffa586a95744b332447cb7a8a845b1eaa61ee0c537964c"
+  },
+  "comparison_script_sha256": "b79d8c7ae785073809469dc0b09fa31845c1a7b79320ffbd96b54ecb7e1d45aa",
+  "checks": {
+    "make_check": "passed with GOPROXY=file cache and XDG_CACHE_HOME=/tmp/quirenote-review-cache",
+    "race_stress_repetitions": 30,
+    "btrfs_regression_repetitions": 3,
+    "windows_darwin": "cross-compilation only"
+  }
+}

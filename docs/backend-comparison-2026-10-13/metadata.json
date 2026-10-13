@@ -1,0 +1,26 @@
+{
+  "repetitions": 4,
+  "timed_seconds": 5,
+  "read_warmup_seconds": 1,
+  "server_cpus": "0-7",
+  "client_cpus": "8-15",
+  "filesystem": "tmpfs",
+  "soak_seconds": 90,
+  "soak_repetitions": 2,
+  "runtime_tuning": "defaults; Go/allocator/coarse-mtime overrides removed",
+  "binaries": {
+    "go": {
+      "path": "/tmp/qbench/corrected-ebt2nj_9/bin/quirenote-go",
+      "sha256": "ae0127ee3e9d57fa588d765318185622e6b4c9536acc4adb618ba11952bfe63a"
+    },
+    "rs": {
+      "path": "/tmp/qbench/corrected-ebt2nj_9/bin/quirenote-rs",
+      "sha256": "db47b4415517b58008926f28ca99cc6ff9a3041970da9d15685f674ad2d33ee0"
+    }
+  },
+  "harness_sha256": "3c835df71b710706b2496d79b4fb170b2ae537952412110f6db4633a0900b92e",
+  "runner_revisions": [
+    "b79d8c7ae785073809469dc0b09fa31845c1a7b79320ffbd96b54ecb7e1d45aa",
+    "216f4aa31a85e140a35082e7388038161af30935a4325a4d4798aa217df46d4d"
+  ]
+}

@@ -2,12 +2,16 @@
 
 *[Leia o resumo em português](RELATORIO.pt-BR.md)*
 
+**Historical campaign, using Go before the integrity fixes.** This branch now contains those
+fixes and the [new comparison with corrected Go](../docs/backend-comparison-2026-10-13.md),
+including complete measurements and the Rust relink consistency failures.
+
 An experiment: the Go backend (`cmd/` + `internal/`, 1,909 non-test lines) reimplemented in Rust with
 Axum (`rust/`, 3,941 non-test lines, rustfmt layout), compared on HTTP-contract parity, correctness under
 concurrency, speed and memory. Same Svelte frontend, embedded in both binaries.
 Everything here was produced on one machine, in one afternoon, by the scripts in this directory.
 
-**Base:** commit `2bc1018` (Go code untouched; `git diff 2bc1018 -- cmd internal web go.mod` is empty).
+**Measured base:** commit `2bc1018` (Go code was untouched in this original campaign).
 **Go:** `go build -trimpath -ldflags="-s -w"` (as in the Makefile), go1.27.0. **Rust:** 1.98.1,
 `cargo build --release` with `lto = "fat"`, `codegen-units = 1`, `opt-level = 3`, `strip = true`,
 system glibc allocator.

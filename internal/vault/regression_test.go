@@ -5,10 +5,188 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"runtime"
+	"strconv"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 )
+
+func TestReadKeepsContentAndMtimeTogetherDuringReplacement(t *testing.T) {
+	v, dir := newVault(t)
+	const base = int64(1_700_000_000_000_000_000)
+	writeVersion := func(version int) error {
+		mtime := base + int64(version)*int64(time.Second)
+		tmp := filepath.Join(dir, ".replacement.tmp")
+		if err := os.WriteFile(tmp, []byte(strconv.FormatInt(mtime, 10)), 0o644); err != nil {
+			return err
+		}
+		stamp := time.Unix(0, mtime)
+		if err := os.Chtimes(tmp, stamp, stamp); err != nil {
+			return err
+		}
+		return os.Rename(tmp, filepath.Join(dir, "a.md"))
+	}
+	if err := writeVersion(0); err != nil {
+		t.Fatal(err)
+	}
+
+	const readers = 8
+	start := make(chan struct{})
+	results := make(chan error, readers+1)
+	go func() {
+		<-start
+		for version := 1; version <= 300; version++ {
+			if err := writeVersion(version); err != nil {
+				results <- err
+				return
+			}
+		}
+		results <- nil
+	}()
+	for range readers {
+		go func() {
+			<-start
+			for range 300 {
+				note, err := v.Read("a.md")
+				if err != nil {
+					results <- err
+					return
+				}
+				want, err := strconv.ParseInt(note.Content, 10, 64)
+				if err != nil || note.Mtime != want {
+					results <- fmt.Errorf("content version %q paired with mtime %d: %v", note.Content, note.Mtime, err)
+					return
+				}
+			}
+			results <- nil
+		}()
+	}
+	close(start)
+	for range readers + 1 {
+		if err := <-results; err != nil {
+			t.Error(err)
+		}
+	}
+}
+
+func TestCreateRacingMoveNeverOverwrites(t *testing.T) {
+	for _, external := range []bool{false, true} {
+		t.Run(fmt.Sprintf("external=%v", external), func(t *testing.T) {
+			if external && runtime.GOOS != "linux" {
+				t.Skip("atomic no-replace rename is currently implemented on Linux")
+			}
+			v, dir := newVault(t)
+			for round := range 150 {
+				from := fmt.Sprintf("source-%d.md", round)
+				to := fmt.Sprintf("dest/%d/note.md", round)
+				if _, err := v.Create(from, "moved"); err != nil {
+					t.Fatal(err)
+				}
+				start := make(chan struct{})
+				var createErr, moveErr error
+				var workers sync.WaitGroup
+				workers.Add(2)
+				go func() {
+					defer workers.Done()
+					<-start
+					if !external {
+						_, createErr = v.Create(to, "created")
+						return
+					}
+					p := filepath.Join(dir, to)
+					if createErr = os.MkdirAll(filepath.Dir(p), 0o755); createErr != nil {
+						return
+					}
+					var f *os.File
+					f, createErr = os.OpenFile(p, os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+					if createErr == nil {
+						_, createErr = f.WriteString("created")
+						createErr = errors.Join(createErr, f.Close())
+					}
+				}()
+				go func() {
+					defer workers.Done()
+					<-start
+					_, moveErr = v.Move(from, to)
+				}()
+				close(start)
+				workers.Wait()
+				want := "moved"
+				if createErr == nil {
+					want = "created"
+					if !errors.Is(moveErr, ErrExists) {
+						t.Fatalf("round %d: create succeeded, move = %v; want ErrExists", round, moveErr)
+					}
+					source, err := v.Read(from)
+					if err != nil || source.Content != "moved" {
+						t.Fatalf("source lost: %+v, %v", source, err)
+					}
+				} else if moveErr != nil || !(errors.Is(createErr, ErrExists) || errors.Is(createErr, os.ErrExist)) {
+					t.Fatalf("round %d: create = %v, move = %v; want one winner", round, createErr, moveErr)
+				}
+				dest, err := v.Read(to)
+				if err != nil || dest.Content != want {
+					t.Fatalf("destination = %+v, %v; want %q", dest, err, want)
+				}
+			}
+		})
+	}
+}
+
+func TestTrashKeepsAConcurrentExternalDestination(t *testing.T) {
+	if runtime.GOOS != "linux" {
+		t.Skip("atomic no-replace rename is currently implemented on Linux")
+	}
+	v, dir := newVault(t)
+	if err := os.Mkdir(filepath.Join(dir, TrashDir), 0o755); err != nil {
+		t.Fatal(err)
+	}
+	for round := range 150 {
+		name := fmt.Sprintf("note-%d.md", round)
+		if _, err := v.Create(name, "trashed"); err != nil {
+			t.Fatal(err)
+		}
+		start := make(chan struct{})
+		var workers sync.WaitGroup
+		var externalErr, trashErr error
+		var dest string
+		workers.Add(2)
+		go func() {
+			defer workers.Done()
+			<-start
+			f, err := os.OpenFile(filepath.Join(dir, TrashDir, name), os.O_WRONLY|os.O_CREATE|os.O_EXCL, 0o644)
+			externalErr = err
+			if err == nil {
+				_, externalErr = f.WriteString("external")
+				externalErr = errors.Join(externalErr, f.Close())
+			}
+		}()
+		go func() {
+			defer workers.Done()
+			<-start
+			dest, trashErr = v.Trash(name)
+		}()
+		close(start)
+		workers.Wait()
+		if trashErr != nil {
+			t.Fatal(trashErr)
+		}
+		data, err := os.ReadFile(filepath.Join(dir, dest))
+		if err != nil || string(data) != "trashed" {
+			t.Fatalf("trash content = %q, %v; want trashed", data, err)
+		}
+		if externalErr == nil {
+			data, err := os.ReadFile(filepath.Join(dir, TrashDir, name))
+			if err != nil || string(data) != "external" {
+				t.Fatalf("external trash entry overwritten: %q, %v", data, err)
+			}
+		} else if !errors.Is(externalErr, os.ErrExist) {
+			t.Fatal(externalErr)
+		}
+	}
+}
 
 func TestConcurrentSavesRejectStaleVersions(t *testing.T) {
 	v, dir := newVault(t)
