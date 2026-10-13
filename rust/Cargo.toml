@@ -1,0 +1,46 @@
+[package]
+name = "quirenote-rs"
+version = "0.1.0"
+edition = "2024"
+description = "Rust/Axum reimplementation of the Quirenote backend (experiment: compare with the Go original)"
+license = "MIT"
+build = "build.rs"
+
+[lib]
+name = "quirenote"
+path = "src/lib.rs"
+
+[[bin]]
+name = "quirenote-rs"
+path = "src/main.rs"
+
+[dependencies]
+axum = { version = "0.8", default-features = false, features = ["http1", "tokio"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "fs", "process", "signal", "sync", "time", "net", "io-util"] }
+tokio-util = { version = "0.7", features = ["io", "rt"] }
+tokio-stream = { version = "0.1", features = ["sync"] }
+futures-util = { version = "0.3", default-features = false }
+bytes = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+cap-std = "4"
+notify = { version = "8", default-features = false }
+rust-embed = "8"
+mime_guess = "2"
+base64 = "0.22"
+regex = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+getrandom = "0.3"
+percent-encoding = "2"
+httpdate = "1"
+http-body-util = "0.1"
+
+[dev-dependencies]
+tempfile = "3"
+tower = { version = "0.5", features = ["util"] }
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+strip = true
+opt-level = 3
