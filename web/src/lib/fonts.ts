@@ -21,8 +21,15 @@ export const FONT_LABELS: Record<FontRole, string> = {
 
 export const FONT_HINTS: Record<FontRole, string> = {
   ui: 'Sidebar, toolbars, dialogs',
-  editor: 'Editor and preview (EB Garamond by default)',
+  editor: 'Editor and preview',
   mono: 'Code blocks and shortcuts',
+}
+
+/** The first font of the default chain of each role (app.css), shown in its own font while the field is empty. */
+export const FONT_DEFAULTS: Record<FontRole, string> = {
+  ui: 'system font',
+  editor: 'EB Garamond',
+  mono: 'JetBrains Mono',
 }
 
 /** Custom font per role; an empty name means "keep the default chain". */
@@ -114,6 +121,28 @@ export function applyFonts(prefs: FontPrefs) {
     else style.removeProperty(`--font-${role}-choice`)
   }
   localStorage.setItem(KEY, JSON.stringify(stacks))
+}
+
+let probe: CanvasRenderingContext2D | null = null
+
+/**
+ * Whether the browser can draw a family: one of the app's own (@font-face) or one installed on
+ * this device. A missing one would fall back to the default chain without a word, so the
+ * settings say so. Text drawn in it differs in width from the generic families it falls back to.
+ */
+export function fontAvailable(name: string): boolean {
+  const clean = cleanFontName(name)
+  if (!clean || GENERIC.has(clean.toLowerCase())) return true
+  for (const face of document.fonts) if (face.family.replace(/^['"]|['"]$/g, '') === clean) return true
+  const ctx = (probe ??= document.createElement('canvas').getContext('2d'))
+  if (!ctx) return true
+  const sample = 'mmmmmmmmmmlli WQ@#0123456789'
+  return ['monospace', 'serif', 'sans-serif'].some((generic) => {
+    ctx.font = `72px ${generic}`
+    const base = ctx.measureText(sample).width
+    ctx.font = `72px '${clean}', ${generic}`
+    return ctx.measureText(sample).width !== base
+  })
 }
 
 interface LocalFontData {

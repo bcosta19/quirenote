@@ -2,3 +2,5 @@
 web/node_modules/
 web/dist/*
 !web/dist/.keep
+# Claude Code local state (agent worktrees)
+/.claude/

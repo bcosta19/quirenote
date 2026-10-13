@@ -55,7 +55,7 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
 <div class="backdrop" onclick={oncancel}>
-  <div class="dialog" onclick={(e) => e.stopPropagation()} role="dialog" aria-label={message} tabindex="-1">
+  <div class="prompt-dialog" onclick={(e) => e.stopPropagation()} role="dialog" aria-label={message} tabindex="-1">
     {#if withInput}
       <label>
         <span class="message">{message}</span>
@@ -92,7 +92,8 @@
     align-items: flex-start;
     padding-top: 18vh;
   }
-  .dialog {
+  /* Not `.dialog`: pdf_viewer.css (pdf.js) styles that class globally, color and font included. */
+  .prompt-dialog {
     width: min(480px, 92vw);
     background: var(--panel);
     border: 1px solid var(--border);
