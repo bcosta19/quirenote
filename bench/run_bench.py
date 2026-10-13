@@ -29,7 +29,10 @@ PORT = 9130
 
 # name -> (dataset, [ (label, loadgen args...) ])
 SCENARIOS = {
-    "conflict": ("small", [(f"conflict-{n}", ["conflict", "--clients", str(n), "--size", str(64 << 10)]) for n in (50, 200, 1000)]),
+    "conflict": ("small", [(f"conflict-{n}", ["conflict", "--clients", str(n), "--size", str(16 << 10)]) for n in (50, 200, 1000)]),
+    # 64 KiB bodies: same scenario, but on loopback they trigger ~200 ms TCP stalls (delayed ACK /
+    # window update) that depend on how fast each server drains the socket; kept to show the effect.
+    "conflict64k": ("small", [(f"conflict64k-{n}", ["conflict", "--clients", str(n), "--size", str(64 << 10)]) for n in (50, 200, 1000)]),
     "rmw": ("small", [("rmw-50x10", ["rmw", "--workers", "50", "--writes", "10"]),
                       ("rmw-200x5", ["rmw", "--workers", "200", "--writes", "5"]),
                       ("rmw-1000x2", ["rmw", "--workers", "1000", "--writes", "2"])]),
