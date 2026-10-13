@@ -81,7 +81,7 @@ The black-box contract suite and the benchmarks live in [`../bench`](../bench/RE
   `spawn_blocking`; with 1000 clients doing read-modify-write on one note the critical section sat
   in the blocking pool's FIFO queue behind hundreds of reads and a 2000-save run took 140 s (Go:
   13 s). A single consumer thread fed by a queue gives the same mutual exclusion with FIFO
-  fairness and no hand-off, and the same run takes ~5 s. Reads, listings, creates and image saves
+  fairness and no hand-off, and the same run takes ~2.5 s. Reads, listings, creates and image saves
   stay on the blocking pool.
 
 ## Parity with the Go contract
@@ -110,9 +110,12 @@ documented items (`bench/contract/known_divergences.json`). Notably reproduced o
    mtime*; the client then saves over the newer version with an accepted `mtime` (a lost update,
    reproduced in `bench/repro/lost_update.py`).
 2. **Saves get a strictly increasing mtime** (`max(now, previous+1ns)` set on the temp file before
-   the rename). The kernel stamps files with a coarse clock, so two saves in the same tick could
-   carry the same mtime and defeat the stale-version check. `QUIRENOTE_RS_COARSE_MTIME=1` turns
-   this off (the benchmark uses it to price the guard).
+   the rename). Every atomic save is a new inode stamped with the kernel's coarse clock, so in
+   principle two saves in the same tick carry the same mtime and defeat the stale-version check.
+   On the benchmark machine (kernel 7.2, tmpfs) I could not provoke a tie even against the Go
+   server (`bench/repro/mtime_tie.py`, 3000 rounds, 0 ties), so this is defence in depth for older
+   kernels and other filesystems, not a measured fix; it costs nothing measurable (writes/s are the
+   same with it off). `QUIRENOTE_RS_COARSE_MTIME=1` turns it off.
 3. **`move` and `trash` use `renameat2(RENAME_NOREPLACE)`**, closing the window in which Go's
    `Lstat`-then-`Rename` can silently overwrite a file created in between (`Create` is not under
    the mutex in Go). Filesystems without support fall back to a plain rename.

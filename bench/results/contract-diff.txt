@@ -1,0 +1,15 @@
+# contract diff Go (A) vs Rust (B): main suite
+DOCUMENTED  save over dir named .md  (Both answer 500 with an OS-level error text: Go reports `renameat <tmp> isdir.md: file exists`, the Rust server `renameat isdir.md: is a directory` (the errno differs and Go names the temporary file).)
+DOCUMENTED  range 'bytes=0-5,10-15'  (Several ranges in one Range header: Go answers 206 multipart/byteranges; the Rust server ignores the Range and answers 200 with the whole file (allowed by RFC 9110). The frontend and PDF.js only ever send a single range.)
+DOCUMENTED  static /assets/  (A request for an embedded directory: Go's http.FileServer returns an HTML directory listing, the Rust server returns the SPA index.html. Not used by the app.)
+DOCUMENTED  raw very long uri  (A 70 KB request target: Go routes it and answers 500 (ENAMETOOLONG from the file system), hyper refuses it earlier with 414 (URI too long).)
+
+cases: 378 compared, 374 identical, 4 documented, 0 UNDOCUMENTED divergences
+checks: A 44/46 ok, B 46/46 ok
+  A fails: read-modify-write: 8 workers x 15 accepted writes = 120 lines (no lost update)  116 lines, 116 unique
+  A fails: create vs move onto one destination: never both succeed (no silent overwrite), 150 rounds  18 rounds lost a file
+
+# first-run setup suite
+
+cases: 33 compared, 33 identical, 0 documented, 0 UNDOCUMENTED divergences
+checks: A 3/3 ok, B 3/3 ok

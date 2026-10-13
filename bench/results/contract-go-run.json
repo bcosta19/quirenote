@@ -1,0 +1,3548 @@
+{
+ "cases": {
+  "tree": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"name\":\"Estudos\",\"path\":\"Estudos\",\"dir\":true,\"children\":[{\"name\":\"Compiladores.md\",\"path\":\"Estudos/Compiladores.md\",\"dir\":false},{\"name\":\"Lexer.md\",\"path\":\"Estudos/Lexer.md\",\"dir\":false}]},{\"name\":\"linked\",\"path\":\"linked\",\"dir\":true,\"children\":[{\"name\":\"A.md\",\"path\":\"linked/A.md\",\"dir\":false},{\"name\":\"Other.md\",\"path\":\"linked/Other.md\",\"dir\":false},{\"name\":\"Table.md\",\"path\":\"linked/Table.md\",\"dir\":false},{\"name\":\"Target.md\",\"path\":\"linked/Target.md\",\"dir\":false}]},{\"name\":\"Livros\",\"path\":\"Livros\",\"dir\":true,\"children\":[{\"name\":\"book.epub\",\"path\":\"Livros/book.epub\",\"dir\":false},{\"name\":\"Dragon.pdf\",\"path\":\"Livros/Dragon.pdf\",\"dir\":false},{\"name\":\"photo.jpg\",\"path\":\"Livros/photo.jpg\",\"dir\":false},{\"name\":\"pic.png\",\"path\":\"Livros/pic.png\",\"dir\":false}]},{\"name\":\"many\",\"path\":\"many\",\"dir\":true,\"children\":[{\"name\":\"m0.md\",\"path\":\"many/m0.md\",\"dir\":false},{\"name\":\"n000.md\",\"path\":\"many/n000.md\",\"dir\":false},{\"name\":\"n001.md\",\"path\":\"many/n001.md\",\"dir\":false},{\"name\":\"n002.md\",\"path\":\"many/n002.md\",\"dir\":false},{\"name\":\"n003.md\",\"path\":\"many/n003.md\",\"dir\":false},{\"name\":\"n004.md\",\"path\":\"many/n004.md\",\"dir\":false},{\"name\":\"n005.md\",\"path\":\"many/n005.md\",\"dir\":false},{\"name\":\"n006.md\",\"path\":\"many/n006.md\",\"dir\":false},{\"name\":\"n007.md\",\"path\":\"many/n007.md\",\"dir\":false},{\"name\":\"n008.md\",\"path\":\"many/n008.md\",\"dir\":false},{\"name\":\"n009.md\",\"path\":\"many/n009.md\",\"dir\":false},{\"name\":\"n010.md\",\"path\":\"many/n010.md\",\"dir\":false},{\"name\":\"n011.md\",\"path\":\"many/n011.md\",\"dir\":false},{\"name\":\"n012.md\",\"path\":\"many/n012.md\",\"dir\":false},{\"name\":\"n013.md\",\"path\":\"many/n013.md\",\"dir\":false},{\"name\":\"n014.md\",\"path\":\"many/n014.md\",\"dir\":false},{\"name\":\"n015.md\",\"path\":\"many/n015.md\",\"dir\":false},{\"name\":\"n016.md\",\"path\":\"many/n016.md\",\"dir\":false},{\"name\":\"n017.md\",\"path\":\"many/n017.md\",\"dir\":false},{\"name\":\"n018.md\",\"path\":\"many/n018.md\",\"dir\":false},{\"name\":\"n019.md\",\"path\":\"many/n019.md\",\"dir\":false},{\"name\":\"n020.md\",\"path\":\"many/n020.md\",\"dir\":false},{\"name\":\"n021.md\",\"path\":\"many/n021.md\",\"dir\":false},{\"name\":\"n022.md\",\"path\":\"many/n022.md\",\"dir\":false},{\"name\":\"n023.md\",\"path\":\"many/n023.md\",\"dir\":false},{\"name\":\"n024.md\",\"path\":\"many/n024.md\",\"dir\":false},{\"name\":\"n025.md\",\"path\":\"many/n025.md\",\"dir\":false},{\"name\":\"n026.md\",\"path\":\"many/n026.md\",\"dir\":false},{\"name\":\"n027.md\",\"path\":\"many/n027.md\",\"dir\":false},{\"name\":\"n028.md\",\"path\":\"many/n028.md\",\"dir\":false},{\"name\":\"n029.md\",\"path\":\"many/n029.md\",\"dir\":false},{\"name\":\"n030.md\",\"path\":\"many/n030.md\",\"dir\":false},{\"name\":\"n031.md\",\"path\":\"many/n031.md\",\"dir\":false},{\"name\":\"n032.md\",\"path\":\"many/n032.md\",\"dir\":false},{\"name\":\"n033.md\",\"path\":\"many/n033.md\",\"dir\":false},{\"name\":\"n034.md\",\"path\":\"many/n034.md\",\"dir\":false},{\"name\":\"n035.md\",\"path\":\"many/n035.md\",\"dir\":false},{\"name\":\"n036.md\",\"path\":\"many/n036.md\",\"dir\":false},{\"name\":\"n037.md\",\"path\":\"many/n037.md\",\"dir\":false},{\"name\":\"n038.md\",\"path\":\"many/n038.md\",\"dir\":false},{\"name\":\"n039.md\",\"path\":\"many/n039.md\",\"dir\":false},{\"name\":\"n040.md\",\"path\":\"many/n040.md\",\"dir\":false},{\"name\":\"n041.md\",\"path\":\"many/n041.md\",\"dir\":false},{\"name\":\"n042.md\",\"path\":\"many/n042.md\",\"dir\":false},{\"name\":\"n043.md\",\"path\":\"many/n043.md\",\"dir\":false},{\"name\":\"n044.md\",\"path\":\"many/n044.md\",\"dir\":false},{\"name\":\"n045.md\",\"path\":\"many/n045.md\",\"dir\":false},{\"name\":\"n046.md\",\"path\":\"many/n046.md\",\"dir\":false},{\"name\":\"n047.md\",\"path\":\"many/n047.md\",\"dir\":false},{\"name\":\"n048.md\",\"path\":\"many/n048.md\",\"dir\":false},{\"name\":\"n049.md\",\"path\":\"many/n049.md\",\"dir\":false},{\"name\":\"n050.md\",\"path\":\"many/n050.md\",\"dir\":false},{\"name\":\"n051.md\",\"path\":\"many/n051.md\",\"dir\":false},{\"name\":\"n052.md\",\"path\":\"many/n052.md\",\"dir\":false},{\"name\":\"n053.md\",\"path\":\"many/n053.md\",\"dir\":false},{\"name\":\"n054.md\",\"path\":\"many/n054.md\",\"dir\":false},{\"name\":\"n055.md\",\"path\":\"many/n055.md\",\"dir\":false},{\"name\":\"n056.md\",\"path\":\"many/n056.md\",\"dir\":false},{\"name\":\"n057.md\",\"path\":\"many/n057.md\",\"dir\":false},{\"name\":\"n058.md\",\"path\":\"many/n058.md\",\"dir\":false},{\"name\":\"n059.md\",\"path\":\"many/n059.md\",\"dir\":false},{\"name\":\"n060.md\",\"path\":\"many/n060.md\",\"dir\":false},{\"name\":\"n061.md\",\"path\":\"many/n061.md\",\"dir\":false},{\"name\":\"n062.md\",\"path\":\"many/n062.md\",\"dir\":false},{\"name\":\"n063.md\",\"path\":\"many/n063.md\",\"dir\":false},{\"name\":\"n064.md\",\"path\":\"many/n064.md\",\"dir\":false},{\"name\":\"n065.md\",\"path\":\"many/n065.md\",\"dir\":false},{\"name\":\"n066.md\",\"path\":\"many/n066.md\",\"dir\":false},{\"name\":\"n067.md\",\"path\":\"many/n067.md\",\"dir\":false},{\"name\":\"n068.md\",\"path\":\"many/n068.md\",\"dir\":false},{\"name\":\"n069.md\",\"path\":\"many/n069.md\",\"dir\":false},{\"name\":\"n070.md\",\"path\":\"many/n070.md\",\"dir\":false},{\"name\":\"n071.md\",\"path\":\"many/n071.md\",\"dir\":false},{\"name\":\"n072.md\",\"path\":\"many/n072.md\",\"dir\":false},{\"name\":\"n073.md\",\"path\":\"many/n073.md\",\"dir\":false},{\"name\":\"n074.md\",\"path\":\"many/n074.md\",\"dir\":false},{\"name\":\"n075.md\",\"path\":\"many/n075.md\",\"dir\":false},{\"name\":\"n076.md\",\"path\":\"many/n076.md\",\"dir\":false},{\"name\":\"n077.md\",\"path\":\"many/n077.md\",\"dir\":false},{\"name\":\"n078.md\",\"path\":\"many/n078.md\",\"dir\":false},{\"name\":\"n079.md\",\"path\":\"many/n079.md\",\"dir\":false},{\"name\":\"n080.md\",\"path\":\"many/n080.md\",\"dir\":false},{\"name\":\"n081.md\",\"path\":\"many/n081.md\",\"dir\":false},{\"name\":\"n082.md\",\"path\":\"many/n082.md\",\"dir\":false},{\"name\":\"n083.md\",\"path\":\"many/n083.md\",\"dir\":false},{\"name\":\"n084.md\",\"path\":\"many/n084.md\",\"dir\":false},{\"name\":\"n085.md\",\"path\":\"many/n085.md\",\"dir\":false},{\"name\":\"n086.md\",\"path\":\"many/n086.md\",\"dir\":false},{\"name\":\"n087.md\",\"path\":\"many/n087.md\",\"dir\":false},{\"name\":\"n088.md\",\"path\":\"many/n088.md\",\"dir\":false},{\"name\":\"n089.md\",\"path\":\"many/n089.md\",\"dir\":false},{\"name\":\"n090.md\",\"path\":\"many/n090.md\",\"dir\":false},{\"name\":\"n091.md\",\"path\":\"many/n091.md\",\"dir\":false},{\"name\":\"n092.md\",\"path\":\"many/n092.md\",\"dir\":false},{\"name\":\"n093.md\",\"path\":\"many/n093.md\",\"dir\":false},{\"name\":\"n094.md\",\"path\":\"many/n094.md\",\"dir\":false},{\"name\":\"n095.md\",\"path\":\"many/n095.md\",\"dir\":false},{\"name\":\"n096.md\",\"path\":\"many/n096.md\",\"dir\":false},{\"name\":\"n097.md\",\"path\":\"many/n097.md\",\"dir\":false},{\"name\":\"n098.md\",\"path\":\"many/n098.md\",\"dir\":false},{\"name\":\"n099.md\",\"path\":\"many/n099.md\",\"dir\":false},{\"name\":\"n100.md\",\"path\":\"many/n100.md\",\"dir\":false},{\"name\":\"n101.md\",\"path\":\"many/n101.md\",\"dir\":false},{\"name\":\"n102.md\",\"path\":\"many/n102.md\",\"dir\":false},{\"name\":\"n103.md\",\"path\":\"many/n103.md\",\"dir\":false},{\"name\":\"n104.md\",\"path\":\"many/n104.md\",\"dir\":false},{\"name\":\"n105.md\",\"path\":\"many/n105.md\",\"dir\":false},{\"name\":\"n106.md\",\"path\":\"many/n106.md\",\"dir\":false},{\"name\":\"n107.md\",\"path\":\"many/n107.md\",\"dir\":false},{\"name\":\"n108.md\",\"path\":\"many/n108.md\",\"dir\":false},{\"name\":\"n109.md\",\"path\":\"many/n109.md\",\"dir\":false},{\"name\":\"n110.md\",\"path\":\"many/n110.md\",\"dir\":false},{\"name\":\"n111.md\",\"path\":\"many/n111.md\",\"dir\":false},{\"name\":\"n112.md\",\"path\":\"many/n112.md\",\"dir\":false},{\"name\":\"n113.md\",\"path\":\"many/n113.md\",\"dir\":false},{\"name\":\"n114.md\",\"path\":\"many/n114.md\",\"dir\":false},{\"name\":\"n115.md\",\"path\":\"many/n115.md\",\"dir\":false},{\"name\":\"n116.md\",\"path\":\"many/n116.md\",\"dir\":false},{\"name\":\"n117.md\",\"path\":\"many/n117.md\",\"dir\":false},{\"name\":\"n118.md\",\"path\":\"many/n118.md\",\"dir\":false},{\"name\":\"n119.md\",\"path\":\"many/n119.md\",\"dir\":false},{\"name\":\"n120.md\",\"path\":\"many/n120.md\",\"dir\":false},{\"name\":\"n121.md\",\"path\":\"many/n121.md\",\"dir\":false},{\"name\":\"n122.md\",\"path\":\"many/n122.md\",\"dir\":false},{\"name\":\"n123.md\",\"path\":\"many/n123.md\",\"dir\":false},{\"name\":\"n124.md\",\"path\":\"many/n124.md\",\"dir\":false},{\"name\":\"n125.md\",\"path\":\"many/n125.md\",\"dir\":false},{\"name\":\"n126.md\",\"path\":\"many/n126.md\",\"dir\":false},{\"name\":\"n127.md\",\"path\":\"many/n127.md\",\"dir\":false},{\"name\":\"n128.md\",\"path\":\"many/n128.md\",\"dir\":false},{\"name\":\"n129.md\",\"path\":\"many/n129.md\",\"dir\":false},{\"name\":\"n130.md\",\"path\":\"many/n130.md\",\"dir\":false},{\"name\":\"n131.md\",\"path\":\"many/n131.md\",\"dir\":false},{\"name\":\"n132.md\",\"path\":\"many/n132.md\",\"dir\":false},{\"name\":\"n133.md\",\"path\":\"many/n133.md\",\"dir\":false},{\"name\":\"n134.md\",\"path\":\"many/n134.md\",\"dir\":false},{\"name\":\"n135.md\",\"path\":\"many/n135.md\",\"dir\":false},{\"name\":\"n136.md\",\"path\":\"many/n136.md\",\"dir\":false},{\"name\":\"n137.md\",\"path\":\"many/n137.md\",\"dir\":false},{\"name\":\"n138.md\",\"path\":\"many/n138.md\",\"dir\":false},{\"name\":\"n139.md\",\"path\":\"many/n139.md\",\"dir\":false},{\"name\":\"n140.md\",\"path\":\"many/n140.md\",\"dir\":false},{\"name\":\"n141.md\",\"path\":\"many/n141.md\",\"dir\":false},{\"name\":\"n142.md\",\"path\":\"many/n142.md\",\"dir\":false},{\"name\":\"n143.md\",\"path\":\"many/n143.md\",\"dir\":false},{\"name\":\"n144.md\",\"path\":\"many/n144.md\",\"dir\":false},{\"name\":\"n145.md\",\"path\":\"many/n145.md\",\"dir\":false},{\"name\":\"n146.md\",\"path\":\"many/n146.md\",\"dir\":false},{\"name\":\"n147.md\",\"path\":\"many/n147.md\",\"dir\":false},{\"name\":\"n148.md\",\"path\":\"many/n148.md\",\"dir\":false},{\"name\":\"n149.md\",\"path\":\"many/n149.md\",\"dir\":false},{\"name\":\"n150.md\",\"path\":\"many/n150.md\",\"dir\":false},{\"name\":\"n151.md\",\"path\":\"many/n151.md\",\"dir\":false},{\"name\":\"n152.md\",\"path\":\"many/n152.md\",\"dir\":false},{\"name\":\"n153.md\",\"path\":\"many/n153.md\",\"dir\":false},{\"name\":\"n154.md\",\"path\":\"many/n154.md\",\"dir\":false},{\"name\":\"n155.md\",\"path\":\"many/n155.md\",\"dir\":false},{\"name\":\"n156.md\",\"path\":\"many/n156.md\",\"dir\":false},{\"name\":\"n157.md\",\"path\":\"many/n157.md\",\"dir\":false},{\"name\":\"n158.md\",\"path\":\"many/n158.md\",\"dir\":false},{\"name\":\"n159.md\",\"path\":\"many/n159.md\",\"dir\":false},{\"name\":\"n160.md\",\"path\":\"many/n160.md\",\"dir\":false},{\"name\":\"n161.md\",\"path\":\"many/n161.md\",\"dir\":false},{\"name\":\"n162.md\",\"path\":\"many/n162.md\",\"dir\":false},{\"name\":\"n163.md\",\"path\":\"many/n163.md\",\"dir\":false},{\"name\":\"n164.md\",\"path\":\"many/n164.md\",\"dir\":false},{\"name\":\"n165.md\",\"path\":\"many/n165.md\",\"dir\":false},{\"name\":\"n166.md\",\"path\":\"many/n166.md\",\"dir\":false},{\"name\":\"n167.md\",\"path\":\"many/n167.md\",\"dir\":false},{\"name\":\"n168.md\",\"path\":\"many/n168.md\",\"dir\":false},{\"name\":\"n169.md\",\"path\":\"many/n169.md\",\"dir\":false},{\"name\":\"n170.md\",\"path\":\"many/n170.md\",\"dir\":false},{\"name\":\"n171.md\",\"path\":\"many/n171.md\",\"dir\":false},{\"name\":\"n172.md\",\"path\":\"many/n172.md\",\"dir\":false},{\"name\":\"n173.md\",\"path\":\"many/n173.md\",\"dir\":false},{\"name\":\"n174.md\",\"path\":\"many/n174.md\",\"dir\":false},{\"name\":\"n175.md\",\"path\":\"many/n175.md\",\"dir\":false},{\"name\":\"n176.md\",\"path\":\"many/n176.md\",\"dir\":false},{\"name\":\"n177.md\",\"path\":\"many/n177.md\",\"dir\":false},{\"name\":\"n178.md\",\"path\":\"many/n178.md\",\"dir\":false},{\"name\":\"n179.md\",\"path\":\"many/n179.md\",\"dir\":false},{\"name\":\"n180.md\",\"path\":\"many/n180.md\",\"dir\":false},{\"name\":\"n181.md\",\"path\":\"many/n181.md\",\"dir\":false},{\"name\":\"n182.md\",\"path\":\"many/n182.md\",\"dir\":false},{\"name\":\"n183.md\",\"path\":\"many/n183.md\",\"dir\":false},{\"name\":\"n184.md\",\"path\":\"many/n184.md\",\"dir\":false},{\"name\":\"n185.md\",\"path\":\"many/n185.md\",\"dir\":false},{\"name\":\"n186.md\",\"path\":\"many/n186.md\",\"dir\":false},{\"name\":\"n187.md\",\"path\":\"many/n187.md\",\"dir\":false},{\"name\":\"n188.md\",\"path\":\"many/n188.md\",\"dir\":false},{\"name\":\"n189.md\",\"path\":\"many/n189.md\",\"dir\":false},{\"name\":\"n190.md\",\"path\":\"many/n190.md\",\"dir\":false},{\"name\":\"n191.md\",\"path\":\"many/n191.md\",\"dir\":false},{\"name\":\"n192.md\",\"path\":\"many/n192.md\",\"dir\":false},{\"name\":\"n193.md\",\"path\":\"many/n193.md\",\"dir\":false},{\"name\":\"n194.md\",\"path\":\"many/n194.md\",\"dir\":false},{\"name\":\"n195.md\",\"path\":\"many/n195.md\",\"dir\":false},{\"name\":\"n196.md\",\"path\":\"many/n196.md\",\"dir\":false},{\"name\":\"n197.md\",\"path\":\"many/n197.md\",\"dir\":false},{\"name\":\"n198.md\",\"path\":\"many/n198.md\",\"dir\":false},{\"name\":\"n199.md\",\"path\":\"many/n199.md\",\"dir\":false},{\"name\":\"n200.md\",\"path\":\"many/n200.md\",\"dir\":false},{\"name\":\"n201.md\",\"path\":\"many/n201.md\",\"dir\":false},{\"name\":\"n202.md\",\"path\":\"many/n202.md\",\"dir\":false},{\"name\":\"n203.md\",\"path\":\"many/n203.md\",\"dir\":false},{\"name\":\"n204.md\",\"path\":\"many/n204.md\",\"dir\":false},{\"name\":\"n205.md\",\"path\":\"many/n205.md\",\"dir\":false},{\"name\":\"n206.md\",\"path\":\"many/n206.md\",\"dir\":false},{\"name\":\"n207.md\",\"path\":\"many/n207.md\",\"dir\":false},{\"name\":\"n208.md\",\"path\":\"many/n208.md\",\"dir\":false},{\"name\":\"n209.md\",\"path\":\"many/n209.md\",\"dir\":false},{\"name\":\"n210.md\",\"path\":\"many/n210.md\",\"dir\":false},{\"name\":\"n211.md\",\"path\":\"many/n211.md\",\"dir\":false},{\"name\":\"n212.md\",\"path\":\"many/n212.md\",\"dir\":false},{\"name\":\"n213.md\",\"path\":\"many/n213.md\",\"dir\":false},{\"name\":\"n214.md\",\"path\":\"many/n214.md\",\"dir\":false},{\"name\":\"n215.md\",\"path\":\"many/n215.md\",\"dir\":false},{\"name\":\"n216.md\",\"path\":\"many/n216.md\",\"dir\":false},{\"name\":\"n217.md\",\"path\":\"many/n217.md\",\"dir\":false},{\"name\":\"n218.md\",\"path\":\"many/n218.md\",\"dir\":false},{\"name\":\"n219.md\",\"path\":\"many/n219.md\",\"dir\":false},{\"name\":\"n220.md\",\"path\":\"many/n220.md\",\"dir\":false},{\"name\":\"n221.md\",\"path\":\"many/n221.md\",\"dir\":false},{\"name\":\"n222.md\",\"path\":\"many/n222.md\",\"dir\":false},{\"name\":\"n223.md\",\"path\":\"many/n223.md\",\"dir\":false},{\"name\":\"n224.md\",\"path\":\"many/n224.md\",\"dir\":false},{\"name\":\"n225.md\",\"path\":\"many/n225.md\",\"dir\":false},{\"name\":\"n226.md\",\"path\":\"many/n226.md\",\"dir\":false},{\"name\":\"n227.md\",\"path\":\"many/n227.md\",\"dir\":false},{\"name\":\"n228.md\",\"path\":\"many/n228.md\",\"dir\":false},{\"name\":\"n229.md\",\"path\":\"many/n229.md\",\"dir\":false},{\"name\":\"n230.md\",\"path\":\"many/n230.md\",\"dir\":false},{\"name\":\"n231.md\",\"path\":\"many/n231.md\",\"dir\":false},{\"name\":\"n232.md\",\"path\":\"many/n232.md\",\"dir\":false},{\"name\":\"n233.md\",\"path\":\"many/n233.md\",\"dir\":false},{\"name\":\"n234.md\",\"path\":\"many/n234.md\",\"dir\":false},{\"name\":\"n235.md\",\"path\":\"many/n235.md\",\"dir\":false},{\"name\":\"n236.md\",\"path\":\"many/n236.md\",\"dir\":false},{\"name\":\"n237.md\",\"path\":\"many/n237.md\",\"dir\":false},{\"name\":\"n238.md\",\"path\":\"many/n238.md\",\"dir\":false},{\"name\":\"n239.md\",\"path\":\"many/n239.md\",\"dir\":false},{\"name\":\"n240.md\",\"path\":\"many/n240.md\",\"dir\":false},{\"name\":\"n241.md\",\"path\":\"many/n241.md\",\"dir\":false},{\"name\":\"n242.md\",\"path\":\"many/n242.md\",\"dir\":false},{\"name\":\"n243.md\",\"path\":\"many/n243.md\",\"dir\":false},{\"name\":\"n244.md\",\"path\":\"many/n244.md\",\"dir\":false},{\"name\":\"n245.md\",\"path\":\"many/n245.md\",\"dir\":false},{\"name\":\"n246.md\",\"path\":\"many/n246.md\",\"dir\":false},{\"name\":\"n247.md\",\"path\":\"many/n247.md\",\"dir\":false},{\"name\":\"n248.md\",\"path\":\"many/n248.md\",\"dir\":false},{\"name\":\"n249.md\",\"path\":\"many/n249.md\",\"dir\":false},{\"name\":\"n250.md\",\"path\":\"many/n250.md\",\"dir\":false},{\"name\":\"n251.md\",\"path\":\"many/n251.md\",\"dir\":false},{\"name\":\"n252.md\",\"path\":\"many/n252.md\",\"dir\":false},{\"name\":\"n253.md\",\"path\":\"many/n253.md\",\"dir\":false},{\"name\":\"n254.md\",\"path\":\"many/n254.md\",\"dir\":false},{\"name\":\"n255.md\",\"path\":\"many/n255.md\",\"dir\":false},{\"name\":\"n256.md\",\"path\":\"many/n256.md\",\"dir\":false},{\"name\":\"n257.md\",\"path\":\"many/n257.md\",\"dir\":false},{\"name\":\"n258.md\",\"path\":\"many/n258.md\",\"dir\":false},{\"name\":\"n259.md\",\"path\":\"many/n259.md\",\"dir\":false}]},{\"name\":\"notes\",\"path\":\"notes\",\"dir\":true,\"children\":[{\"name\":\"dots.v2\",\"path\":\"notes/dots.v2\",\"dir\":true,\"children\":[{\"name\":\"x.md\",\"path\":\"notes/dots.v2/x.md\",\"dir\":false}]},{\"name\":\"crlf.md\",\"path\":\"notes/crlf.md\",\"dir\":false},{\"name\":\"latin1.md\",\"path\":\"notes/latin1.md\",\"dir\":false},{\"name\":\"utf8.md\",\"path\":\"notes/utf8.md\",\"dir\":false}]},{\"name\":\"empty.md\",\"path\":\"empty.md\",\"dir\":false},{\"name\":\"ignored.md\",\"path\":\"ignored.md\",\"dir\":false},{\"name\":\"longa.md\",\"path\":\"longa.md\",\"dir\":false},{\"name\":\"multi.md\",\"path\":\"multi.md\",\"dir\":false},{\"name\":\"perigo.md\",\"path\":\"perigo.md\",\"dir\":false},{\"name\":\"UPPER.MD\",\"path\":\"UPPER.MD\",\"dir\":false},{\"name\":\"Welcome.md\",\"path\":\"Welcome.md\",\"dir\":false}]\n"
+  },
+  "tree HEAD": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   }
+  },
+  "tree trailing slash -> SPA": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   }
+  },
+  "unknown api GET -> SPA": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   }
+  },
+  "POST /api/dirs ct=None": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"use Content-Type: application/json\"}\n"
+  },
+  "POST /api/dirs ct='text/plain'": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"use Content-Type: application/json\"}\n"
+  },
+  "POST /api/dirs ct='application/x-www-form-urlencoded'": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"use Content-Type: application/json\"}\n"
+  },
+  "POST /api/dirs ct='Application/JSON'": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"use Content-Type: application/json\"}\n"
+  },
+  "POST /api/dirs ct='application/json;charset=utf-8'": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"csrf-4\"}\n"
+  },
+  "POST /api/dirs ct=' application/json ; x=y'": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"csrf-5\"}\n"
+  },
+  "POST /api/dirs ct='application/jsonx'": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"use Content-Type: application/json\"}\n"
+  },
+  "POST unknown path no content-type": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"use Content-Type: application/json\"}\n"
+  },
+  "POST unknown path json": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "PUT unknown path no content-type": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"use Content-Type: application/json\"}\n"
+  },
+  "PUT unknown path json": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "DELETE unknown path no content-type": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"use Content-Type: application/json\"}\n"
+  },
+  "DELETE unknown path json": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "PATCH unknown path no content-type": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"use Content-Type: application/json\"}\n"
+  },
+  "PATCH unknown path json": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "DELETE /api/tree": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "PUT /api/move": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD, POST",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "GET /api/move": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "body": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"google\" content=\"notranslate\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/icon.svg\" />\n    <link rel=\"manifest\" href=\"/manifest.webmanifest\" />\n    <meta name=\"theme-color\" content=\"#f2eadb\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Quirenote</title>\n    <!--\n      CSP: only the app's own scripts. It also applies to the EPUB iframes (blob:),\n      blocking JavaScript embedded in books, as foliate-js requires.\n\n    -->\n    <meta http-equiv=\"Content-Security-Policy\" content=\"script-src 'self'; object-src 'none'; base-uri 'self'\" />\n    <script src=\"/theme-init.js\"></script>\n    <script type=\"module\" crossorigin src=\"/assets/index-DZTAQN24.js\"></script>\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClfNXQDS.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Cz-W9D_a.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-BIeWGAoO.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-v4vcUIKh.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Db5lcyjw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClCbstQu.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-CXl2arXw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/preload-helper-BLdHbfdN.js\">\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-BK8zcGVA.css\">\n  </head>\n  <body>\n    <div id=\"app\"></div>\n  </body>\n</html>\n"
+  },
+  "DELETE /api/notes/a.md": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD, POST, PUT",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "PUT /api/relink": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD, POST",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "DELETE /api/files/a.md": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "GET /api/dirs/x": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "body": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"google\" content=\"notranslate\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/icon.svg\" />\n    <link rel=\"manifest\" href=\"/manifest.webmanifest\" />\n    <meta name=\"theme-color\" content=\"#f2eadb\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Quirenote</title>\n    <!--\n      CSP: only the app's own scripts. It also applies to the EPUB iframes (blob:),\n      blocking JavaScript embedded in books, as foliate-js requires.\n\n    -->\n    <meta http-equiv=\"Content-Security-Policy\" content=\"script-src 'self'; object-src 'none'; base-uri 'self'\" />\n    <script src=\"/theme-init.js\"></script>\n    <script type=\"module\" crossorigin src=\"/assets/index-DZTAQN24.js\"></script>\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClfNXQDS.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Cz-W9D_a.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-BIeWGAoO.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-v4vcUIKh.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Db5lcyjw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClCbstQu.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-CXl2arXw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/preload-helper-BLdHbfdN.js\">\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-BK8zcGVA.css\">\n  </head>\n  <body>\n    <div id=\"app\"></div>\n  </body>\n</html>\n"
+  },
+  "DELETE /api/setup": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD, POST",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "PUT /api/events": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "POST /api/search": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "POST /api/backlinks": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "PUT /api/trash": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD, POST",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "GET /api/trash": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "body": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"google\" content=\"notranslate\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/icon.svg\" />\n    <link rel=\"manifest\" href=\"/manifest.webmanifest\" />\n    <meta name=\"theme-color\" content=\"#f2eadb\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Quirenote</title>\n    <!--\n      CSP: only the app's own scripts. It also applies to the EPUB iframes (blob:),\n      blocking JavaScript embedded in books, as foliate-js requires.\n\n    -->\n    <meta http-equiv=\"Content-Security-Policy\" content=\"script-src 'self'; object-src 'none'; base-uri 'self'\" />\n    <script src=\"/theme-init.js\"></script>\n    <script type=\"module\" crossorigin src=\"/assets/index-DZTAQN24.js\"></script>\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClfNXQDS.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Cz-W9D_a.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-BIeWGAoO.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-v4vcUIKh.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Db5lcyjw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClCbstQu.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-CXl2arXw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/preload-helper-BLdHbfdN.js\">\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-BK8zcGVA.css\">\n  </head>\n  <body>\n    <div id=\"app\"></div>\n  </body>\n</html>\n"
+  },
+  "GET /api/images": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "body": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"google\" content=\"notranslate\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/icon.svg\" />\n    <link rel=\"manifest\" href=\"/manifest.webmanifest\" />\n    <meta name=\"theme-color\" content=\"#f2eadb\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Quirenote</title>\n    <!--\n      CSP: only the app's own scripts. It also applies to the EPUB iframes (blob:),\n      blocking JavaScript embedded in books, as foliate-js requires.\n\n    -->\n    <meta http-equiv=\"Content-Security-Policy\" content=\"script-src 'self'; object-src 'none'; base-uri 'self'\" />\n    <script src=\"/theme-init.js\"></script>\n    <script type=\"module\" crossorigin src=\"/assets/index-DZTAQN24.js\"></script>\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClfNXQDS.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Cz-W9D_a.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-BIeWGAoO.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-v4vcUIKh.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Db5lcyjw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClCbstQu.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-CXl2arXw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/preload-helper-BLdHbfdN.js\">\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-BK8zcGVA.css\">\n  </head>\n  <body>\n    <div id=\"app\"></div>\n  </body>\n</html>\n"
+  },
+  "DELETE /api/notes/": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD, POST, PUT",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "DELETE /api/files/": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "redirect GET /api/notes": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/notes/"
+   },
+   "body": "<a href=\"/api/notes/\">Temporary Redirect</a>.\n\n"
+  },
+  "redirect GET /api/files": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/files/"
+   },
+   "body": "<a href=\"/api/files/\">Temporary Redirect</a>.\n\n"
+  },
+  "redirect GET /api/dirs": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "body": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"google\" content=\"notranslate\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/icon.svg\" />\n    <link rel=\"manifest\" href=\"/manifest.webmanifest\" />\n    <meta name=\"theme-color\" content=\"#f2eadb\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Quirenote</title>\n    <!--\n      CSP: only the app's own scripts. It also applies to the EPUB iframes (blob:),\n      blocking JavaScript embedded in books, as foliate-js requires.\n\n    -->\n    <meta http-equiv=\"Content-Security-Policy\" content=\"script-src 'self'; object-src 'none'; base-uri 'self'\" />\n    <script src=\"/theme-init.js\"></script>\n    <script type=\"module\" crossorigin src=\"/assets/index-DZTAQN24.js\"></script>\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClfNXQDS.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Cz-W9D_a.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-BIeWGAoO.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-v4vcUIKh.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Db5lcyjw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClCbstQu.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-CXl2arXw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/preload-helper-BLdHbfdN.js\">\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-BK8zcGVA.css\">\n  </head>\n  <body>\n    <div id=\"app\"></div>\n  </body>\n</html>\n"
+  },
+  "redirect GET /api//tree": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/tree"
+   },
+   "body": "<a href=\"/api/tree\">Temporary Redirect</a>.\n\n"
+  },
+  "redirect GET /api/notes/x/../Welcome.md": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/notes/Welcome.md"
+   },
+   "body": "<a href=\"/api/notes/Welcome.md\">Temporary Redirect</a>.\n\n"
+  },
+  "redirect GET /api/./tree": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/tree"
+   },
+   "body": "<a href=\"/api/tree\">Temporary Redirect</a>.\n\n"
+  },
+  "redirect GET /api/notes/Welcome.md/../Welcome.md?x=1&y=2": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/notes/Welcome.md?x=1&y=2"
+   },
+   "body": "<a href=\"/api/notes/Welcome.md?x=1&amp;y=2\">Temporary Redirect</a>.\n\n"
+  },
+  "redirect GET //api/tree": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/tree"
+   },
+   "body": "<a href=\"/api/tree\">Temporary Redirect</a>.\n\n"
+  },
+  "redirect GET /api/notes/a%20b//c.md": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/notes/a%20b/c.md"
+   },
+   "body": "<a href=\"/api/notes/a%20b/c.md\">Temporary Redirect</a>.\n\n"
+  },
+  "redirect POST /api/notes": {
+   "status": 307,
+   "headers": {
+    "location": "/api/notes/"
+   },
+   "body": ""
+  },
+  "redirect PUT /api/notes": {
+   "status": 307,
+   "headers": {
+    "location": "/api/notes/"
+   },
+   "body": ""
+  },
+  "redirect POST /api/dirs": {
+   "status": 307,
+   "headers": {
+    "location": "/api/dirs/"
+   },
+   "body": ""
+  },
+  "redirect DELETE /api/notes": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD, POST, PUT",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "redirect HEAD /api/notes": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/notes/"
+   },
+   "body": ""
+  },
+  "read 'Welcome.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Welcome.md\",\"content\":\"# Welcome\\nSee [[Lexer]] and [[Estudos/Compiladores]].\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "read '/Welcome.md'": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/notes/Welcome.md"
+   },
+   "body": "<a href=\"/api/notes/Welcome.md\">Temporary Redirect</a>.\n\n"
+  },
+  "read '%2FWelcome.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Welcome.md\",\"content\":\"# Welcome\\nSee [[Lexer]] and [[Estudos/Compiladores]].\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "read 'welcome.md'": {
+   "status": 404,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"openat welcome.md: no such file or directory\"}\n"
+  },
+  "read 'Estudos/../Welcome.md'": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/notes/Welcome.md"
+   },
+   "body": "<a href=\"/api/notes/Welcome.md\">Temporary Redirect</a>.\n\n"
+  },
+  "read 'Estudos/%2e%2e/Welcome.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Welcome.md\",\"content\":\"# Welcome\\nSee [[Lexer]] and [[Estudos/Compiladores]].\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "read '%2e%2e/x.md'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "read '..%2fx.md'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "read '%2e%2e%2fetc%2fpasswd'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "read '%2fetc%2fpasswd'": {
+   "status": 404,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"openat etc/passwd: no such file or directory\"}\n"
+  },
+  "read 'Estudos%2f..%2f..%2fx.md'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "read '.hidden.md'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "read '.obsidian/app.json'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "read 'Estudos/.x.md'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "read 'missing.md'": {
+   "status": 404,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"openat missing.md: no such file or directory\"}\n"
+  },
+  "read 'Estudos'": {
+   "status": 500,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"read <VAULT>/Estudos: is a directory\"}\n"
+  },
+  "read 'Estudos/'": {
+   "status": 500,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"read <VAULT>/Estudos: is a directory\"}\n"
+  },
+  "read ''": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "read 'notes/plain.txt'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"notes/plain.txt\",\"content\":\"just text\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "read 'notes/dots.v2/x.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"notes/dots.v2/x.md\",\"content\":\"inside a folder with a dot\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "read '..'": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api"
+   },
+   "body": "<a href=\"/api\">Temporary Redirect</a>.\n\n"
+  },
+  "read '%2e%2e'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "read 'Welcome.md/'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Welcome.md\",\"content\":\"# Welcome\\nSee [[Lexer]] and [[Estudos/Compiladores]].\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "read 'a%00b.md'": {
+   "status": 500,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"openat a\\u0000b.md: invalid argument\"}\n"
+  },
+  "read 'Welcome.md%00'": {
+   "status": 500,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"openat Welcome.md\\u0000: invalid argument\"}\n"
+  },
+  "read '%ff%fe.md'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "read 'caf%C3%A9.md'": {
+   "status": 404,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"openat café.md: no such file or directory\"}\n"
+  },
+  "read 'Estudos//Lexer.md'": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/notes/Estudos/Lexer.md"
+   },
+   "body": "<a href=\"/api/notes/Estudos/Lexer.md\">Temporary Redirect</a>.\n\n"
+  },
+  "read './Welcome.md'": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/notes/Welcome.md"
+   },
+   "body": "<a href=\"/api/notes/Welcome.md\">Temporary Redirect</a>.\n\n"
+  },
+  "read 'notes/latin1.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"notes/latin1.md\",\"content\":\"fun��o em latin1\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "read 'notes/utf8.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"notes/utf8.md\",\"content\":\"Olá, mundo! \\u003cb\\u003e\\u0026amp;\\u003c/b\\u003e ☃ \\u2028 end\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "read 'notes/crlf.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"notes/crlf.md\",\"content\":\"line1\\r\\nline2\\r\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "read 'empty.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"empty.md\",\"content\":\"\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "files traversal '../etc/passwd'": {
+   "status": 307,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "location": "/api/etc/passwd"
+   },
+   "body": "<a href=\"/api/etc/passwd\">Temporary Redirect</a>.\n\n"
+  },
+  "save traversal '../etc/passwd'": {
+   "status": 307,
+   "headers": {
+    "location": "/api/etc/passwd"
+   },
+   "body": ""
+  },
+  "create traversal '../etc/passwd'": {
+   "status": 307,
+   "headers": {
+    "location": "/api/etc/passwd"
+   },
+   "body": ""
+  },
+  "mkdir traversal '../etc/passwd'": {
+   "status": 307,
+   "headers": {
+    "location": "/api/etc/passwd"
+   },
+   "body": ""
+  },
+  "files traversal '..%2f..%2fetc%2fpasswd'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "save traversal '..%2f..%2fetc%2fpasswd'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "create traversal '..%2f..%2fetc%2fpasswd'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "mkdir traversal '..%2f..%2fetc%2fpasswd'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "files traversal '%2e%2e/%2e%2e/etc/passwd'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "save traversal '%2e%2e/%2e%2e/etc/passwd'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "create traversal '%2e%2e/%2e%2e/etc/passwd'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "mkdir traversal '%2e%2e/%2e%2e/etc/passwd'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "files traversal '.obsidian/app.json'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "save traversal '.obsidian/app.json'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "create traversal '.obsidian/app.json'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "mkdir traversal '.obsidian/app.json'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "files traversal '.hidden.md'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "save traversal '.hidden.md'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "create traversal '.hidden.md'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "mkdir traversal '.hidden.md'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "raw GET /api/notes/../../../../etc/passwd HTTP/1.1": {
+   "status": 307,
+   "headers": {},
+   "extra": {
+    "leaks_passwd": false
+   }
+  },
+  "raw GET /api/files/../../etc/passwd HTTP/1.1": {
+   "status": 307,
+   "headers": {},
+   "extra": {
+    "leaks_passwd": false
+   }
+  },
+  "raw GET /api/files/%2e%2e/%2e%2e/etc/passwd HTTP/1.1": {
+   "status": 400,
+   "headers": {},
+   "extra": {
+    "leaks_passwd": false
+   }
+  },
+  "raw GET /../../etc/passwd HTTP/1.1": {
+   "status": 307,
+   "headers": {},
+   "extra": {
+    "leaks_passwd": false
+   }
+  },
+  "symlink escape read": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"openat link-out.md: path escapes from parent\"}\n"
+  },
+  "symlink escape files": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"openat link-out.md: path escapes from parent\"}\n"
+  },
+  "symlink escape via dir": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"openat dir-out/outside-secret.md: path escapes from parent\"}\n"
+  },
+  "symlink inside vault read": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"link-in.md\",\"content\":\"# Welcome\\nSee [[Lexer]] and [[Estudos/Compiladores]].\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "symlink escape save": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"statat link-out.md: path escapes from parent\"}\n"
+  },
+  "symlink escape mkdir": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"mkdirat dir-out/newdir: path escapes from parent\"}\n"
+  },
+  "tree with symlinks": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"name\":\"csrf-4\",\"path\":\"csrf-4\",\"dir\":true},{\"name\":\"csrf-5\",\"path\":\"csrf-5\",\"dir\":true},{\"name\":\"Estudos\",\"path\":\"Estudos\",\"dir\":true,\"children\":[{\"name\":\"Compiladores.md\",\"path\":\"Estudos/Compiladores.md\",\"dir\":false},{\"name\":\"Lexer.md\",\"path\":\"Estudos/Lexer.md\",\"dir\":false}]},{\"name\":\"linked\",\"path\":\"linked\",\"dir\":true,\"children\":[{\"name\":\"A.md\",\"path\":\"linked/A.md\",\"dir\":false},{\"name\":\"Other.md\",\"path\":\"linked/Other.md\",\"dir\":false},{\"name\":\"Table.md\",\"path\":\"linked/Table.md\",\"dir\":false},{\"name\":\"Target.md\",\"path\":\"linked/Target.md\",\"dir\":false}]},{\"name\":\"Livros\",\"path\":\"Livros\",\"dir\":true,\"children\":[{\"name\":\"book.epub\",\"path\":\"Livros/book.epub\",\"dir\":false},{\"name\":\"Dragon.pdf\",\"path\":\"Livros/Dragon.pdf\",\"dir\":false},{\"name\":\"photo.jpg\",\"path\":\"Livros/photo.jpg\",\"dir\":false},{\"name\":\"pic.png\",\"path\":\"Livros/pic.png\",\"dir\":false}]},{\"name\":\"many\",\"path\":\"many\",\"dir\":true,\"children\":[{\"name\":\"m0.md\",\"path\":\"many/m0.md\",\"dir\":false},{\"name\":\"n000.md\",\"path\":\"many/n000.md\",\"dir\":false},{\"name\":\"n001.md\",\"path\":\"many/n001.md\",\"dir\":false},{\"name\":\"n002.md\",\"path\":\"many/n002.md\",\"dir\":false},{\"name\":\"n003.md\",\"path\":\"many/n003.md\",\"dir\":false},{\"name\":\"n004.md\",\"path\":\"many/n004.md\",\"dir\":false},{\"name\":\"n005.md\",\"path\":\"many/n005.md\",\"dir\":false},{\"name\":\"n006.md\",\"path\":\"many/n006.md\",\"dir\":false},{\"name\":\"n007.md\",\"path\":\"many/n007.md\",\"dir\":false},{\"name\":\"n008.md\",\"path\":\"many/n008.md\",\"dir\":false},{\"name\":\"n009.md\",\"path\":\"many/n009.md\",\"dir\":false},{\"name\":\"n010.md\",\"path\":\"many/n010.md\",\"dir\":false},{\"name\":\"n011.md\",\"path\":\"many/n011.md\",\"dir\":false},{\"name\":\"n012.md\",\"path\":\"many/n012.md\",\"dir\":false},{\"name\":\"n013.md\",\"path\":\"many/n013.md\",\"dir\":false},{\"name\":\"n014.md\",\"path\":\"many/n014.md\",\"dir\":false},{\"name\":\"n015.md\",\"path\":\"many/n015.md\",\"dir\":false},{\"name\":\"n016.md\",\"path\":\"many/n016.md\",\"dir\":false},{\"name\":\"n017.md\",\"path\":\"many/n017.md\",\"dir\":false},{\"name\":\"n018.md\",\"path\":\"many/n018.md\",\"dir\":false},{\"name\":\"n019.md\",\"path\":\"many/n019.md\",\"dir\":false},{\"name\":\"n020.md\",\"path\":\"many/n020.md\",\"dir\":false},{\"name\":\"n021.md\",\"path\":\"many/n021.md\",\"dir\":false},{\"name\":\"n022.md\",\"path\":\"many/n022.md\",\"dir\":false},{\"name\":\"n023.md\",\"path\":\"many/n023.md\",\"dir\":false},{\"name\":\"n024.md\",\"path\":\"many/n024.md\",\"dir\":false},{\"name\":\"n025.md\",\"path\":\"many/n025.md\",\"dir\":false},{\"name\":\"n026.md\",\"path\":\"many/n026.md\",\"dir\":false},{\"name\":\"n027.md\",\"path\":\"many/n027.md\",\"dir\":false},{\"name\":\"n028.md\",\"path\":\"many/n028.md\",\"dir\":false},{\"name\":\"n029.md\",\"path\":\"many/n029.md\",\"dir\":false},{\"name\":\"n030.md\",\"path\":\"many/n030.md\",\"dir\":false},{\"name\":\"n031.md\",\"path\":\"many/n031.md\",\"dir\":false},{\"name\":\"n032.md\",\"path\":\"many/n032.md\",\"dir\":false},{\"name\":\"n033.md\",\"path\":\"many/n033.md\",\"dir\":false},{\"name\":\"n034.md\",\"path\":\"many/n034.md\",\"dir\":false},{\"name\":\"n035.md\",\"path\":\"many/n035.md\",\"dir\":false},{\"name\":\"n036.md\",\"path\":\"many/n036.md\",\"dir\":false},{\"name\":\"n037.md\",\"path\":\"many/n037.md\",\"dir\":false},{\"name\":\"n038.md\",\"path\":\"many/n038.md\",\"dir\":false},{\"name\":\"n039.md\",\"path\":\"many/n039.md\",\"dir\":false},{\"name\":\"n040.md\",\"path\":\"many/n040.md\",\"dir\":false},{\"name\":\"n041.md\",\"path\":\"many/n041.md\",\"dir\":false},{\"name\":\"n042.md\",\"path\":\"many/n042.md\",\"dir\":false},{\"name\":\"n043.md\",\"path\":\"many/n043.md\",\"dir\":false},{\"name\":\"n044.md\",\"path\":\"many/n044.md\",\"dir\":false},{\"name\":\"n045.md\",\"path\":\"many/n045.md\",\"dir\":false},{\"name\":\"n046.md\",\"path\":\"many/n046.md\",\"dir\":false},{\"name\":\"n047.md\",\"path\":\"many/n047.md\",\"dir\":false},{\"name\":\"n048.md\",\"path\":\"many/n048.md\",\"dir\":false},{\"name\":\"n049.md\",\"path\":\"many/n049.md\",\"dir\":false},{\"name\":\"n050.md\",\"path\":\"many/n050.md\",\"dir\":false},{\"name\":\"n051.md\",\"path\":\"many/n051.md\",\"dir\":false},{\"name\":\"n052.md\",\"path\":\"many/n052.md\",\"dir\":false},{\"name\":\"n053.md\",\"path\":\"many/n053.md\",\"dir\":false},{\"name\":\"n054.md\",\"path\":\"many/n054.md\",\"dir\":false},{\"name\":\"n055.md\",\"path\":\"many/n055.md\",\"dir\":false},{\"name\":\"n056.md\",\"path\":\"many/n056.md\",\"dir\":false},{\"name\":\"n057.md\",\"path\":\"many/n057.md\",\"dir\":false},{\"name\":\"n058.md\",\"path\":\"many/n058.md\",\"dir\":false},{\"name\":\"n059.md\",\"path\":\"many/n059.md\",\"dir\":false},{\"name\":\"n060.md\",\"path\":\"many/n060.md\",\"dir\":false},{\"name\":\"n061.md\",\"path\":\"many/n061.md\",\"dir\":false},{\"name\":\"n062.md\",\"path\":\"many/n062.md\",\"dir\":false},{\"name\":\"n063.md\",\"path\":\"many/n063.md\",\"dir\":false},{\"name\":\"n064.md\",\"path\":\"many/n064.md\",\"dir\":false},{\"name\":\"n065.md\",\"path\":\"many/n065.md\",\"dir\":false},{\"name\":\"n066.md\",\"path\":\"many/n066.md\",\"dir\":false},{\"name\":\"n067.md\",\"path\":\"many/n067.md\",\"dir\":false},{\"name\":\"n068.md\",\"path\":\"many/n068.md\",\"dir\":false},{\"name\":\"n069.md\",\"path\":\"many/n069.md\",\"dir\":false},{\"name\":\"n070.md\",\"path\":\"many/n070.md\",\"dir\":false},{\"name\":\"n071.md\",\"path\":\"many/n071.md\",\"dir\":false},{\"name\":\"n072.md\",\"path\":\"many/n072.md\",\"dir\":false},{\"name\":\"n073.md\",\"path\":\"many/n073.md\",\"dir\":false},{\"name\":\"n074.md\",\"path\":\"many/n074.md\",\"dir\":false},{\"name\":\"n075.md\",\"path\":\"many/n075.md\",\"dir\":false},{\"name\":\"n076.md\",\"path\":\"many/n076.md\",\"dir\":false},{\"name\":\"n077.md\",\"path\":\"many/n077.md\",\"dir\":false},{\"name\":\"n078.md\",\"path\":\"many/n078.md\",\"dir\":false},{\"name\":\"n079.md\",\"path\":\"many/n079.md\",\"dir\":false},{\"name\":\"n080.md\",\"path\":\"many/n080.md\",\"dir\":false},{\"name\":\"n081.md\",\"path\":\"many/n081.md\",\"dir\":false},{\"name\":\"n082.md\",\"path\":\"many/n082.md\",\"dir\":false},{\"name\":\"n083.md\",\"path\":\"many/n083.md\",\"dir\":false},{\"name\":\"n084.md\",\"path\":\"many/n084.md\",\"dir\":false},{\"name\":\"n085.md\",\"path\":\"many/n085.md\",\"dir\":false},{\"name\":\"n086.md\",\"path\":\"many/n086.md\",\"dir\":false},{\"name\":\"n087.md\",\"path\":\"many/n087.md\",\"dir\":false},{\"name\":\"n088.md\",\"path\":\"many/n088.md\",\"dir\":false},{\"name\":\"n089.md\",\"path\":\"many/n089.md\",\"dir\":false},{\"name\":\"n090.md\",\"path\":\"many/n090.md\",\"dir\":false},{\"name\":\"n091.md\",\"path\":\"many/n091.md\",\"dir\":false},{\"name\":\"n092.md\",\"path\":\"many/n092.md\",\"dir\":false},{\"name\":\"n093.md\",\"path\":\"many/n093.md\",\"dir\":false},{\"name\":\"n094.md\",\"path\":\"many/n094.md\",\"dir\":false},{\"name\":\"n095.md\",\"path\":\"many/n095.md\",\"dir\":false},{\"name\":\"n096.md\",\"path\":\"many/n096.md\",\"dir\":false},{\"name\":\"n097.md\",\"path\":\"many/n097.md\",\"dir\":false},{\"name\":\"n098.md\",\"path\":\"many/n098.md\",\"dir\":false},{\"name\":\"n099.md\",\"path\":\"many/n099.md\",\"dir\":false},{\"name\":\"n100.md\",\"path\":\"many/n100.md\",\"dir\":false},{\"name\":\"n101.md\",\"path\":\"many/n101.md\",\"dir\":false},{\"name\":\"n102.md\",\"path\":\"many/n102.md\",\"dir\":false},{\"name\":\"n103.md\",\"path\":\"many/n103.md\",\"dir\":false},{\"name\":\"n104.md\",\"path\":\"many/n104.md\",\"dir\":false},{\"name\":\"n105.md\",\"path\":\"many/n105.md\",\"dir\":false},{\"name\":\"n106.md\",\"path\":\"many/n106.md\",\"dir\":false},{\"name\":\"n107.md\",\"path\":\"many/n107.md\",\"dir\":false},{\"name\":\"n108.md\",\"path\":\"many/n108.md\",\"dir\":false},{\"name\":\"n109.md\",\"path\":\"many/n109.md\",\"dir\":false},{\"name\":\"n110.md\",\"path\":\"many/n110.md\",\"dir\":false},{\"name\":\"n111.md\",\"path\":\"many/n111.md\",\"dir\":false},{\"name\":\"n112.md\",\"path\":\"many/n112.md\",\"dir\":false},{\"name\":\"n113.md\",\"path\":\"many/n113.md\",\"dir\":false},{\"name\":\"n114.md\",\"path\":\"many/n114.md\",\"dir\":false},{\"name\":\"n115.md\",\"path\":\"many/n115.md\",\"dir\":false},{\"name\":\"n116.md\",\"path\":\"many/n116.md\",\"dir\":false},{\"name\":\"n117.md\",\"path\":\"many/n117.md\",\"dir\":false},{\"name\":\"n118.md\",\"path\":\"many/n118.md\",\"dir\":false},{\"name\":\"n119.md\",\"path\":\"many/n119.md\",\"dir\":false},{\"name\":\"n120.md\",\"path\":\"many/n120.md\",\"dir\":false},{\"name\":\"n121.md\",\"path\":\"many/n121.md\",\"dir\":false},{\"name\":\"n122.md\",\"path\":\"many/n122.md\",\"dir\":false},{\"name\":\"n123.md\",\"path\":\"many/n123.md\",\"dir\":false},{\"name\":\"n124.md\",\"path\":\"many/n124.md\",\"dir\":false},{\"name\":\"n125.md\",\"path\":\"many/n125.md\",\"dir\":false},{\"name\":\"n126.md\",\"path\":\"many/n126.md\",\"dir\":false},{\"name\":\"n127.md\",\"path\":\"many/n127.md\",\"dir\":false},{\"name\":\"n128.md\",\"path\":\"many/n128.md\",\"dir\":false},{\"name\":\"n129.md\",\"path\":\"many/n129.md\",\"dir\":false},{\"name\":\"n130.md\",\"path\":\"many/n130.md\",\"dir\":false},{\"name\":\"n131.md\",\"path\":\"many/n131.md\",\"dir\":false},{\"name\":\"n132.md\",\"path\":\"many/n132.md\",\"dir\":false},{\"name\":\"n133.md\",\"path\":\"many/n133.md\",\"dir\":false},{\"name\":\"n134.md\",\"path\":\"many/n134.md\",\"dir\":false},{\"name\":\"n135.md\",\"path\":\"many/n135.md\",\"dir\":false},{\"name\":\"n136.md\",\"path\":\"many/n136.md\",\"dir\":false},{\"name\":\"n137.md\",\"path\":\"many/n137.md\",\"dir\":false},{\"name\":\"n138.md\",\"path\":\"many/n138.md\",\"dir\":false},{\"name\":\"n139.md\",\"path\":\"many/n139.md\",\"dir\":false},{\"name\":\"n140.md\",\"path\":\"many/n140.md\",\"dir\":false},{\"name\":\"n141.md\",\"path\":\"many/n141.md\",\"dir\":false},{\"name\":\"n142.md\",\"path\":\"many/n142.md\",\"dir\":false},{\"name\":\"n143.md\",\"path\":\"many/n143.md\",\"dir\":false},{\"name\":\"n144.md\",\"path\":\"many/n144.md\",\"dir\":false},{\"name\":\"n145.md\",\"path\":\"many/n145.md\",\"dir\":false},{\"name\":\"n146.md\",\"path\":\"many/n146.md\",\"dir\":false},{\"name\":\"n147.md\",\"path\":\"many/n147.md\",\"dir\":false},{\"name\":\"n148.md\",\"path\":\"many/n148.md\",\"dir\":false},{\"name\":\"n149.md\",\"path\":\"many/n149.md\",\"dir\":false},{\"name\":\"n150.md\",\"path\":\"many/n150.md\",\"dir\":false},{\"name\":\"n151.md\",\"path\":\"many/n151.md\",\"dir\":false},{\"name\":\"n152.md\",\"path\":\"many/n152.md\",\"dir\":false},{\"name\":\"n153.md\",\"path\":\"many/n153.md\",\"dir\":false},{\"name\":\"n154.md\",\"path\":\"many/n154.md\",\"dir\":false},{\"name\":\"n155.md\",\"path\":\"many/n155.md\",\"dir\":false},{\"name\":\"n156.md\",\"path\":\"many/n156.md\",\"dir\":false},{\"name\":\"n157.md\",\"path\":\"many/n157.md\",\"dir\":false},{\"name\":\"n158.md\",\"path\":\"many/n158.md\",\"dir\":false},{\"name\":\"n159.md\",\"path\":\"many/n159.md\",\"dir\":false},{\"name\":\"n160.md\",\"path\":\"many/n160.md\",\"dir\":false},{\"name\":\"n161.md\",\"path\":\"many/n161.md\",\"dir\":false},{\"name\":\"n162.md\",\"path\":\"many/n162.md\",\"dir\":false},{\"name\":\"n163.md\",\"path\":\"many/n163.md\",\"dir\":false},{\"name\":\"n164.md\",\"path\":\"many/n164.md\",\"dir\":false},{\"name\":\"n165.md\",\"path\":\"many/n165.md\",\"dir\":false},{\"name\":\"n166.md\",\"path\":\"many/n166.md\",\"dir\":false},{\"name\":\"n167.md\",\"path\":\"many/n167.md\",\"dir\":false},{\"name\":\"n168.md\",\"path\":\"many/n168.md\",\"dir\":false},{\"name\":\"n169.md\",\"path\":\"many/n169.md\",\"dir\":false},{\"name\":\"n170.md\",\"path\":\"many/n170.md\",\"dir\":false},{\"name\":\"n171.md\",\"path\":\"many/n171.md\",\"dir\":false},{\"name\":\"n172.md\",\"path\":\"many/n172.md\",\"dir\":false},{\"name\":\"n173.md\",\"path\":\"many/n173.md\",\"dir\":false},{\"name\":\"n174.md\",\"path\":\"many/n174.md\",\"dir\":false},{\"name\":\"n175.md\",\"path\":\"many/n175.md\",\"dir\":false},{\"name\":\"n176.md\",\"path\":\"many/n176.md\",\"dir\":false},{\"name\":\"n177.md\",\"path\":\"many/n177.md\",\"dir\":false},{\"name\":\"n178.md\",\"path\":\"many/n178.md\",\"dir\":false},{\"name\":\"n179.md\",\"path\":\"many/n179.md\",\"dir\":false},{\"name\":\"n180.md\",\"path\":\"many/n180.md\",\"dir\":false},{\"name\":\"n181.md\",\"path\":\"many/n181.md\",\"dir\":false},{\"name\":\"n182.md\",\"path\":\"many/n182.md\",\"dir\":false},{\"name\":\"n183.md\",\"path\":\"many/n183.md\",\"dir\":false},{\"name\":\"n184.md\",\"path\":\"many/n184.md\",\"dir\":false},{\"name\":\"n185.md\",\"path\":\"many/n185.md\",\"dir\":false},{\"name\":\"n186.md\",\"path\":\"many/n186.md\",\"dir\":false},{\"name\":\"n187.md\",\"path\":\"many/n187.md\",\"dir\":false},{\"name\":\"n188.md\",\"path\":\"many/n188.md\",\"dir\":false},{\"name\":\"n189.md\",\"path\":\"many/n189.md\",\"dir\":false},{\"name\":\"n190.md\",\"path\":\"many/n190.md\",\"dir\":false},{\"name\":\"n191.md\",\"path\":\"many/n191.md\",\"dir\":false},{\"name\":\"n192.md\",\"path\":\"many/n192.md\",\"dir\":false},{\"name\":\"n193.md\",\"path\":\"many/n193.md\",\"dir\":false},{\"name\":\"n194.md\",\"path\":\"many/n194.md\",\"dir\":false},{\"name\":\"n195.md\",\"path\":\"many/n195.md\",\"dir\":false},{\"name\":\"n196.md\",\"path\":\"many/n196.md\",\"dir\":false},{\"name\":\"n197.md\",\"path\":\"many/n197.md\",\"dir\":false},{\"name\":\"n198.md\",\"path\":\"many/n198.md\",\"dir\":false},{\"name\":\"n199.md\",\"path\":\"many/n199.md\",\"dir\":false},{\"name\":\"n200.md\",\"path\":\"many/n200.md\",\"dir\":false},{\"name\":\"n201.md\",\"path\":\"many/n201.md\",\"dir\":false},{\"name\":\"n202.md\",\"path\":\"many/n202.md\",\"dir\":false},{\"name\":\"n203.md\",\"path\":\"many/n203.md\",\"dir\":false},{\"name\":\"n204.md\",\"path\":\"many/n204.md\",\"dir\":false},{\"name\":\"n205.md\",\"path\":\"many/n205.md\",\"dir\":false},{\"name\":\"n206.md\",\"path\":\"many/n206.md\",\"dir\":false},{\"name\":\"n207.md\",\"path\":\"many/n207.md\",\"dir\":false},{\"name\":\"n208.md\",\"path\":\"many/n208.md\",\"dir\":false},{\"name\":\"n209.md\",\"path\":\"many/n209.md\",\"dir\":false},{\"name\":\"n210.md\",\"path\":\"many/n210.md\",\"dir\":false},{\"name\":\"n211.md\",\"path\":\"many/n211.md\",\"dir\":false},{\"name\":\"n212.md\",\"path\":\"many/n212.md\",\"dir\":false},{\"name\":\"n213.md\",\"path\":\"many/n213.md\",\"dir\":false},{\"name\":\"n214.md\",\"path\":\"many/n214.md\",\"dir\":false},{\"name\":\"n215.md\",\"path\":\"many/n215.md\",\"dir\":false},{\"name\":\"n216.md\",\"path\":\"many/n216.md\",\"dir\":false},{\"name\":\"n217.md\",\"path\":\"many/n217.md\",\"dir\":false},{\"name\":\"n218.md\",\"path\":\"many/n218.md\",\"dir\":false},{\"name\":\"n219.md\",\"path\":\"many/n219.md\",\"dir\":false},{\"name\":\"n220.md\",\"path\":\"many/n220.md\",\"dir\":false},{\"name\":\"n221.md\",\"path\":\"many/n221.md\",\"dir\":false},{\"name\":\"n222.md\",\"path\":\"many/n222.md\",\"dir\":false},{\"name\":\"n223.md\",\"path\":\"many/n223.md\",\"dir\":false},{\"name\":\"n224.md\",\"path\":\"many/n224.md\",\"dir\":false},{\"name\":\"n225.md\",\"path\":\"many/n225.md\",\"dir\":false},{\"name\":\"n226.md\",\"path\":\"many/n226.md\",\"dir\":false},{\"name\":\"n227.md\",\"path\":\"many/n227.md\",\"dir\":false},{\"name\":\"n228.md\",\"path\":\"many/n228.md\",\"dir\":false},{\"name\":\"n229.md\",\"path\":\"many/n229.md\",\"dir\":false},{\"name\":\"n230.md\",\"path\":\"many/n230.md\",\"dir\":false},{\"name\":\"n231.md\",\"path\":\"many/n231.md\",\"dir\":false},{\"name\":\"n232.md\",\"path\":\"many/n232.md\",\"dir\":false},{\"name\":\"n233.md\",\"path\":\"many/n233.md\",\"dir\":false},{\"name\":\"n234.md\",\"path\":\"many/n234.md\",\"dir\":false},{\"name\":\"n235.md\",\"path\":\"many/n235.md\",\"dir\":false},{\"name\":\"n236.md\",\"path\":\"many/n236.md\",\"dir\":false},{\"name\":\"n237.md\",\"path\":\"many/n237.md\",\"dir\":false},{\"name\":\"n238.md\",\"path\":\"many/n238.md\",\"dir\":false},{\"name\":\"n239.md\",\"path\":\"many/n239.md\",\"dir\":false},{\"name\":\"n240.md\",\"path\":\"many/n240.md\",\"dir\":false},{\"name\":\"n241.md\",\"path\":\"many/n241.md\",\"dir\":false},{\"name\":\"n242.md\",\"path\":\"many/n242.md\",\"dir\":false},{\"name\":\"n243.md\",\"path\":\"many/n243.md\",\"dir\":false},{\"name\":\"n244.md\",\"path\":\"many/n244.md\",\"dir\":false},{\"name\":\"n245.md\",\"path\":\"many/n245.md\",\"dir\":false},{\"name\":\"n246.md\",\"path\":\"many/n246.md\",\"dir\":false},{\"name\":\"n247.md\",\"path\":\"many/n247.md\",\"dir\":false},{\"name\":\"n248.md\",\"path\":\"many/n248.md\",\"dir\":false},{\"name\":\"n249.md\",\"path\":\"many/n249.md\",\"dir\":false},{\"name\":\"n250.md\",\"path\":\"many/n250.md\",\"dir\":false},{\"name\":\"n251.md\",\"path\":\"many/n251.md\",\"dir\":false},{\"name\":\"n252.md\",\"path\":\"many/n252.md\",\"dir\":false},{\"name\":\"n253.md\",\"path\":\"many/n253.md\",\"dir\":false},{\"name\":\"n254.md\",\"path\":\"many/n254.md\",\"dir\":false},{\"name\":\"n255.md\",\"path\":\"many/n255.md\",\"dir\":false},{\"name\":\"n256.md\",\"path\":\"many/n256.md\",\"dir\":false},{\"name\":\"n257.md\",\"path\":\"many/n257.md\",\"dir\":false},{\"name\":\"n258.md\",\"path\":\"many/n258.md\",\"dir\":false},{\"name\":\"n259.md\",\"path\":\"many/n259.md\",\"dir\":false}]},{\"name\":\"notes\",\"path\":\"notes\",\"dir\":true,\"children\":[{\"name\":\"dots.v2\",\"path\":\"notes/dots.v2\",\"dir\":true,\"children\":[{\"name\":\"x.md\",\"path\":\"notes/dots.v2/x.md\",\"dir\":false}]},{\"name\":\"crlf.md\",\"path\":\"notes/crlf.md\",\"dir\":false},{\"name\":\"latin1.md\",\"path\":\"notes/latin1.md\",\"dir\":false},{\"name\":\"utf8.md\",\"path\":\"notes/utf8.md\",\"dir\":false}]},{\"name\":\"empty.md\",\"path\":\"empty.md\",\"dir\":false},{\"name\":\"ignored.md\",\"path\":\"ignored.md\",\"dir\":false},{\"name\":\"link-in.md\",\"path\":\"link-in.md\",\"dir\":false},{\"name\":\"link-out.md\",\"path\":\"link-out.md\",\"dir\":false},{\"name\":\"longa.md\",\"path\":\"longa.md\",\"dir\":false},{\"name\":\"multi.md\",\"path\":\"multi.md\",\"dir\":false},{\"name\":\"perigo.md\",\"path\":\"perigo.md\",\"dir\":false},{\"name\":\"UPPER.MD\",\"path\":\"UPPER.MD\",\"dir\":false},{\"name\":\"Welcome.md\",\"path\":\"Welcome.md\",\"dir\":false}]\n"
+  },
+  "create": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"new/Idea.md\",\"content\":\"# Idea\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "create again 409": {
+   "status": 409,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"a file with this name already exists\"}\n"
+  },
+  "create no content": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"new/Empty.md\",\"content\":\"\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "create non-md": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"only .md files can be edited\"}\n"
+  },
+  "create uppercase .MD": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"new/Up.MD\",\"content\":\"x\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "create bad name C%23%20notas.md": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the name cannot contain # ^ [ ] | (Obsidian rejects them; they would break links)\"}\n"
+  },
+  "create bad name x%5Ey.md": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the name cannot contain # ^ [ ] | (Obsidian rejects them; they would break links)\"}\n"
+  },
+  "create bad name a%20%5Bb%5D.md": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the name cannot contain # ^ [ ] | (Obsidian rejects them; they would break links)\"}\n"
+  },
+  "create bad name a%7Cb.md": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the name cannot contain # ^ [ ] | (Obsidian rejects them; they would break links)\"}\n"
+  },
+  "create bad name a%0Ab.md": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the name cannot contain # ^ [ ] | (Obsidian rejects them; they would break links)\"}\n"
+  },
+  "create invalid json": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "create empty body": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "create json null": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"new/Null.md\",\"content\":\"\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "create wrong type": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "create unknown fields": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"new/U.md\",\"content\":\"u\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "create trailing garbage": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"new/T.md\",\"content\":\"t\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "create capitalised key": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"new/K.md\",\"content\":\"k\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "create special chars": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"new/Special.md\",\"content\":\"\\u003cscript\\u003e\\u0026\\u2028\\u2029\\u0000\\u001f\\\"\\\\ é ☃ 😀\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "read special chars": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"new/Special.md\",\"content\":\"\\u003cscript\\u003e\\u0026\\u2028\\u2029\\u0000\\u001f\\\"\\\\ é ☃ 😀\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "create big body 10MB limit": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "create under 10MB": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   }
+  },
+  "create through a file": {
+   "status": 500,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"mkdirat Welcome.md: file exists\"}\n"
+  },
+  "read utf8": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"notes/utf8.md\",\"content\":\"Olá, mundo! \\u003cb\\u003e\\u0026amp;\\u003c/b\\u003e ☃ \\u2028 end\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "save ok": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Welcome.md\",\"content\":\"# Welcome v2\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "save stale -> 409 with current": {
+   "status": 409,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Welcome.md\",\"content\":\"# Welcome v2\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "save force (no mtime)": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Welcome.md\",\"content\":\"forced\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "save force (mtime 0 string)": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Welcome.md\",\"content\":\"forced0\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "save new file with mtime -> 404": {
+   "status": 404,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"statat ghost.md: no such file or directory\"}\n"
+  },
+  "save new file force": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"deep/er/new.md\",\"content\":\"n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "save mtime as number -> 400": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "save mtime garbage -> 400": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "save mtime empty string -> 400": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "save mtime null": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Welcome.md\",\"content\":\"nullm\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "save mtime negative": {
+   "status": 409,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Welcome.md\",\"content\":\"nullm\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "save mtime overflow": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "save non-md": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"only .md files can be edited\"}\n"
+  },
+  "save upper .MD ext": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"UPPER.MD\",\"content\":\"upper saved\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "save empty body": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "save invalid json": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "save too big": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "save dir path": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Estudos.md\",\"content\":\"x\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "save over dir named .md": {
+   "status": 500,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"renameat <tmp> isdir.md: file exists\"}\n"
+  },
+  "read dir named .md": {
+   "status": 500,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"read <VAULT>/isdir.md: is a directory\"}\n"
+  },
+  "read dir": {
+   "status": 500,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"read <VAULT>/Estudos: is a directory\"}\n"
+  },
+  "read latin1": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"notes/latin1.md\",\"content\":\"fun��o em latin1\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "read crlf": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"notes/crlf.md\",\"content\":\"line1\\r\\nline2\\r\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "save after external change": {
+   "status": 409,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Estudos/Lexer.md\",\"content\":\"# changed outside\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "stale save after move": {
+   "status": 404,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"statat stale/draft.md: no such file or directory\"}\n"
+  },
+  "stale save after trash": {
+   "status": 404,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"statat stale/draft2.md: no such file or directory\"}\n"
+  },
+  "mkdir": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Estudos/Novo\"}\n"
+  },
+  "mkdir again": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Estudos/Novo\"}\n"
+  },
+  "mkdir leading slash": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"etc/x\"}\n"
+  },
+  "mkdir bad .oculta": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "mkdir bad a/.obsidian": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "mkdir bad Pasta%20%231": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the name cannot contain # ^ [ ] | (Obsidian rejects them; they would break links)\"}\n"
+  },
+  "mkdir bad a%7Cb": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the name cannot contain # ^ [ ] | (Obsidian rejects them; they would break links)\"}\n"
+  },
+  "mkdir over a file": {
+   "status": 500,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"openat Welcome.md: not a directory\"}\n"
+  },
+  "mkdir ignores body": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"nobody\"}\n"
+  },
+  "move": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"mv2/deep/a.md\"}\n"
+  },
+  "move onto existing 409": {
+   "status": 409,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"a file with this name already exists\"}\n"
+  },
+  "move same path": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"mv/b.md\"}\n"
+  },
+  "move folder into itself": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "move folder": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"mv3\"}\n"
+  },
+  "move missing": {
+   "status": 404,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"statat nope.md: no such file or directory\"}\n"
+  },
+  "move bad name": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the name cannot contain # ^ [ ] | (Obsidian rejects them; they would break links)\"}\n"
+  },
+  "move from outside": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "move to outside": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "move hidden source": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "move into trash": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "move missing fields": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "move invalid json": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "move case only": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"mv/B.md\"}\n"
+  },
+  "move a pdf": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Livros/book2.epub\"}\n"
+  },
+  "trash": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\".trash/B.md\"}\n"
+  },
+  "trash same name again": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\".trash/B <stamp>.md\"}\n"
+  },
+  "trash folder": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\".trash/mv3\"}\n"
+  },
+  "trash the trash": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "trash inside the trash": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "trash missing": {
+   "status": 404,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"statat gone.md: no such file or directory\"}\n"
+  },
+  "trash outside": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "trash empty path": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "trash no fields": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "tree has no .trash": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[\"batch\",\"csrf-4\",\"csrf-5\",\"deep\",\"Estudos\",\"etc\",\"isdir.md\",\"linked\",\"Livros\",\"many\",\"mv\",\"new\",\"nobody\",\"notes\",\"stale\",\"stale-archive\",\"empty.md\",\"Estudos.md\",\"ignored.md\",\"longa.md\",\"multi.md\",\"perigo.md\",\"perm.md\",\"permnew.md\",\"UPPER.MD\",\"Welcome.md\"]"
+  },
+  "image ok": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Pasted image <ts>.png\"}\n"
+  },
+  "image ok again same second": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Pasted image <ts>.png\"}\n"
+  },
+  "image svg": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the file is not a PNG, JPEG, GIF, WebP or BMP image\"}\n"
+  },
+  "image text": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the file is not a PNG, JPEG, GIF, WebP or BMP image\"}\n"
+  },
+  "image empty": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the file is not a PNG, JPEG, GIF, WebP or BMP image\"}\n"
+  },
+  "image html": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the file is not a PNG, JPEG, GIF, WebP or BMP image\"}\n"
+  },
+  "image bad base64": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid base64 image\"}\n"
+  },
+  "image no data": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the file is not a PNG, JPEG, GIF, WebP or BMP image\"}\n"
+  },
+  "image invalid json": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "image jpeg": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Pasted image <ts>.jpg\"}\n"
+  },
+  "image gif": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Pasted image <ts>.gif\"}\n"
+  },
+  "image webp": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Pasted image <ts>.webp\"}\n"
+  },
+  "image bmp": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Pasted image <ts>.bmp\"}\n"
+  },
+  "image too large 413": {
+   "status": 413,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"image too large (max 20 MB)\"}\n"
+  },
+  "image attachment folder './'": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Livros/Pasted image <ts>.png\"}\n"
+  },
+  "image attachment folder './anexos'": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Livros/anexos/Pasted image <ts>.png\"}\n"
+  },
+  "image attachment folder 'Anexos'": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Anexos/Pasted image <ts>.png\"}\n"
+  },
+  "image attachment folder '/'": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Pasted image <ts>.png\"}\n"
+  },
+  "image attachment folder '../fora'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "image attachment folder '  Spaced  '": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Spaced/Pasted image <ts>.png\"}\n"
+  },
+  "image attachment folder '.hiddenfolder'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "image attachment folder 'a/../b'": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"b/Pasted image <ts>.png\"}\n"
+  },
+  "image with broken app.json": {
+   "status": 201,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"Pasted image <ts>.png\"}\n"
+  },
+  "tree includes images and bmp": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[\"Anexos\",\"Anexos/Pasted image <ts>.png\",\"Estudos\",\"Estudos.md\",\"Estudos/Compiladores.md\",\"Estudos/Lexer.md\",\"Estudos/Novo\",\"Livros\",\"Livros/Dragon.pdf\",\"Livros/Pasted image <ts>.png\",\"Livros/anexos\",\"Livros/anexos/Pasted image <ts>.png\",\"Livros/book.epub\",\"Livros/photo.jpg\",\"Livros/pic.png\",\"Pasted image <ts>.bmp\",\"Pasted image <ts>.gif\",\"Pasted image <ts>.jpg\",\"Pasted image <ts>.png\",\"Pasted image <ts>.png\",\"Pasted image <ts>.png\",\"Pasted image <ts>.png\",\"Pasted image <ts>.webp\",\"Spaced\",\"Spaced/Pasted image <ts>.png\",\"UPPER.MD\",\"Welcome.md\",\"b\",\"b/Pasted image <ts>.png\",\"batch\",\"batch/0\",\"batch/1\",\"batch/10\",\"batch/11\",\"batch/12\",\"batch/13\",\"batch/14\",\"batch/15\",\"batch/16\",\"batch/17\",\"batch/18\",\"batch/19\",\"batch/2\",\"batch/20\",\"batch/21\",\"batch/22\",\"batch/23\",\"batch/24\",\"batch/25\",\"batch/26\",\"batch/27\",\"batch/28\",\"batch/29\",\"batch/3\",\"batch/30\",\"batch/31\",\"batch/32\",\"batch/33\",\"batch/34\",\"batch/35\",\"batch/36\",\"batch/37\",\"batch/38\",\"batch/39\",\"batch/4\",\"batch/5\",\"batch/6\",\"batch/7\",\"batch/8\",\"batch/9\",\"csrf-4\",\"csrf-5\",\"deep\",\"deep/er\",\"deep/er/new.md\",\"empty.md\",\"etc\",\"etc/x\",\"ignored.md\",\"isdir.md\",\"linked\",\"linked/A.md\",\"linked/Other.md\",\"linked/Table.md\",\"linked/Target.md\",\"longa.md\",\"many\",\"many/m0.md\",\"many/n000.md\",\"many/n001.md\",\"many/n002.md\",\"many/n003.md\",\"many/n004.md\",\"many/n005.md\",\"many/n006.md\",\"many/n007.md\",\"many/n008.md\",\"many/n009.md\",\"many/n010.md\",\"many/n011.md\",\"many/n012.md\",\"many/n013.md\",\"many/n014.md\",\"many/n015.md\",\"many/n016.md\",\"many/n017.md\",\"many/n018.md\",\"many/n019.md\",\"many/n020.md\",\"many/n021.md\",\"many/n022.md\",\"many/n023.md\",\"many/n024.md\",\"many/n025.md\",\"many/n026.md\",\"many/n027.md\",\"many/n028.md\",\"many/n029.md\",\"many/n030.md\",\"many/n031.md\",\"many/n032.md\",\"many/n033.md\",\"many/n034.md\",\"many/n035.md\",\"many/n036.md\",\"many/n037.md\",\"many/n038.md\",\"many/n039.md\",\"many/n040.md\",\"many/n041.md\",\"many/n042.md\",\"many/n043.md\",\"many/n044.md\",\"many/n045.md\",\"many/n046.md\",\"many/n047.md\",\"many/n048.md\",\"many/n049.md\",\"many/n050.md\",\"many/n051.md\",\"many/n052.md\",\"many/n053.md\",\"many/n054.md\",\"many/n055.md\",\"many/n056.md\",\"many/n057.md\",\"many/n058.md\",\"many/n059.md\",\"many/n060.md\",\"many/n061.md\",\"many/n062.md\",\"many/n063.md\",\"many/n064.md\",\"many/n065.md\",\"many/n066.md\",\"many/n067.md\",\"many/n068.md\",\"many/n069.md\",\"many/n070.md\",\"many/n071.md\",\"many/n072.md\",\"many/n073.md\",\"many/n074.md\",\"many/n075.md\",\"many/n076.md\",\"many/n077.md\",\"many/n078.md\",\"many/n079.md\",\"many/n080.md\",\"many/n081.md\",\"many/n082.md\",\"many/n083.md\",\"many/n084.md\",\"many/n085.md\",\"many/n086.md\",\"many/n087.md\",\"many/n088.md\",\"many/n089.md\",\"many/n090.md\",\"many/n091.md\",\"many/n092.md\",\"many/n093.md\",\"many/n094.md\",\"many/n095.md\",\"many/n096.md\",\"many/n097.md\",\"many/n098.md\",\"many/n099.md\",\"many/n100.md\",\"many/n101.md\",\"many/n102.md\",\"many/n103.md\",\"many/n104.md\",\"many/n105.md\",\"many/n106.md\",\"many/n107.md\",\"many/n108.md\",\"many/n109.md\",\"many/n110.md\",\"many/n111.md\",\"many/n112.md\",\"many/n113.md\",\"many/n114.md\",\"many/n115.md\",\"many/n116.md\",\"many/n117.md\",\"many/n118.md\",\"many/n119.md\",\"many/n120.md\",\"many/n121.md\",\"many/n122.md\",\"many/n123.md\",\"many/n124.md\",\"many/n125.md\",\"many/n126.md\",\"many/n127.md\",\"many/n128.md\",\"many/n129.md\",\"many/n130.md\",\"many/n131.md\",\"many/n132.md\",\"many/n133.md\",\"many/n134.md\",\"many/n135.md\",\"many/n136.md\",\"many/n137.md\",\"many/n138.md\",\"many/n139.md\",\"many/n140.md\",\"many/n141.md\",\"many/n142.md\",\"many/n143.md\",\"many/n144.md\",\"many/n145.md\",\"many/n146.md\",\"many/n147.md\",\"many/n148.md\",\"many/n149.md\",\"many/n150.md\",\"many/n151.md\",\"many/n152.md\",\"many/n153.md\",\"many/n154.md\",\"many/n155.md\",\"many/n156.md\",\"many/n157.md\",\"many/n158.md\",\"many/n159.md\",\"many/n160.md\",\"many/n161.md\",\"many/n162.md\",\"many/n163.md\",\"many/n164.md\",\"many/n165.md\",\"many/n166.md\",\"many/n167.md\",\"many/n168.md\",\"many/n169.md\",\"many/n170.md\",\"many/n171.md\",\"many/n172.md\",\"many/n173.md\",\"many/n174.md\",\"many/n175.md\",\"many/n176.md\",\"many/n177.md\",\"many/n178.md\",\"many/n179.md\",\"many/n180.md\",\"many/n181.md\",\"many/n182.md\",\"many/n183.md\",\"many/n184.md\",\"many/n185.md\",\"many/n186.md\",\"many/n187.md\",\"many/n188.md\",\"many/n189.md\",\"many/n190.md\",\"many/n191.md\",\"many/n192.md\",\"many/n193.md\",\"many/n194.md\",\"many/n195.md\",\"many/n196.md\",\"many/n197.md\",\"many/n198.md\",\"many/n199.md\",\"many/n200.md\",\"many/n201.md\",\"many/n202.md\",\"many/n203.md\",\"many/n204.md\",\"many/n205.md\",\"many/n206.md\",\"many/n207.md\",\"many/n208.md\",\"many/n209.md\",\"many/n210.md\",\"many/n211.md\",\"many/n212.md\",\"many/n213.md\",\"many/n214.md\",\"many/n215.md\",\"many/n216.md\",\"many/n217.md\",\"many/n218.md\",\"many/n219.md\",\"many/n220.md\",\"many/n221.md\",\"many/n222.md\",\"many/n223.md\",\"many/n224.md\",\"many/n225.md\",\"many/n226.md\",\"many/n227.md\",\"many/n228.md\",\"many/n229.md\",\"many/n230.md\",\"many/n231.md\",\"many/n232.md\",\"many/n233.md\",\"many/n234.md\",\"many/n235.md\",\"many/n236.md\",\"many/n237.md\",\"many/n238.md\",\"many/n239.md\",\"many/n240.md\",\"many/n241.md\",\"many/n242.md\",\"many/n243.md\",\"many/n244.md\",\"many/n245.md\",\"many/n246.md\",\"many/n247.md\",\"many/n248.md\",\"many/n249.md\",\"many/n250.md\",\"many/n251.md\",\"many/n252.md\",\"many/n253.md\",\"many/n254.md\",\"many/n255.md\",\"many/n256.md\",\"many/n257.md\",\"many/n258.md\",\"many/n259.md\",\"multi.md\",\"mv\",\"new\",\"new/Big2.md\",\"new/Empty.md\",\"new/Idea.md\",\"new/K.md\",\"new/Null.md\",\"new/Special.md\",\"new/T.md\",\"new/U.md\",\"new/Up.MD\",\"nobody\",\"notes\",\"notes/crlf.md\",\"notes/dots.v2\",\"notes/dots.v2/x.md\",\"notes/latin1.md\",\"notes/utf8.md\",\"perigo.md\",\"perm.md\",\"permnew.md\",\"stale\",\"stale-archive\",\"stale-archive/draft.md\"]"
+  },
+  "file Welcome.md": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/markdown; charset=utf-8",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "dynamic"
+   },
+   "body": "nullm"
+  },
+  "file Livros/Dragon.pdf": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   },
+   "body": "%PDF-1.4\n%fake pdf for the contract suite\n\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������"
+  },
+  "file Livros/pic.png": {
+   "status": 200,
+   "headers": {
+    "content-type": "image/png",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   },
+   "body": "�PNG\r\n\u001a\n\u0000\u0000\u0000\rIHDR\u0000\u0000\u0000\u0001\u0000\u0000\u0000\u0001\b\u0006\u0000\u0000\u0000\u001f\u0015ĉ\u0000\u0000\u0000\u000bIDATx�c`\u0000\u0002\u0000\u0000\u0005\u0000\u0001z^�?\u0000\u0000\u0000\u0000IEND�B`�"
+  },
+  "file Livros/book.epub": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/epub+zip",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   },
+   "body": "PK\u0003\u0004epubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepubepub"
+  },
+  "file Livros/photo.jpg": {
+   "status": 200,
+   "headers": {
+    "content-type": "image/jpeg",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   },
+   "body": "����jpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpegjpeg"
+  },
+  "file notes/plain.txt": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   },
+   "body": "just text\n"
+  },
+  "file notes/unknown.xyz": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/octet-stream",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   },
+   "body": "\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������"
+  },
+  "file notes/textual.zzz": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   },
+   "body": "plain text with an unknown extension\n"
+  },
+  "file notes/utf8.md": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/markdown; charset=utf-8",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   },
+   "body": "Olá, mundo! <b>&amp;</b> ☃   end\n"
+  },
+  "file empty.md": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/markdown; charset=utf-8",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   },
+   "body": ""
+  },
+  "file Estudos": {
+   "status": 404,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "404 page not found\n"
+  },
+  "file missing.pdf": {
+   "status": 404,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"openat missing.pdf: no such file or directory\"}\n"
+  },
+  "file .hidden.md": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid path\"}\n"
+  },
+  "file notes/dots.v2/x.md": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/markdown; charset=utf-8",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   },
+   "body": "inside a folder with a dot\n"
+  },
+  "file HEAD": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   },
+   "body": ""
+  },
+  "range 'bytes=0-9'": {
+   "status": 206,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "content-range": "bytes 0-9/1066",
+    "last-modified": "seed"
+   },
+   "body": "%PDF-1.4\n%"
+  },
+  "range 'bytes=10-'": {
+   "status": 206,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "content-range": "bytes 10-1065/1066",
+    "last-modified": "seed"
+   },
+   "body": "fake pdf for the contract suite\n\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������"
+  },
+  "range 'bytes=-20'": {
+   "status": 206,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "content-range": "bytes 1046-1065/1066",
+    "last-modified": "seed"
+   },
+   "body": "��������������������"
+  },
+  "range 'bytes=0-0'": {
+   "status": 206,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "content-range": "bytes 0-0/1066",
+    "last-modified": "seed"
+   },
+   "body": "%"
+  },
+  "range 'bytes=5000-'": {
+   "status": 416,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "content-range": "bytes */1066"
+   },
+   "body": "invalid range: failed to overlap\n"
+  },
+  "range 'bytes=1000-2000'": {
+   "status": 206,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "content-range": "bytes 1000-1065/1066",
+    "last-modified": "seed"
+   },
+   "body": "������������������������������������������������������������������"
+  },
+  "range 'bytes=-5000'": {
+   "status": 206,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "content-range": "bytes 0-1065/1066",
+    "last-modified": "seed"
+   },
+   "body": "%PDF-1.4\n%fake pdf for the contract suite\n\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������"
+  },
+  "range 'bytes=2-1'": {
+   "status": 416,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "invalid range\n"
+  },
+  "range 'bytes=abc'": {
+   "status": 416,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "invalid range\n"
+  },
+  "range 'items=0-5'": {
+   "status": 416,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "invalid range\n"
+  },
+  "range 'bytes=0-5,10-15'": {
+   "status": 206,
+   "headers": {
+    "content-type": "multipart/byteranges; boundary=62f549cf4d12e8d9e5a12dd22b3eb9483f1638460da1c07ac34999797208",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   },
+   "body": "--62f549cf4d12e8d9e5a12dd22b3eb9483f1638460da1c07ac34999797208\r\nContent-Range: bytes 0-5/1066\r\nContent-Type: application/pdf\r\n\r\n%PDF-1\r\n--62f549cf4d12e8d9e5a12dd22b3eb9483f1638460da1c07ac34999797208\r\nContent-Range: bytes 10-15/1066\r\nContent-Type: application/pdf\r\n\r\nfake p\r\n--62f549cf4d12e8d9e5a12dd22b3eb9483f1638460da1c07ac34999797208--\r\n"
+  },
+  "range 'bytes='": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   },
+   "body": "%PDF-1.4\n%fake pdf for the contract suite\n\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������\u0000\u0001\u0002\u0003\u0004\u0005\u0006\u0007\b\t\n\u000b\f\r\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~��������������������������������������������������������������������������������������������������������������������������������"
+  },
+  "range 'bytes=-'": {
+   "status": 416,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "invalid range\n"
+  },
+  "range 'bytes=0-9 '": {
+   "status": 206,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "content-range": "bytes 0-9/1066",
+    "last-modified": "seed"
+   },
+   "body": "%PDF-1.4\n%"
+  },
+  "range 'bytes=--5'": {
+   "status": 416,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "invalid range\n"
+  },
+  "range 'bytes=0-1,'": {
+   "status": 206,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "content-range": "bytes 0-1/1066",
+    "last-modified": "seed"
+   },
+   "body": "%P"
+  },
+  "if-modified-since equal -> 304": {
+   "status": 304,
+   "headers": {
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "last-modified": "seed"
+   },
+   "body": ""
+  },
+  "if-modified-since old -> 200": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   }
+  },
+  "if-range match": {
+   "status": 206,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "content-range": "bytes 0-3/1066",
+    "last-modified": "seed"
+   },
+   "body": "%PDF"
+  },
+  "if-range mismatch": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "last-modified": "seed"
+   }
+  },
+  "range on HEAD": {
+   "status": 206,
+   "headers": {
+    "content-type": "application/pdf",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "content-range": "bytes 0-3/1066",
+    "last-modified": "seed"
+   },
+   "body": ""
+  },
+  "big file range headers": {
+   "status": 206,
+   "headers": {
+    "content-type": "application/octet-stream",
+    "content-security-policy": "sandbox",
+    "x-content-type-options": "nosniff",
+    "accept-ranges": "bytes",
+    "content-range": "bytes 1048576-2097151/3145728",
+    "last-modified": "dynamic"
+   }
+  },
+  "search 'funcao'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"Estudos/Compiladores.md\",\"line\":3,\"parts\":[{\"text\":\"A \"},{\"text\":\"FUNÇÃO\",\"hit\":true},{\"text\":\" do lexer é gerar tokens.\"}]},{\"path\":\"ignored.md\",\"line\":1,\"parts\":[{\"text\":\"função\",\"hit\":true},{\"text\":\" listada no gitignore\"}]}]"
+  },
+  "search 'função'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"Estudos/Compiladores.md\",\"line\":3,\"parts\":[{\"text\":\"A \"},{\"text\":\"FUNÇÃO\",\"hit\":true},{\"text\":\" do lexer é gerar tokens.\"}]},{\"path\":\"ignored.md\",\"line\":1,\"parts\":[{\"text\":\"função\",\"hit\":true},{\"text\":\" listada no gitignore\"}]}]"
+  },
+  "search 'FUNÇÃO'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"Estudos/Compiladores.md\",\"line\":3,\"parts\":[{\"text\":\"A \"},{\"text\":\"FUNÇÃO\",\"hit\":true},{\"text\":\" do lexer é gerar tokens.\"}]},{\"path\":\"ignored.md\",\"line\":1,\"parts\":[{\"text\":\"função\",\"hit\":true},{\"text\":\" listada no gitignore\"}]}]"
+  },
+  "search 'needle'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"capped_at\":201,\"all_hits_are_matches\":true}"
+  },
+  "search '[a-z]+ .*'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"perigo.md\",\"line\":1,\"parts\":[{\"text\":\"$(rm -rf /) ; `x` \"},{\"text\":\"[a-z]+ .*\",\"hit\":true}]}]"
+  },
+  "search '$(rm'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"perigo.md\",\"line\":1,\"parts\":[{\"text\":\"$(rm\",\"hit\":true},{\"text\":\" -rf /) ; `x` [a-z]+ .*\"}]}]"
+  },
+  "search 'alpha'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"multi.md\",\"line\":1,\"parts\":[{\"text\":\"alpha\",\"hit\":true},{\"text\":\" line 0\"}]},{\"path\":\"multi.md\",\"line\":2,\"parts\":[{\"text\":\"alpha\",\"hit\":true},{\"text\":\" line 1\"}]},{\"path\":\"multi.md\",\"line\":3,\"parts\":[{\"text\":\"alpha\",\"hit\":true},{\"text\":\" line 2\"}]},{\"path\":\"multi.md\",\"line\":4,\"parts\":[{\"text\":\"alpha\",\"hit\":true},{\"text\":\" line 3\"}]},{\"path\":\"multi.md\",\"line\":5,\"parts\":[{\"text\":\"alpha\",\"hit\":true},{\"text\":\" line 4\"}]}]"
+  },
+  "search 'arquivo MD'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "search 'nada-existe-aqui'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "search ''": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "search '   '": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "search ' lexer '": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"Estudos/Compiladores.md\",\"line\":3,\"parts\":[{\"text\":\"A FUNÇÃO do \"},{\"text\":\"lexer\",\"hit\":true},{\"text\":\" é gerar tokens.\"}]},{\"path\":\"Estudos/Compiladores.md\",\"line\":4,\"parts\":[{\"text\":\"Link [[\"},{\"text\":\"Lexer\",\"hit\":true},{\"text\":\"#Regras|regras]]\"}]},{\"path\":\"Estudos/Lexer.md\",\"line\":1,\"parts\":[{\"text\":\"# \"},{\"text\":\"Lexer\",\"hit\":true}]}]"
+  },
+  "search 'a+b'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "search '('": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"perigo.md\",\"line\":1,\"parts\":[{\"text\":\"$\"},{\"text\":\"(\",\"hit\":true},{\"text\":\"rm -rf /) ; `x` [a-z]+ .*\"}]}]"
+  },
+  "search '\\\\'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"linked/Table.md\",\"line\":3,\"parts\":[{\"text\":\"| [[Target\"},{\"text\":\"\\\\\",\"hit\":true},{\"text\":\"|x]] |\"}]}]"
+  },
+  "search 'tokens'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"Estudos/Compiladores.md\",\"line\":3,\"parts\":[{\"text\":\"A FUNÇÃO do lexer é gerar \"},{\"text\":\"tokens\",\"hit\":true},{\"text\":\".\"}]}]"
+  },
+  "search 'regras'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"Estudos/Compiladores.md\",\"line\":4,\"parts\":[{\"text\":\"Link [[Lexer#\"},{\"text\":\"Regras\",\"hit\":true},{\"text\":\"|\"},{\"text\":\"regras\",\"hit\":true},{\"text\":\"]]\"}]},{\"path\":\"Estudos/Lexer.md\",\"line\":2,\"parts\":[{\"text\":\"Regras\",\"hit\":true}]}]"
+  },
+  "search 'palavrapalavrapalavrapalavrapa'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"query too long\"}\n"
+  },
+  "search 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"query too long\"}\n"
+  },
+  "search 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx''": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "search 'ol'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"notes/dots.v2/x.md\",\"line\":1,\"parts\":[{\"text\":\"inside a f\"},{\"text\":\"ol\",\"hit\":true},{\"text\":\"der with a dot\"}]},{\"path\":\"notes/utf8.md\",\"line\":1,\"parts\":[{\"text\":\"Ol\",\"hit\":true},{\"text\":\"á, mundo! <b>&amp;</b> ☃   end\"}]}]"
+  },
+  "search 'ol%'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "search 'é'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"capped_at\":201,\"all_hits_are_matches\":true}"
+  },
+  "search 'c'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"Estudos/Compiladores.md\",\"line\":1,\"parts\":[{\"text\":\"# \"},{\"text\":\"C\",\"hit\":true},{\"text\":\"ompiladores\"}]},{\"path\":\"Estudos/Compiladores.md\",\"line\":3,\"parts\":[{\"text\":\"A FUN\"},{\"text\":\"Ç\",\"hit\":true},{\"text\":\"ÃO do lexer é gerar tokens.\"}]},{\"path\":\"ignored.md\",\"line\":1,\"parts\":[{\"text\":\"fun\"},{\"text\":\"ç\",\"hit\":true},{\"text\":\"ão listada no gitignore\"}]},{\"path\":\"linked/A.md\",\"line\":1,\"parts\":[{\"text\":\"[[Target]] and [[linked/Target|alias]] and [[Target.md]] and [[Target#se\"},{\"text\":\"c\",\"hit\":true},{\"text\":\"]]\"}]}]"
+  },
+  "search 'n'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"capped_at\":201,\"all_hits_are_matches\":true}"
+  },
+  "search duplicate q keeps first": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"Estudos/Compiladores.md\",\"line\":3,\"parts\":[{\"text\":\"A \"},{\"text\":\"FUNÇÃO\",\"hit\":true},{\"text\":\" do lexer é gerar tokens.\"}]},{\"path\":\"ignored.md\",\"line\":1,\"parts\":[{\"text\":\"função\",\"hit\":true},{\"text\":\" listada no gitignore\"}]}]"
+  },
+  "search plus is space": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"Estudos/Compiladores.md\",\"line\":3,\"parts\":[{\"text\":\"A FUNÇÃO do \"},{\"text\":\"lexer é\",\"hit\":true},{\"text\":\" gerar tokens.\"}]}]"
+  },
+  "search bad escape": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "search no q": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "search latin1": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "search long line": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"query too long\"}\n"
+  },
+  "backlinks 'linked/Target.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"linked/A.md\",\"line\":1,\"parts\":[{\"text\":\"[[Target]]\",\"hit\":true},{\"text\":\" and \"},{\"text\":\"[[linked/Target|alias]]\",\"hit\":true},{\"text\":\" and \"},{\"text\":\"[[Target.md]]\",\"hit\":true},{\"text\":\" and \"},{\"text\":\"[[Target#sec]]\",\"hit\":true}]},{\"path\":\"linked/Table.md\",\"line\":3,\"parts\":[{\"text\":\"| \"},{\"text\":\"[[Target\\\\|x]]\",\"hit\":true},{\"text\":\" |\"}]}]"
+  },
+  "backlinks '/linked/Target.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"linked/A.md\",\"line\":1,\"parts\":[{\"text\":\"[[Target]]\",\"hit\":true},{\"text\":\" and \"},{\"text\":\"[[linked/Target|alias]]\",\"hit\":true},{\"text\":\" and \"},{\"text\":\"[[Target.md]]\",\"hit\":true},{\"text\":\" and \"},{\"text\":\"[[Target#sec]]\",\"hit\":true}]},{\"path\":\"linked/Table.md\",\"line\":3,\"parts\":[{\"text\":\"| \"},{\"text\":\"[[Target\\\\|x]]\",\"hit\":true},{\"text\":\" |\"}]}]"
+  },
+  "backlinks 'Target.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"linked/A.md\",\"line\":1,\"parts\":[{\"text\":\"[[Target]]\",\"hit\":true},{\"text\":\" and [[linked/Target|alias]] and \"},{\"text\":\"[[Target.md]]\",\"hit\":true},{\"text\":\" and \"},{\"text\":\"[[Target#sec]]\",\"hit\":true}]},{\"path\":\"linked/Table.md\",\"line\":3,\"parts\":[{\"text\":\"| \"},{\"text\":\"[[Target\\\\|x]]\",\"hit\":true},{\"text\":\" |\"}]},{\"path\":\"linked/Target.md\",\"line\":1,\"parts\":[{\"text\":\"I am the target \"},{\"text\":\"[[Target]]\",\"hit\":true}]}]"
+  },
+  "backlinks 'Welcome.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "backlinks 'Estudos/Lexer.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[{\"path\":\"Estudos/Compiladores.md\",\"line\":4,\"parts\":[{\"text\":\"Link \"},{\"text\":\"[[Lexer#Regras|regras]]\",\"hit\":true}]}]"
+  },
+  "backlinks '../x.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "backlinks ''": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "backlinks 'Livros/Dragon.pdf'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "backlinks 'a.b.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "backlinks 'linked/Table.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "backlinks 'Needle.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"capped_at\":201,\"all_hits_are_matches\":true}"
+  },
+  "backlinks 'x%00.md'": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "[]"
+  },
+  "relink preview before rename -> 400": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the file was not renamed (the source still exists or the destination does not)\"}\n"
+  },
+  "relink preview": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"files\":[\"rl/New name.md\",\"rl/ref1.md\",\"rl/ref2.md\"],\"ambiguous\":false}"
+  },
+  "relink run": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"updated\":[\"rl/New name.md\",\"rl/ref1.md\",\"rl/ref2.md\"],\"skipped\":[],\"ambiguous\":false}"
+  },
+  "relink result ref1": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"rl/ref1.md\",\"content\":\"see [[New name]] and [[rl/New name#sec|alias]] and ![[New name.md]]\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "relink result ref2": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"rl/ref2.md\",\"content\":\"| [[New name\\\\|x]] |\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "relink result self": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"rl/New name.md\",\"content\":\"# Old\\n[[New name]] self\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "relink run again (nothing left)": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"updated\":[],\"skipped\":[],\"ambiguous\":false}"
+  },
+  "relink with no referencing notes": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"updated\":[],\"skipped\":[],\"ambiguous\":false}"
+  },
+  "relink ambiguous preview": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"files\":[\"amb/bypath.md\"],\"ambiguous\":true}"
+  },
+  "relink ambiguous run": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"updated\":[\"amb/bypath.md\"],\"skipped\":[],\"ambiguous\":true}"
+  },
+  "relink ambiguous byname": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"amb/byname.md\",\"content\":\"[[Lexer]]\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "relink ambiguous bypath": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"amb/bypath.md\",\"content\":\"[[amb/a/Tokens]]\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "relink source still exists": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the file was not renamed (the source still exists or the destination does not)\"}\n"
+  },
+  "relink dest missing": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the file was not renamed (the source still exists or the destination does not)\"}\n"
+  },
+  "relink type changed": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the extension changed between a note (.md) and another type; update the links by hand\"}\n"
+  },
+  "relink bad name": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the file was not renamed (the source still exists or the destination does not)\"}\n"
+  },
+  "relink invalid json": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"invalid JSON\"}\n"
+  },
+  "relink preview no params": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the file was not renamed (the source still exists or the destination does not)\"}\n"
+  },
+  "relink traversal": {
+   "status": 400,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"the file was not renamed (the source still exists or the destination does not)\"}\n"
+  },
+  "relink pdf": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"updated\":[\"pdfref.md\"],\"skipped\":[],\"ambiguous\":false}"
+  },
+  "relink pdf result": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"pdfref.md\",\"content\":\"[[Dragon Book.pdf#page=12]] and [[Livros/Dragon Book.pdf]]\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "relink case-only": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"updated\":[],\"skipped\":[],\"ambiguous\":true}"
+  },
+  "relink case-only result": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"path\":\"case/cita.md\",\"content\":\"[[Lexer]]\\n\",\"mtime\":\"<mtime>\"}\n"
+  },
+  "relink with newline in referencing name": {
+   "status": 200,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"updated\":[\"imported\\nreference.md\"],\"skipped\":[],\"ambiguous\":false}"
+  },
+  "GET /": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "body": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"google\" content=\"notranslate\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/icon.svg\" />\n    <link rel=\"manifest\" href=\"/manifest.webmanifest\" />\n    <meta name=\"theme-color\" content=\"#f2eadb\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Quirenote</title>\n    <!--\n      CSP: only the app's own scripts. It also applies to the EPUB iframes (blob:),\n      blocking JavaScript embedded in books, as foliate-js requires.\n\n    -->\n    <meta http-equiv=\"Content-Security-Policy\" content=\"script-src 'self'; object-src 'none'; base-uri 'self'\" />\n    <script src=\"/theme-init.js\"></script>\n    <script type=\"module\" crossorigin src=\"/assets/index-DZTAQN24.js\"></script>\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClfNXQDS.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Cz-W9D_a.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-BIeWGAoO.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-v4vcUIKh.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Db5lcyjw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClCbstQu.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-CXl2arXw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/preload-helper-BLdHbfdN.js\">\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-BK8zcGVA.css\">\n  </head>\n  <body>\n    <div id=\"app\"></div>\n  </body>\n</html>\n"
+  },
+  "HEAD /": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "body": ""
+  },
+  "GET /index.html": {
+   "status": 301,
+   "headers": {
+    "location": "./"
+   },
+   "body": ""
+  },
+  "GET /index.html?x=1": {
+   "status": 301,
+   "headers": {
+    "location": "./?x=1"
+   },
+   "body": ""
+  },
+  "GET /some/route": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "body": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"google\" content=\"notranslate\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/icon.svg\" />\n    <link rel=\"manifest\" href=\"/manifest.webmanifest\" />\n    <meta name=\"theme-color\" content=\"#f2eadb\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Quirenote</title>\n    <!--\n      CSP: only the app's own scripts. It also applies to the EPUB iframes (blob:),\n      blocking JavaScript embedded in books, as foliate-js requires.\n\n    -->\n    <meta http-equiv=\"Content-Security-Policy\" content=\"script-src 'self'; object-src 'none'; base-uri 'self'\" />\n    <script src=\"/theme-init.js\"></script>\n    <script type=\"module\" crossorigin src=\"/assets/index-DZTAQN24.js\"></script>\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClfNXQDS.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Cz-W9D_a.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-BIeWGAoO.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-v4vcUIKh.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Db5lcyjw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClCbstQu.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-CXl2arXw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/preload-helper-BLdHbfdN.js\">\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-BK8zcGVA.css\">\n  </head>\n  <body>\n    <div id=\"app\"></div>\n  </body>\n</html>\n"
+  },
+  "GET /deep/index.html": {
+   "status": 301,
+   "headers": {
+    "location": "./"
+   },
+   "body": ""
+  },
+  "GET /%20weird": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "body": "<!doctype html>\n<html lang=\"en\">\n  <head>\n    <meta charset=\"UTF-8\" />\n    <meta name=\"google\" content=\"notranslate\" />\n    <link rel=\"icon\" type=\"image/svg+xml\" href=\"/icon.svg\" />\n    <link rel=\"manifest\" href=\"/manifest.webmanifest\" />\n    <meta name=\"theme-color\" content=\"#f2eadb\" />\n    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n    <title>Quirenote</title>\n    <!--\n      CSP: only the app's own scripts. It also applies to the EPUB iframes (blob:),\n      blocking JavaScript embedded in books, as foliate-js requires.\n\n    -->\n    <meta http-equiv=\"Content-Security-Policy\" content=\"script-src 'self'; object-src 'none'; base-uri 'self'\" />\n    <script src=\"/theme-init.js\"></script>\n    <script type=\"module\" crossorigin src=\"/assets/index-DZTAQN24.js\"></script>\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClfNXQDS.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Cz-W9D_a.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-BIeWGAoO.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-v4vcUIKh.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-Db5lcyjw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-ClCbstQu.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/dist-CXl2arXw.js\">\n    <link rel=\"modulepreload\" crossorigin href=\"/assets/preload-helper-BLdHbfdN.js\">\n    <link rel=\"stylesheet\" crossorigin href=\"/assets/index-BK8zcGVA.css\">\n  </head>\n  <body>\n    <div id=\"app\"></div>\n  </body>\n</html>\n"
+  },
+  "static /assets/dist-BIeWGAoO.js": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 26681,
+    "sha": "883e03e06b4c41d1"
+   }
+  },
+  "static /assets/dist-CXl2arXw.js": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 12620,
+    "sha": "292952fba133e9bb"
+   }
+  },
+  "static /assets/dist-ClCbstQu.js": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 43980,
+    "sha": "ebbb5057f2fde20a"
+   }
+  },
+  "static /assets/dist-ClfNXQDS.js": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 330940,
+    "sha": "5bab099eb7d75bc1"
+   }
+  },
+  "static /assets/dist-Cz-W9D_a.js": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 35036,
+    "sha": "916caa73f22d7372"
+   }
+  },
+  "static /assets/dist-Db5lcyjw.js": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 28342,
+    "sha": "e35b973dbff335d3"
+   }
+  },
+  "static /assets/dist-v4vcUIKh.js": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 84407,
+    "sha": "12f6d7b1ef91c989"
+   }
+  },
+  "static /assets/index-BK8zcGVA.css": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/css; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 250609,
+    "sha": "fe73b4b62c368532"
+   }
+  },
+  "static /assets/index-DZTAQN24.js": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 876901,
+    "sha": "03768de52aa6fe0b"
+   }
+  },
+  "static /assets/preload-helper-BLdHbfdN.js": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 1519,
+    "sha": "8aec9ff75ffa86a0"
+   }
+  },
+  "static /icon.svg": {
+   "status": 200,
+   "headers": {
+    "content-type": "image/svg+xml",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 627,
+    "sha": "def8bc5af23e6249"
+   }
+  },
+  "static /manifest.webmanifest": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 420,
+    "sha": "b277ebd7fe7d91d6"
+   }
+  },
+  "static /theme-init.js": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 1288,
+    "sha": "8dfa28b829cfff50"
+   }
+  },
+  "static /icon.svg'": {
+   "status": 200,
+   "headers": {
+    "content-type": "image/svg+xml",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 627,
+    "sha": "def8bc5af23e6249"
+   }
+  },
+  "static /icon-512.png": {
+   "status": 200,
+   "headers": {
+    "content-type": "image/png",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 18261,
+    "sha": "23c4ee8f662c858a"
+   }
+  },
+  "static /manifest.webmanifest'": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 420,
+    "sha": "b277ebd7fe7d91d6"
+   }
+  },
+  "static /theme-init.js'": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 1288,
+    "sha": "8dfa28b829cfff50"
+   }
+  },
+  "static /assets": {
+   "status": 301,
+   "headers": {
+    "location": "assets/"
+   },
+   "extra": {
+    "len": 0,
+    "sha": "e3b0c44298fc1c14"
+   }
+  },
+  "static /assets/": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8"
+   },
+   "extra": {
+    "len": 9049,
+    "sha": "956053fb659397b8"
+   }
+  },
+  "static /.keep": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 1549,
+    "sha": "972c450b6ca73268"
+   }
+  },
+  "static /favicon.ico": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 1549,
+    "sha": "972c450b6ca73268"
+   }
+  },
+  "static /robots.txt": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/html; charset=utf-8",
+    "accept-ranges": "bytes"
+   },
+   "extra": {
+    "len": 1549,
+    "sha": "972c450b6ca73268"
+   }
+  },
+  "static range": {
+   "status": 206,
+   "headers": {
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes",
+    "content-range": "bytes 0-9/1288"
+   },
+   "body": "// Applies"
+  },
+  "static If-Modified-Since": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/javascript; charset=utf-8",
+    "accept-ranges": "bytes"
+   }
+  },
+  "POST /": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "PUT /x": {
+   "status": 405,
+   "headers": {
+    "content-type": "text/plain; charset=utf-8",
+    "allow": "GET, HEAD",
+    "x-content-type-options": "nosniff"
+   },
+   "body": "Method Not Allowed\n"
+  },
+  "OPTIONS /api/tree": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"use Content-Type: application/json\"}\n"
+  },
+  "OPTIONS /": {
+   "status": 415,
+   "headers": {
+    "content-type": "application/json"
+   },
+   "body": "{\"error\":\"use Content-Type: application/json\"}\n"
+  },
+  "raw no host header http/1.1": {
+   "status": 400,
+   "headers": {}
+  },
+  "raw http/1.0": {
+   "status": 200,
+   "headers": {}
+  },
+  "raw garbage": {
+   "status": 400,
+   "headers": {}
+  },
+  "raw bad method": {
+   "status": 415,
+   "headers": {}
+  },
+  "raw chunked save": {
+   "status": 200,
+   "headers": {}
+  },
+  "raw expect 100": {
+   "status": 100,
+   "headers": {}
+  },
+  "raw very long uri": {
+   "status": 500,
+   "headers": {}
+  },
+  "raw absolute-form": {
+   "status": 200,
+   "headers": {}
+  },
+  "sse headers": {
+   "status": 200,
+   "headers": {
+    "content-type": "text/event-stream",
+    "cache-control": "no-cache",
+    "transfer-encoding": "chunked"
+   }
+  },
+  "sse external create": {
+   "status": 200,
+   "headers": {},
+   "extra": [
+    [
+     "sse1.md",
+     "write"
+    ]
+   ]
+  },
+  "sse external append": {
+   "status": 200,
+   "headers": {},
+   "extra": [
+    [
+     "sse1.md",
+     "write"
+    ]
+   ]
+  },
+  "sse external remove": {
+   "status": 200,
+   "headers": {},
+   "extra": [
+    [
+     "sse1.md",
+     "remove"
+    ]
+   ]
+  },
+  "sse external rename": {
+   "status": 200,
+   "headers": {},
+   "extra": [
+    [
+     "sse2.md",
+     "rename"
+    ],
+    [
+     "sse3.md",
+     "create"
+    ]
+   ]
+  },
+  "sse api save": {
+   "status": 200,
+   "headers": {},
+   "extra": [
+    [
+     "sse-api.md",
+     "create"
+    ]
+   ]
+  },
+  "sse hidden files are not reported": {
+   "status": 200,
+   "headers": {},
+   "extra": []
+  },
+  "sse new dir": {
+   "status": 200,
+   "headers": {},
+   "extra": [
+    [
+     "ssedir",
+     "create"
+    ]
+   ]
+  },
+  "sse file inside new dir is watched": {
+   "status": 200,
+   "headers": {},
+   "extra": [
+    [
+     "ssedir/inside.md",
+     "write"
+    ]
+   ]
+  },
+  "sse burst coalesced": {
+   "status": 200,
+   "headers": {},
+   "extra": [
+    [
+     "burst.md",
+     "write"
+    ]
+   ]
+  },
+  "sse api trash": {
+   "status": 200,
+   "headers": {},
+   "extra": [
+    [
+     "burst.md",
+     "rename"
+    ]
+   ]
+  }
+ },
+ "order": [
+  "tree",
+  "tree HEAD",
+  "tree trailing slash -> SPA",
+  "unknown api GET -> SPA",
+  "POST /api/dirs ct=None",
+  "POST /api/dirs ct='text/plain'",
+  "POST /api/dirs ct='application/x-www-form-urlencoded'",
+  "POST /api/dirs ct='Application/JSON'",
+  "POST /api/dirs ct='application/json;charset=utf-8'",
+  "POST /api/dirs ct=' application/json ; x=y'",
+  "POST /api/dirs ct='application/jsonx'",
+  "POST unknown path no content-type",
+  "POST unknown path json",
+  "PUT unknown path no content-type",
+  "PUT unknown path json",
+  "DELETE unknown path no content-type",
+  "DELETE unknown path json",
+  "PATCH unknown path no content-type",
+  "PATCH unknown path json",
+  "DELETE /api/tree",
+  "PUT /api/move",
+  "GET /api/move",
+  "DELETE /api/notes/a.md",
+  "PUT /api/relink",
+  "DELETE /api/files/a.md",
+  "GET /api/dirs/x",
+  "DELETE /api/setup",
+  "PUT /api/events",
+  "POST /api/search",
+  "POST /api/backlinks",
+  "PUT /api/trash",
+  "GET /api/trash",
+  "GET /api/images",
+  "DELETE /api/notes/",
+  "DELETE /api/files/",
+  "redirect GET /api/notes",
+  "redirect GET /api/files",
+  "redirect GET /api/dirs",
+  "redirect GET /api//tree",
+  "redirect GET /api/notes/x/../Welcome.md",
+  "redirect GET /api/./tree",
+  "redirect GET /api/notes/Welcome.md/../Welcome.md?x=1&y=2",
+  "redirect GET //api/tree",
+  "redirect GET /api/notes/a%20b//c.md",
+  "redirect POST /api/notes",
+  "redirect PUT /api/notes",
+  "redirect POST /api/dirs",
+  "redirect DELETE /api/notes",
+  "redirect HEAD /api/notes",
+  "read 'Welcome.md'",
+  "read '/Welcome.md'",
+  "read '%2FWelcome.md'",
+  "read 'welcome.md'",
+  "read 'Estudos/../Welcome.md'",
+  "read 'Estudos/%2e%2e/Welcome.md'",
+  "read '%2e%2e/x.md'",
+  "read '..%2fx.md'",
+  "read '%2e%2e%2fetc%2fpasswd'",
+  "read '%2fetc%2fpasswd'",
+  "read 'Estudos%2f..%2f..%2fx.md'",
+  "read '.hidden.md'",
+  "read '.obsidian/app.json'",
+  "read 'Estudos/.x.md'",
+  "read 'missing.md'",
+  "read 'Estudos'",
+  "read 'Estudos/'",
+  "read ''",
+  "read 'notes/plain.txt'",
+  "read 'notes/dots.v2/x.md'",
+  "read '..'",
+  "read '%2e%2e'",
+  "read 'Welcome.md/'",
+  "read 'a%00b.md'",
+  "read 'Welcome.md%00'",
+  "read '%ff%fe.md'",
+  "read 'caf%C3%A9.md'",
+  "read 'Estudos//Lexer.md'",
+  "read './Welcome.md'",
+  "read 'notes/latin1.md'",
+  "read 'notes/utf8.md'",
+  "read 'notes/crlf.md'",
+  "read 'empty.md'",
+  "files traversal '../etc/passwd'",
+  "save traversal '../etc/passwd'",
+  "create traversal '../etc/passwd'",
+  "mkdir traversal '../etc/passwd'",
+  "files traversal '..%2f..%2fetc%2fpasswd'",
+  "save traversal '..%2f..%2fetc%2fpasswd'",
+  "create traversal '..%2f..%2fetc%2fpasswd'",
+  "mkdir traversal '..%2f..%2fetc%2fpasswd'",
+  "files traversal '%2e%2e/%2e%2e/etc/passwd'",
+  "save traversal '%2e%2e/%2e%2e/etc/passwd'",
+  "create traversal '%2e%2e/%2e%2e/etc/passwd'",
+  "mkdir traversal '%2e%2e/%2e%2e/etc/passwd'",
+  "files traversal '.obsidian/app.json'",
+  "save traversal '.obsidian/app.json'",
+  "create traversal '.obsidian/app.json'",
+  "mkdir traversal '.obsidian/app.json'",
+  "files traversal '.hidden.md'",
+  "save traversal '.hidden.md'",
+  "create traversal '.hidden.md'",
+  "mkdir traversal '.hidden.md'",
+  "raw GET /api/notes/../../../../etc/passwd HTTP/1.1",
+  "raw GET /api/files/../../etc/passwd HTTP/1.1",
+  "raw GET /api/files/%2e%2e/%2e%2e/etc/passwd HTTP/1.1",
+  "raw GET /../../etc/passwd HTTP/1.1",
+  "symlink escape read",
+  "symlink escape files",
+  "symlink escape via dir",
+  "symlink inside vault read",
+  "symlink escape save",
+  "symlink escape mkdir",
+  "tree with symlinks",
+  "create",
+  "create again 409",
+  "create no content",
+  "create non-md",
+  "create uppercase .MD",
+  "create bad name C%23%20notas.md",
+  "create bad name x%5Ey.md",
+  "create bad name a%20%5Bb%5D.md",
+  "create bad name a%7Cb.md",
+  "create bad name a%0Ab.md",
+  "create invalid json",
+  "create empty body",
+  "create json null",
+  "create wrong type",
+  "create unknown fields",
+  "create trailing garbage",
+  "create capitalised key",
+  "create special chars",
+  "read special chars",
+  "create big body 10MB limit",
+  "create under 10MB",
+  "create through a file",
+  "read utf8",
+  "save ok",
+  "save stale -> 409 with current",
+  "save force (no mtime)",
+  "save force (mtime 0 string)",
+  "save new file with mtime -> 404",
+  "save new file force",
+  "save mtime as number -> 400",
+  "save mtime garbage -> 400",
+  "save mtime empty string -> 400",
+  "save mtime null",
+  "save mtime negative",
+  "save mtime overflow",
+  "save non-md",
+  "save upper .MD ext",
+  "save empty body",
+  "save invalid json",
+  "save too big",
+  "save dir path",
+  "save over dir named .md",
+  "read dir named .md",
+  "read dir",
+  "read latin1",
+  "read crlf",
+  "save after external change",
+  "stale save after move",
+  "stale save after trash",
+  "mkdir",
+  "mkdir again",
+  "mkdir leading slash",
+  "mkdir bad .oculta",
+  "mkdir bad a/.obsidian",
+  "mkdir bad Pasta%20%231",
+  "mkdir bad a%7Cb",
+  "mkdir over a file",
+  "mkdir ignores body",
+  "move",
+  "move onto existing 409",
+  "move same path",
+  "move folder into itself",
+  "move folder",
+  "move missing",
+  "move bad name",
+  "move from outside",
+  "move to outside",
+  "move hidden source",
+  "move into trash",
+  "move missing fields",
+  "move invalid json",
+  "move case only",
+  "move a pdf",
+  "trash",
+  "trash same name again",
+  "trash folder",
+  "trash the trash",
+  "trash inside the trash",
+  "trash missing",
+  "trash outside",
+  "trash empty path",
+  "trash no fields",
+  "tree has no .trash",
+  "image ok",
+  "image ok again same second",
+  "image svg",
+  "image text",
+  "image empty",
+  "image html",
+  "image bad base64",
+  "image no data",
+  "image invalid json",
+  "image jpeg",
+  "image gif",
+  "image webp",
+  "image bmp",
+  "image too large 413",
+  "image attachment folder './'",
+  "image attachment folder './anexos'",
+  "image attachment folder 'Anexos'",
+  "image attachment folder '/'",
+  "image attachment folder '../fora'",
+  "image attachment folder '  Spaced  '",
+  "image attachment folder '.hiddenfolder'",
+  "image attachment folder 'a/../b'",
+  "image with broken app.json",
+  "tree includes images and bmp",
+  "file Welcome.md",
+  "file Livros/Dragon.pdf",
+  "file Livros/pic.png",
+  "file Livros/book.epub",
+  "file Livros/photo.jpg",
+  "file notes/plain.txt",
+  "file notes/unknown.xyz",
+  "file notes/textual.zzz",
+  "file notes/utf8.md",
+  "file empty.md",
+  "file Estudos",
+  "file missing.pdf",
+  "file .hidden.md",
+  "file notes/dots.v2/x.md",
+  "file HEAD",
+  "range 'bytes=0-9'",
+  "range 'bytes=10-'",
+  "range 'bytes=-20'",
+  "range 'bytes=0-0'",
+  "range 'bytes=5000-'",
+  "range 'bytes=1000-2000'",
+  "range 'bytes=-5000'",
+  "range 'bytes=2-1'",
+  "range 'bytes=abc'",
+  "range 'items=0-5'",
+  "range 'bytes=0-5,10-15'",
+  "range 'bytes='",
+  "range 'bytes=-'",
+  "range 'bytes=0-9 '",
+  "range 'bytes=--5'",
+  "range 'bytes=0-1,'",
+  "if-modified-since equal -> 304",
+  "if-modified-since old -> 200",
+  "if-range match",
+  "if-range mismatch",
+  "range on HEAD",
+  "big file range headers",
+  "search 'funcao'",
+  "search 'função'",
+  "search 'FUNÇÃO'",
+  "search 'needle'",
+  "search '[a-z]+ .*'",
+  "search '$(rm'",
+  "search 'alpha'",
+  "search 'arquivo MD'",
+  "search 'nada-existe-aqui'",
+  "search ''",
+  "search '   '",
+  "search ' lexer '",
+  "search 'a+b'",
+  "search '('",
+  "search '\\\\'",
+  "search 'tokens'",
+  "search 'regras'",
+  "search 'palavrapalavrapalavrapalavrapa'",
+  "search 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'",
+  "search 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx''",
+  "search 'ol'",
+  "search 'ol%'",
+  "search 'é'",
+  "search 'c'",
+  "search 'n'",
+  "search duplicate q keeps first",
+  "search plus is space",
+  "search bad escape",
+  "search no q",
+  "search latin1",
+  "search long line",
+  "backlinks 'linked/Target.md'",
+  "backlinks '/linked/Target.md'",
+  "backlinks 'Target.md'",
+  "backlinks 'Welcome.md'",
+  "backlinks 'Estudos/Lexer.md'",
+  "backlinks '../x.md'",
+  "backlinks ''",
+  "backlinks 'Livros/Dragon.pdf'",
+  "backlinks 'a.b.md'",
+  "backlinks 'linked/Table.md'",
+  "backlinks 'Needle.md'",
+  "backlinks 'x%00.md'",
+  "relink preview before rename -> 400",
+  "relink preview",
+  "relink run",
+  "relink result ref1",
+  "relink result ref2",
+  "relink result self",
+  "relink run again (nothing left)",
+  "relink with no referencing notes",
+  "relink ambiguous preview",
+  "relink ambiguous run",
+  "relink ambiguous byname",
+  "relink ambiguous bypath",
+  "relink source still exists",
+  "relink dest missing",
+  "relink type changed",
+  "relink bad name",
+  "relink invalid json",
+  "relink preview no params",
+  "relink traversal",
+  "relink pdf",
+  "relink pdf result",
+  "relink case-only",
+  "relink case-only result",
+  "relink with newline in referencing name",
+  "GET /",
+  "HEAD /",
+  "GET /index.html",
+  "GET /index.html?x=1",
+  "GET /some/route",
+  "GET /deep/index.html",
+  "GET /%20weird",
+  "static /assets/dist-BIeWGAoO.js",
+  "static /assets/dist-CXl2arXw.js",
+  "static /assets/dist-ClCbstQu.js",
+  "static /assets/dist-ClfNXQDS.js",
+  "static /assets/dist-Cz-W9D_a.js",
+  "static /assets/dist-Db5lcyjw.js",
+  "static /assets/dist-v4vcUIKh.js",
+  "static /assets/index-BK8zcGVA.css",
+  "static /assets/index-DZTAQN24.js",
+  "static /assets/preload-helper-BLdHbfdN.js",
+  "static /icon.svg",
+  "static /manifest.webmanifest",
+  "static /theme-init.js",
+  "static /icon.svg'",
+  "static /icon-512.png",
+  "static /manifest.webmanifest'",
+  "static /theme-init.js'",
+  "static /assets",
+  "static /assets/",
+  "static /.keep",
+  "static /favicon.ico",
+  "static /robots.txt",
+  "static range",
+  "static If-Modified-Since",
+  "POST /",
+  "PUT /x",
+  "OPTIONS /api/tree",
+  "OPTIONS /",
+  "raw no host header http/1.1",
+  "raw http/1.0",
+  "raw garbage",
+  "raw bad method",
+  "raw chunked save",
+  "raw expect 100",
+  "raw very long uri",
+  "raw absolute-form",
+  "sse headers",
+  "sse external create",
+  "sse external append",
+  "sse external remove",
+  "sse external rename",
+  "sse api save",
+  "sse hidden files are not reported",
+  "sse new dir",
+  "sse file inside new dir is watched",
+  "sse burst coalesced",
+  "sse api trash"
+ ],
+ "checks": [
+  {
+   "name": "no traversal leaked /etc/passwd",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "symlink escape not served",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "symlink escape (files) not served",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "outside file untouched by save through symlink",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "no dir created outside the vault",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "create did not overwrite",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "mtime is a decimal string",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "mtime equals st_mtime_ns",
+   "ok": true,
+   "detail": "1700000000000000000 vs 1700000000000000000"
+  },
+  {
+   "name": "409 carries the current version",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "stale save did not write",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "ghost not created",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "save keeps 0600",
+   "ok": true,
+   "detail": "0o600"
+  },
+  {
+   "name": "forced save keeps 0600",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "new file is 0644 & umask",
+   "ok": true,
+   "detail": "0o644"
+  },
+  {
+   "name": "no temporary files left",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "external change returned as 409",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "stale save did not recreate the old path",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "stale save after trash did not recreate",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "mkdir /etc/x is inside the vault",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "move kept both",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "trash keeps both versions",
+   "ok": true,
+   "detail": ".trash/B.md .trash/B 2026-10-13 022106.771.md"
+  },
+  {
+   "name": "trash names follow Go's scheme",
+   "ok": true,
+   "detail": ".trash/B.md .trash/B 2026-10-13 022106.771.md"
+  },
+  {
+   "name": "40 trashed versions all distinct",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "40 trashed versions all intact",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "range of a 3MB file has the right length",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "range bytes match disk",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "search returns at most 201 hits",
+   "ok": true,
+   "detail": "201"
+  },
+  {
+   "name": "search returns at most 5 hits per file",
+   "ok": true,
+   "detail": "5"
+  },
+  {
+   "name": "chunked save worked",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "sse sends ': connected' first",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "64 concurrent saves of one version: exactly one 200",
+   "ok": true,
+   "detail": "1 accepted"
+  },
+  {
+   "name": "others got 409",
+   "ok": true,
+   "detail": "[200, 409]"
+  },
+  {
+   "name": "final content is exactly the winner's",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "no tmp left after concurrent saves",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "read-modify-write: 8 workers x 15 accepted writes = 120 lines (no lost update)",
+   "ok": false,
+   "detail": "116 lines, 116 unique"
+  },
+  {
+   "name": "concurrent create: exactly one 201, the rest 409",
+   "ok": true,
+   "detail": "{409: 31, 201: 1}"
+  },
+  {
+   "name": "created file is one writer's complete content",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "concurrent moves to one destination: exactly one 200, others 409",
+   "ok": true,
+   "detail": "{200: 1, 409: 15}"
+  },
+  {
+   "name": "losing moves left their sources in place",
+   "ok": true,
+   "detail": "15"
+  },
+  {
+   "name": "concurrent trash: all 48 ok",
+   "ok": true,
+   "detail": "{200}"
+  },
+  {
+   "name": "concurrent trash: 48 distinct destinations",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "concurrent trash: every version intact",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "create vs move onto one destination: never both succeed (no silent overwrite), 150 rounds",
+   "ok": false,
+   "detail": "18 rounds lost a file"
+  },
+  {
+   "name": "move during saves: 200",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "move during saves: no 5xx",
+   "ok": true,
+   "detail": "[]"
+  },
+  {
+   "name": "move during saves: old folder not resurrected",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

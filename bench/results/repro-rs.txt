@@ -1,0 +1,29 @@
+## rs: lost_update.py (8 workers x 15 writes, 20 rounds)
+round  0: accepted 120, lines on disk 120, lost 0
+round  1: accepted 120, lines on disk 120, lost 0
+round  2: accepted 120, lines on disk 120, lost 0
+round  3: accepted 120, lines on disk 120, lost 0
+round  4: accepted 120, lines on disk 120, lost 0
+round  5: accepted 120, lines on disk 120, lost 0
+round  6: accepted 120, lines on disk 120, lost 0
+round  7: accepted 120, lines on disk 120, lost 0
+round  8: accepted 120, lines on disk 120, lost 0
+round  9: accepted 120, lines on disk 120, lost 0
+round 10: accepted 120, lines on disk 120, lost 0
+round 11: accepted 120, lines on disk 120, lost 0
+round 12: accepted 120, lines on disk 120, lost 0
+round 13: accepted 120, lines on disk 120, lost 0
+round 14: accepted 120, lines on disk 120, lost 0
+round 15: accepted 120, lines on disk 120, lost 0
+round 16: accepted 120, lines on disk 120, lost 0
+round 17: accepted 120, lines on disk 120, lost 0
+round 18: accepted 120, lines on disk 120, lost 0
+round 19: accepted 120, lines on disk 120, lost 0
+SUMMARY: 0/20 rounds lost updates; 0 accepted writes lost in total
+## rs: create_vs_move.py (200 rounds)
+0/200 rounds: create answered 201 AND move answered 200 (one of the two files was silently destroyed)
+## rs: mtime_tie.py (3000 rounds)
+3000 rounds: v1 and v2 had the same mtime in 0; the stale save of v3 (base = v1's mtime) was ACCEPTED in 0 (should be 0)
+## rs: GET a directory as a note
+{"error":"read /tmp/qbench/repro-final-rs/vault/Estudos: is a directory"}
+ [500]

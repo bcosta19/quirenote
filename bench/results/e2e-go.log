@@ -1,0 +1,12 @@
+[go] pid 3307932 port 9121: 2026/10/13 02:21:31 INFO quirenote addr=http://127.0.0.1:9121 vault=/tmp/qbench/e2e-go/vault
+ok    page loads and the tree shows the vault
+ok    folders expand and show nested notes
+ok    opening a note loads its content in the editor
+ok    typing then autosave writes the file on disk
+ok    reload: the edit is still there
+ok    a change made on disk reaches the open editor (SSE)
+ok    a note created on disk by another program shows up in the tree (SSE)
+ok    creating a note through the API from the page works (POST /api/notes)
+ok    no 5xx from the API and no uncaught page errors
+
+9/9 steps passed

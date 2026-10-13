@@ -1,0 +1,406 @@
+[
+ {
+  "accepted": 500,
+  "errors": 0,
+  "leftover_tmp": 0,
+  "lines_on_disk": 445,
+  "lost_updates": 55,
+  "rejected_409": 6733,
+  "scenario": "rmw",
+  "unique_lines": 445,
+  "wall_ms": 630.298,
+  "workers": 50,
+  "writes_each": 10,
+  "server": {
+   "listen_ms": 24.519660975784063,
+   "first_tree_ms": 27.777085022535175,
+   "rss_idle_kb": 8472,
+   "vmhwm_before_kb": 8472,
+   "vmhwm_kb": 15724,
+   "rss_end_kb": 15724,
+   "rss_3s_after_kb": 15660,
+   "cpu_s": 2.8000000000000003,
+   "child_cpu_s": 0.0,
+   "threads_before": 9,
+   "threads_after": 22,
+   "wall_s": 0.6529982059728354,
+   "tmp_files_left": 0
+  },
+  "name": "go",
+  "label": "rmw-50x10",
+  "rep": 0
+ },
+ {
+  "accepted": 500,
+  "errors": 0,
+  "leftover_tmp": 0,
+  "lines_on_disk": 500,
+  "lost_updates": 0,
+  "rejected_409": 19068,
+  "scenario": "rmw",
+  "unique_lines": 500,
+  "wall_ms": 1594.584,
+  "workers": 50,
+  "writes_each": 10,
+  "server": {
+   "listen_ms": 3.5616550012491643,
+   "first_tree_ms": 4.6472070389427245,
+   "rss_idle_kb": 5584,
+   "vmhwm_before_kb": 5584,
+   "vmhwm_kb": 14848,
+   "rss_end_kb": 14848,
+   "rss_3s_after_kb": 14848,
+   "cpu_s": 5.16,
+   "child_cpu_s": 0.0,
+   "threads_before": 12,
+   "threads_after": 32,
+   "wall_s": 1.6077199499704875,
+   "tmp_files_left": 0
+  },
+  "name": "rs",
+  "label": "rmw-50x10",
+  "rep": 0
+ },
+ {
+  "accepted": 1000,
+  "errors": 0,
+  "leftover_tmp": 0,
+  "lines_on_disk": 913,
+  "lost_updates": 87,
+  "rejected_409": 50686,
+  "scenario": "rmw",
+  "unique_lines": 913,
+  "wall_ms": 3261.441,
+  "workers": 200,
+  "writes_each": 5,
+  "server": {
+   "listen_ms": 115.82469200948253,
+   "first_tree_ms": 117.69526696298271,
+   "rss_idle_kb": 9384,
+   "vmhwm_before_kb": 9384,
+   "vmhwm_kb": 23976,
+   "rss_end_kb": 20044,
+   "rss_3s_after_kb": 19820,
+   "cpu_s": 19.71,
+   "child_cpu_s": 0.0,
+   "threads_before": 8,
+   "threads_after": 15,
+   "wall_s": 3.2743020430207253,
+   "tmp_files_left": 0
+  },
+  "name": "go",
+  "label": "rmw-200x5",
+  "rep": 0
+ },
+ {
+  "accepted": 1000,
+  "errors": 0,
+  "leftover_tmp": 0,
+  "lines_on_disk": 1000,
+  "lost_updates": 0,
+  "rejected_409": 158043,
+  "scenario": "rmw",
+  "unique_lines": 1000,
+  "wall_ms": 15112.743,
+  "workers": 200,
+  "writes_each": 5,
+  "server": {
+   "listen_ms": 56.67045299196616,
+   "first_tree_ms": 57.689097011461854,
+   "rss_idle_kb": 5592,
+   "vmhwm_before_kb": 5592,
+   "vmhwm_kb": 23044,
+   "rss_end_kb": 22888,
+   "rss_3s_after_kb": 22888,
+   "cpu_s": 48.04,
+   "child_cpu_s": 0.0,
+   "threads_before": 12,
+   "threads_after": 23,
+   "wall_s": 15.12394309398951,
+   "tmp_files_left": 0
+  },
+  "name": "rs",
+  "label": "rmw-200x5",
+  "rep": 0
+ },
+ {
+  "accepted": 2000,
+  "errors": 0,
+  "leftover_tmp": 0,
+  "lines_on_disk": 1925,
+  "lost_updates": 75,
+  "rejected_409": 148425,
+  "scenario": "rmw",
+  "unique_lines": 1925,
+  "wall_ms": 12833.43,
+  "workers": 1000,
+  "writes_each": 2,
+  "server": {
+   "listen_ms": 8.518191985785961,
+   "first_tree_ms": 10.349515010602772,
+   "rss_idle_kb": 9652,
+   "vmhwm_before_kb": 9652,
+   "vmhwm_kb": 85804,
+   "rss_end_kb": 64068,
+   "rss_3s_after_kb": 49824,
+   "cpu_s": 82.2,
+   "child_cpu_s": 0.0,
+   "threads_before": 8,
+   "threads_after": 160,
+   "wall_s": 12.85852208500728,
+   "tmp_files_left": 0
+  },
+  "name": "go",
+  "label": "rmw-1000x2",
+  "rep": 0
+ },
+ {
+  "accepted": 2000,
+  "errors": 0,
+  "leftover_tmp": 0,
+  "lines_on_disk": 2000,
+  "lost_updates": 0,
+  "rejected_409": 1347392,
+  "scenario": "rmw",
+  "unique_lines": 2000,
+  "wall_ms": 140793.936,
+  "workers": 1000,
+  "writes_each": 2,
+  "server": {
+   "listen_ms": 5.9774849796667695,
+   "first_tree_ms": 7.185260008554906,
+   "rss_idle_kb": 5576,
+   "vmhwm_before_kb": 5576,
+   "vmhwm_kb": 63668,
+   "rss_end_kb": 61348,
+   "rss_3s_after_kb": 61348,
+   "cpu_s": 462.72,
+   "child_cpu_s": 0.0,
+   "threads_before": 12,
+   "threads_after": 45,
+   "wall_s": 140.81624555704184,
+   "tmp_files_left": 0
+  },
+  "name": "rs",
+  "label": "rmw-1000x2",
+  "rep": 0
+ },
+ {
+  "clients": 64,
+  "latency": {
+   "n": 69566,
+   "p50_ms": 9.039,
+   "p95_ms": 10.945,
+   "p99_ms": 12.912,
+   "max_ms": 27.019,
+   "mean_ms": 9.172327818187046
+  },
+  "non_200": 0,
+  "ok": 69566,
+  "rps": 6950.784364217107,
+  "scenario": "writes",
+  "size": 4096,
+  "transport_errors": 0,
+  "wall_s": 10.008366877,
+  "server": {
+   "listen_ms": 17.103083955589682,
+   "first_tree_ms": 20.426996983587742,
+   "rss_idle_kb": 7296,
+   "vmhwm_before_kb": 7296,
+   "vmhwm_kb": 15072,
+   "rss_end_kb": 14776,
+   "rss_3s_after_kb": 14712,
+   "cpu_s": 33.410000000000004,
+   "child_cpu_s": 0.0,
+   "threads_before": 9,
+   "threads_after": 15,
+   "wall_s": 10.042890754004475,
+   "tmp_files_left": 0
+  },
+  "name": "go",
+  "label": "writes-64",
+  "rep": 0
+ },
+ {
+  "clients": 64,
+  "latency": {
+   "n": 85909,
+   "p50_ms": 7.37,
+   "p95_ms": 8.255,
+   "p99_ms": 9.136,
+   "max_ms": 26.964,
+   "mean_ms": 7.424886915224249
+  },
+  "non_200": 0,
+  "ok": 85909,
+  "rps": 8584.942311876299,
+  "scenario": "writes",
+  "size": 4096,
+  "transport_errors": 0,
+  "wall_s": 10.006939695,
+  "server": {
+   "listen_ms": 8.079586026724428,
+   "first_tree_ms": 9.105074044782668,
+   "rss_idle_kb": 5640,
+   "vmhwm_before_kb": 5640,
+   "vmhwm_kb": 13956,
+   "rss_end_kb": 13164,
+   "rss_3s_after_kb": 13164,
+   "cpu_s": 21.41,
+   "child_cpu_s": 0.0,
+   "threads_before": 12,
+   "threads_after": 13,
+   "wall_s": 10.034815606020857,
+   "tmp_files_left": 0
+  },
+  "name": "rs",
+  "label": "writes-64",
+  "rep": 0
+ },
+ {
+  "checks": [
+   {
+    "name": "trash: same-named notes trashed concurrently all succeed",
+    "ok": true,
+    "detail": "400/400 ok"
+   },
+   {
+    "name": "trash: every destination distinct (no version overwritten)",
+    "ok": true,
+    "detail": "400 distinct of 400"
+   },
+   {
+    "name": "trash: every version intact on disk",
+    "ok": true,
+    "detail": "400/400 intact"
+   },
+   {
+    "name": "move: many sources onto one destination: exactly one 200",
+    "ok": true,
+    "detail": "200=1 409=199 other=0"
+   },
+   {
+    "name": "move: losing sources left in place",
+    "ok": true,
+    "detail": "199 sources remain of 199 expected"
+   },
+   {
+    "name": "create vs move onto one destination: never both succeed",
+    "ok": false,
+    "detail": "76 of 200 rounds silently destroyed a file"
+   },
+   {
+    "name": "relink: ran while editors were saving",
+    "ok": true,
+    "detail": "status 200, updated=17 skipped=183"
+   },
+   {
+    "name": "relink: no accepted edit lost (relink never overwrites a newer save)",
+    "ok": false,
+    "detail": "3 accepted edits missing of 7117"
+   },
+   {
+    "name": "relink: no note left with the old link unless reported as skipped",
+    "ok": true,
+    "detail": "0 stale"
+   },
+   {
+    "name": "no temporary files left in the vault",
+    "ok": true,
+    "detail": "[]"
+   }
+  ],
+  "scenario": "consistency",
+  "server": {
+   "listen_ms": 5.881731980480254,
+   "first_tree_ms": 7.698178989812732,
+   "rss_idle_kb": 9480,
+   "vmhwm_before_kb": 9480,
+   "vmhwm_kb": 17880,
+   "rss_end_kb": 17880,
+   "rss_3s_after_kb": 17856,
+   "cpu_s": 3.32,
+   "child_cpu_s": 0.02,
+   "threads_before": 8,
+   "threads_after": 18,
+   "wall_s": 0.9532918809563853,
+   "tmp_files_left": 0
+  },
+  "name": "go",
+  "label": "consistency",
+  "rep": 0
+ },
+ {
+  "checks": [
+   {
+    "name": "trash: same-named notes trashed concurrently all succeed",
+    "ok": true,
+    "detail": "400/400 ok"
+   },
+   {
+    "name": "trash: every destination distinct (no version overwritten)",
+    "ok": true,
+    "detail": "400 distinct of 400"
+   },
+   {
+    "name": "trash: every version intact on disk",
+    "ok": true,
+    "detail": "400/400 intact"
+   },
+   {
+    "name": "move: many sources onto one destination: exactly one 200",
+    "ok": true,
+    "detail": "200=1 409=199 other=0"
+   },
+   {
+    "name": "move: losing sources left in place",
+    "ok": true,
+    "detail": "199 sources remain of 199 expected"
+   },
+   {
+    "name": "create vs move onto one destination: never both succeed",
+    "ok": true,
+    "detail": "0 of 200 rounds silently destroyed a file"
+   },
+   {
+    "name": "relink: ran while editors were saving",
+    "ok": true,
+    "detail": "status 200, updated=3 skipped=197"
+   },
+   {
+    "name": "relink: no accepted edit lost (relink never overwrites a newer save)",
+    "ok": true,
+    "detail": "0 accepted edits missing of 8295"
+   },
+   {
+    "name": "relink: no note left with the old link unless reported as skipped",
+    "ok": true,
+    "detail": "0 stale"
+   },
+   {
+    "name": "no temporary files left in the vault",
+    "ok": true,
+    "detail": "[]"
+   }
+  ],
+  "scenario": "consistency",
+  "server": {
+   "listen_ms": 8.122119004838169,
+   "first_tree_ms": 9.178616979625076,
+   "rss_idle_kb": 5700,
+   "vmhwm_before_kb": 5700,
+   "vmhwm_kb": 14528,
+   "rss_end_kb": 14528,
+   "rss_3s_after_kb": 14528,
+   "cpu_s": 3.15,
+   "child_cpu_s": 0.01,
+   "threads_before": 12,
+   "threads_after": 65,
+   "wall_s": 1.1396293209982105,
+   "tmp_files_left": 0
+  },
+  "name": "rs",
+  "label": "consistency",
+  "rep": 0
+ }
+]

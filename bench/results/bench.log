@@ -1,0 +1,115 @@
+[rep 0] go  startup-small: listen 34.3 ms, first /api/tree 36.8 ms, idle RSS 14.9 MB
+[rep 0] rs  startup-small: listen 14.2 ms, first /api/tree 15.8 ms, idle RSS 4.6 MB
+[rep 0] go  startup-large: listen 16.4 ms, first /api/tree 64.6 ms, idle RSS 19.4 MB
+[rep 0] rs  startup-large: listen 5.7 ms, first /api/tree 23.1 ms, idle RSS 6.8 MB
+[rep 0] go  conflict-50: cpu 0.17s, HWM 13.9 MB, rss 10.0->13.9->13.9 MB
+[rep 0] rs  conflict-50: cpu 0.01s, HWM 6.4 MB, rss 4.6->6.4->6.4 MB
+[rep 0] go  conflict-200: cpu 0.13s, HWM 21.6 MB, rss 7.6->21.3->20.7 MB
+[rep 0] rs  conflict-200: cpu 0.05s, HWM 9.1 MB, rss 4.7->9.1->9.1 MB
+[rep 0] go  conflict-1000: cpu 0.61s, HWM 69.2 MB, rss 8.8->67.2->53.6 MB
+[rep 0] rs  conflict-1000: cpu 0.24s, HWM 17.8 MB, rss 4.6->17.2->17.1 MB
+[rep 0] go  conflict64k-50: cpu 0.08s, HWM 19.9 MB, rss 7.9->13.4->13.4 MB
+[rep 0] rs  conflict64k-50: cpu 0.05s, HWM 13.9 MB, rss 4.7->10.1->10.0 MB
+[rep 0] go  conflict64k-200: cpu 0.28s, HWM 41.8 MB, rss 7.7->30.5->19.9 MB
+[rep 0] rs  conflict64k-200: cpu 0.19s, HWM 23.1 MB, rss 4.7->17.5->17.5 MB
+[rep 0] go  conflict64k-1000: cpu 1.82s, HWM 150.4 MB, rss 9.8->106.0->62.0 MB
+[rep 0] rs  conflict64k-1000: cpu 1.19s, HWM 106.9 MB, rss 4.7->77.4->66.9 MB
+[rep 0] go  rmw-50x10: cpu 2.40s, HWM 16.6 MB, rss 9.7->16.6->16.6 MB
+[rep 0] rs  rmw-50x10: cpu 1.10s, HWM 10.3 MB, rss 4.7->10.3->10.3 MB
+[rep 0] go  rmw-200x5: cpu 19.60s, HWM 24.3 MB, rss 9.5->20.7->19.7 MB
+[rep 0] rs  rmw-200x5: cpu 4.48s, HWM 14.5 MB, rss 4.7->14.5->14.5 MB
+[rep 0] go  rmw-1000x2: cpu 75.28s, HWM 76.9 MB, rss 9.5->54.4->51.1 MB
+[rep 0] rs  rmw-1000x2: cpu 13.82s, HWM 34.5 MB, rss 4.6->33.9->33.9 MB
+[rep 0] go  writes-64: cpu 33.37s, HWM 17.2 MB, rss 9.9->16.8->16.7 MB
+[rep 0] rs  writes-64: cpu 33.08s, HWM 12.2 MB, rss 4.6->12.2->12.2 MB
+[rep 0] go  read-note: cpu 82.38s, HWM 18.6 MB, rss 17.9->15.7->15.7 MB
+[rep 0] rs  read-note: cpu 69.53s, HWM 17.1 MB, rss 6.9->17.1->17.1 MB
+[rep 0] go  read-tree: cpu 92.22s, HWM 95.3 MB, rss 19.8->61.6->38.5 MB
+[rep 0] rs  read-tree: cpu 94.60s, HWM 82.3 MB, rss 6.9->69.9->69.9 MB
+[rep 0] go  read-search: cpu 3.44s, HWM 19.7 MB, rss 19.5->15.7->15.7 MB
+[rep 0] rs  read-search: cpu 1.54s, HWM 17.7 MB, rss 6.9->17.7->17.7 MB
+[rep 0] go  read-backlinks: cpu 2.39s, HWM 19.7 MB, rss 19.8->15.0->15.0 MB
+[rep 0] rs  read-backlinks: cpu 1.04s, HWM 15.0 MB, rss 6.7->15.0->15.0 MB
+[rep 0] go  sse-500: cpu 0.40s, HWM 26.6 MB, rss 10.6->26.6->26.6 MB
+[rep 0] rs  sse-500: cpu 0.34s, HWM 14.5 MB, rss 4.7->14.5->14.5 MB
+[rep 0] go  sse-2000: cpu 1.58s, HWM 72.7 MB, rss 12.7->72.7->72.7 MB
+[rep 0] rs  sse-2000: cpu 1.27s, HWM 42.7 MB, rss 4.7->42.7->42.7 MB
+[rep 0] go  consistency: cpu 3.22s, HWM 21.6 MB, rss 10.6->21.6->21.6 MB
+[rep 0] rs  consistency: cpu 3.49s, HWM 13.4 MB, rss 4.7->13.4->13.4 MB
+[rep 1] go  startup-small: listen 6.0 ms, first /api/tree 7.9 ms, idle RSS 12.8 MB
+[rep 1] rs  startup-small: listen 3.5 ms, first /api/tree 4.5 ms, idle RSS 4.9 MB
+[rep 1] go  startup-large: listen 13.1 ms, first /api/tree 57.9 ms, idle RSS 21.9 MB
+[rep 1] rs  startup-large: listen 3.6 ms, first /api/tree 22.9 ms, idle RSS 7.0 MB
+[rep 1] go  conflict-50: cpu 0.03s, HWM 15.1 MB, rss 10.8->15.1->15.1 MB
+[rep 1] rs  conflict-50: cpu 0.01s, HWM 6.6 MB, rss 4.8->6.6->6.6 MB
+[rep 1] go  conflict-200: cpu 0.13s, HWM 24.1 MB, rss 10.7->24.1->24.1 MB
+[rep 1] rs  conflict-200: cpu 0.06s, HWM 9.2 MB, rss 4.8->9.4->9.1 MB
+[rep 1] go  conflict-1000: cpu 0.67s, HWM 76.9 MB, rss 12.8->74.4->63.3 MB
+[rep 1] rs  conflict-1000: cpu 0.30s, HWM 24.5 MB, rss 4.9->21.0->21.0 MB
+[rep 1] go  conflict64k-50: cpu 0.08s, HWM 22.7 MB, rss 10.7->15.0->15.0 MB
+[rep 1] rs  conflict64k-50: cpu 0.04s, HWM 11.3 MB, rss 4.8->9.1->9.1 MB
+[rep 1] go  conflict64k-200: cpu 0.29s, HWM 41.5 MB, rss 10.8->37.1->24.3 MB
+[rep 1] rs  conflict64k-200: cpu 0.17s, HWM 17.8 MB, rss 4.9->13.2->13.2 MB
+[rep 1] go  conflict64k-1000: cpu 1.40s, HWM 153.3 MB, rss 10.8->145.6->71.7 MB
+[rep 1] rs  conflict64k-1000: cpu 1.12s, HWM 126.1 MB, rss 4.5->87.7->77.8 MB
+[rep 1] go  rmw-50x10: cpu 2.49s, HWM 17.9 MB, rss 12.7->17.9->17.8 MB
+[rep 1] rs  rmw-50x10: cpu 1.09s, HWM 10.9 MB, rss 4.7->10.9->10.9 MB
+[rep 1] go  rmw-200x5: cpu 17.32s, HWM 25.5 MB, rss 10.8->21.9->20.9 MB
+[rep 1] rs  rmw-200x5: cpu 4.37s, HWM 15.4 MB, rss 4.7->15.4->15.4 MB
+[rep 1] go  rmw-1000x2: cpu 66.22s, HWM 78.7 MB, rss 10.7->55.1->42.8 MB
+[rep 1] rs  rmw-1000x2: cpu 13.95s, HWM 35.0 MB, rss 4.7->34.8->34.8 MB
+[rep 1] go  writes-64: cpu 33.31s, HWM 16.9 MB, rss 9.6->16.5->16.1 MB
+[rep 1] rs  writes-64: cpu 32.99s, HWM 12.0 MB, rss 4.7->12.0->12.0 MB
+[rep 1] go  read-note: cpu 82.09s, HWM 18.9 MB, rss 17.4->15.8->15.8 MB
+[rep 1] rs  read-note: cpu 68.34s, HWM 16.8 MB, rss 6.9->16.8->16.8 MB
+[rep 1] go  read-tree: cpu 92.39s, HWM 97.9 MB, rss 21.1->81.9->62.2 MB
+[rep 1] rs  read-tree: cpu 95.83s, HWM 75.6 MB, rss 6.8->65.4->65.4 MB
+[rep 1] go  read-search: cpu 3.44s, HWM 20.7 MB, rss 20.5->17.1->17.1 MB
+[rep 1] rs  read-search: cpu 1.65s, HWM 17.0 MB, rss 6.9->17.0->16.9 MB
+[rep 1] go  read-backlinks: cpu 2.29s, HWM 17.9 MB, rss 17.9->16.8->16.8 MB
+[rep 1] rs  read-backlinks: cpu 1.08s, HWM 15.2 MB, rss 7.0->15.2->15.2 MB
+[rep 1] go  sse-500: cpu 0.42s, HWM 24.9 MB, rss 8.3->24.9->24.9 MB
+[rep 1] rs  sse-500: cpu 0.34s, HWM 14.5 MB, rss 4.7->14.5->14.5 MB
+[rep 1] go  sse-2000: cpu 1.59s, HWM 70.5 MB, rss 8.1->70.5->70.5 MB
+[rep 1] rs  sse-2000: cpu 1.28s, HWM 42.8 MB, rss 4.7->42.8->42.8 MB
+[rep 1] go  consistency: cpu 3.38s, HWM 17.0 MB, rss 8.2->17.0->17.0 MB
+[rep 1] rs  consistency: cpu 3.61s, HWM 15.2 MB, rss 4.7->15.2->15.2 MB
+[rep 2] go  startup-small: listen 5.7 ms, first /api/tree 7.6 ms, idle RSS 9.4 MB
+[rep 2] rs  startup-small: listen 3.8 ms, first /api/tree 4.6 ms, idle RSS 4.9 MB
+[rep 2] go  startup-large: listen 6.0 ms, first /api/tree 53.4 ms, idle RSS 17.9 MB
+[rep 2] rs  startup-large: listen 4.1 ms, first /api/tree 29.6 ms, idle RSS 7.1 MB
+[rep 2] go  conflict-50: cpu 0.04s, HWM 14.6 MB, rss 9.2->14.3->14.3 MB
+[rep 2] rs  conflict-50: cpu 0.01s, HWM 6.5 MB, rss 4.9->6.5->6.5 MB
+[rep 2] go  conflict-200: cpu 0.13s, HWM 23.1 MB, rss 10.1->19.9->19.9 MB
+[rep 2] rs  conflict-200: cpu 0.06s, HWM 9.7 MB, rss 4.8->9.5->9.5 MB
+[rep 2] go  conflict-1000: cpu 0.61s, HWM 67.2 MB, rss 8.3->64.5->62.5 MB
+[rep 2] rs  conflict-1000: cpu 0.30s, HWM 27.9 MB, rss 4.8->27.9->27.9 MB
+[rep 2] go  conflict64k-50: cpu 0.08s, HWM 22.0 MB, rss 8.1->18.0->16.6 MB
+[rep 2] rs  conflict64k-50: cpu 0.04s, HWM 11.8 MB, rss 4.9->9.3->9.3 MB
+[rep 2] go  conflict64k-200: cpu 0.28s, HWM 44.0 MB, rss 8.4->33.5->21.3 MB
+[rep 2] rs  conflict64k-200: cpu 0.17s, HWM 35.2 MB, rss 4.9->28.2->28.2 MB
+[rep 2] go  conflict64k-1000: cpu 1.33s, HWM 170.9 MB, rss 8.3->162.9->75.1 MB
+[rep 2] rs  conflict64k-1000: cpu 1.06s, HWM 95.9 MB, rss 4.9->66.4->66.4 MB
+[rep 2] go  rmw-50x10: cpu 2.24s, HWM 15.0 MB, rss 8.1->15.0->15.0 MB
+[rep 2] rs  rmw-50x10: cpu 1.12s, HWM 10.7 MB, rss 4.9->10.7->10.7 MB
+[rep 2] go  rmw-200x5: cpu 16.76s, HWM 22.5 MB, rss 8.3->20.0->18.8 MB
+[rep 2] rs  rmw-200x5: cpu 4.45s, HWM 15.3 MB, rss 4.9->15.3->15.3 MB
+[rep 2] go  rmw-1000x2: cpu 64.18s, HWM 73.9 MB, rss 8.2->53.0->50.2 MB
+[rep 2] rs  rmw-1000x2: cpu 13.64s, HWM 37.9 MB, rss 4.8->37.9->37.9 MB
+[rep 2] go  writes-64: cpu 33.34s, HWM 15.8 MB, rss 8.4->15.5->15.5 MB
+[rep 2] rs  writes-64: cpu 33.09s, HWM 12.1 MB, rss 4.9->12.1->12.1 MB
+[rep 2] go  read-note: cpu 80.71s, HWM 18.8 MB, rss 18.0->15.7->15.7 MB
+[rep 2] rs  read-note: cpu 67.75s, HWM 18.1 MB, rss 7.1->18.1->18.1 MB
+[rep 2] go  read-tree: cpu 90.93s, HWM 103.0 MB, rss 19.6->66.9->29.2 MB
+[rep 2] rs  read-tree: cpu 95.64s, HWM 78.7 MB, rss 7.1->69.8->69.8 MB
+[rep 2] go  read-search: cpu 3.41s, HWM 21.4 MB, rss 21.1->17.4->17.4 MB
+[rep 2] rs  read-search: cpu 1.55s, HWM 16.7 MB, rss 7.1->16.7->16.7 MB
+[rep 2] go  read-backlinks: cpu 2.33s, HWM 20.4 MB, rss 20.5->17.7->17.7 MB
+[rep 2] rs  read-backlinks: cpu 1.05s, HWM 15.3 MB, rss 7.1->15.3->15.3 MB
+[rep 2] go  sse-500: cpu 0.42s, HWM 26.4 MB, rss 10.7->26.4->26.4 MB
+[rep 2] rs  sse-500: cpu 0.35s, HWM 14.6 MB, rss 4.8->14.6->14.6 MB
+[rep 2] go  sse-2000: cpu 1.57s, HWM 71.5 MB, rss 9.8->71.5->71.5 MB
+[rep 2] rs  sse-2000: cpu 1.28s, HWM 42.9 MB, rss 4.8->42.9->42.9 MB
+[rep 2] go  consistency: cpu 3.40s, HWM 18.5 MB, rss 11.0->18.5->18.5 MB
+[rep 2] rs  consistency: cpu 3.56s, HWM 13.3 MB, rss 4.8->13.3->13.3 MB
+done -> /tmp/qbench/results/raw.json

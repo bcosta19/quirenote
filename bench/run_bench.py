@@ -76,13 +76,14 @@ def http_ok(url, timeout=0.5):
         return None
 
 
-def start_server(binary, port, vault, home, log):
+def start_server(binary, port, vault, home, log, extra_env=None):
     for p in (vault, home, log):
         assert p.startswith(RUN + "/"), p
     assert 9100 <= port <= 9199
     os.makedirs(home + "/.config", exist_ok=True)
     env = {k: v for k, v in os.environ.items() if k not in ("QUIRENOTE_VAULT", "NOTAS_VAULT", "QUIRENOTE_ADDR", "NOTAS_ADDR")}
     env.update(HOME=home, XDG_CONFIG_HOME=home + "/.config")
+    env.update(extra_env or {})
     logf = open(log, "wb")
     t0 = time.monotonic()
     p = subprocess.Popen(["taskset", "-c", SERVER_CPUS, binary, "-addr", f"127.0.0.1:{port}", "-vault", vault],
@@ -111,7 +112,7 @@ def stop_server(p):
         p.wait()
 
 
-def run_one(server, binary, scenario, label, lg_args, dataset, rep):
+def run_one(server, binary, scenario, label, lg_args, dataset, rep, extra_env=None):
     global PORT
     PORT = 9130 + (PORT - 9130 + 1) % 60
     name = f"{server}-{label}-{rep}"
@@ -120,7 +121,7 @@ def run_one(server, binary, scenario, label, lg_args, dataset, rep):
     os.makedirs(base)
     vault = f"{base}/vault"
     subprocess.run(["cp", "-a", f"{DATA}/{dataset}/vault", vault], check=True)
-    p, listen_ms, tree_ms = start_server(binary, PORT, vault, f"{base}/home", f"{base}/server.log")
+    p, listen_ms, tree_ms = start_server(binary, PORT, vault, f"{base}/home", f"{base}/server.log", extra_env)
     try:
         time.sleep(1.5)
         idle_rss = read_status(p.pid, "VmRSS")
@@ -160,14 +161,14 @@ def run_one(server, binary, scenario, label, lg_args, dataset, rep):
         shutil.rmtree(base, ignore_errors=True)
 
 
-def startup_only(server, binary, dataset, rep):
+def startup_only(server, binary, dataset, rep, extra_env=None):
     global PORT
     PORT = 9130 + (PORT - 9130 + 1) % 60
     base = f"{RUN}/{server}-startup-{dataset}-{rep}"
     shutil.rmtree(base, ignore_errors=True)
     os.makedirs(base)
     subprocess.run(["cp", "-a", f"{DATA}/{dataset}/vault", f"{base}/vault"], check=True)
-    p, listen_ms, tree_ms = start_server(binary, PORT, f"{base}/vault", f"{base}/home", f"{base}/server.log")
+    p, listen_ms, tree_ms = start_server(binary, PORT, f"{base}/vault", f"{base}/home", f"{base}/server.log", extra_env)
     try:
         time.sleep(1.5)
         return {"scenario": "startup", "dataset": dataset, "server": {"listen_ms": listen_ms, "first_tree_ms": tree_ms, "rss_idle_kb": read_status(p.pid, "VmRSS"),
@@ -180,11 +181,17 @@ def startup_only(server, binary, dataset, rep):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--server", action="append", required=True, help="name=binary (repeatable)")
+    ap.add_argument("--env", action="append", default=[], help="NAME:KEY=VALUE environment for one server (repeatable)")
     ap.add_argument("--reps", type=int, default=3)
     ap.add_argument("--out", required=True)
     ap.add_argument("--scenarios", default="startup," + ",".join(SCENARIOS))
     a = ap.parse_args()
     servers = [tuple(s.split("=", 1)) for s in a.server]
+    envs = {}
+    for e in a.env:
+        name, kv = e.split(":", 1)
+        k, v = kv.split("=", 1)
+        envs.setdefault(name, {})[k] = v
     wanted = a.scenarios.split(",")
     os.makedirs(os.path.dirname(a.out), exist_ok=True)
     os.makedirs(RUN, exist_ok=True)
@@ -197,7 +204,7 @@ def main():
         if "startup" in wanted:
             for ds in ("small", "large"):
                 for name, binary in servers:
-                    r = startup_only(name, binary, ds, rep)
+                    r = startup_only(name, binary, ds, rep, envs.get(name))
                     r.update(name=name, label=f"startup-{ds}", rep=rep)
                     results.append(r)
                     print(f"[rep {rep}] {name:3} startup-{ds}: listen {r['server']['listen_ms']:.1f} ms, first /api/tree {r['server']['first_tree_ms']:.1f} ms, idle RSS {r['server']['rss_idle_kb']/1024:.1f} MB", flush=True)
@@ -207,7 +214,7 @@ def main():
                 continue
             for label, lg in runs:
                 for name, binary in servers:  # alternate servers inside each repetition
-                    r = run_one(name, binary, scen, label, lg, ds, rep)
+                    r = run_one(name, binary, scen, label, lg, ds, rep, envs.get(name))
                     r.update(name=name, label=label, rep=rep)
                     results.append(r)
                     s = r["server"]
