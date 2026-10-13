@@ -44,11 +44,13 @@ fn type_by_extension(name: &str) -> Option<String> {
     }
     let guess = mime_guess::from_ext(ext.trim_start_matches('.')).first()?;
     let essence = guess.essence_str().to_string();
-    Some(if essence.starts_with("text/") && !essence.contains("charset") {
-        format!("{essence}; charset=utf-8")
-    } else {
-        essence
-    })
+    Some(
+        if essence.starts_with("text/") && !essence.contains("charset") {
+            format!("{essence}; charset=utf-8")
+        } else {
+            essence
+        },
+    )
 }
 
 /// A small `http.DetectContentType`: the signatures that matter for vault attachments, then
@@ -72,9 +74,9 @@ fn sniff(data: &[u8]) -> &'static str {
     if d.len() >= 12 && d.starts_with(b"RIFF") && &d[8..12] == b"WEBP" {
         return "image/webp";
     }
-    let binary = d
-        .iter()
-        .any(|&b| b <= 0x08 || b == 0x0B || (0x0E..=0x1A).contains(&b) || (0x1C..=0x1F).contains(&b));
+    let binary = d.iter().any(|&b| {
+        b <= 0x08 || b == 0x0B || (0x0E..=0x1A).contains(&b) || (0x1C..=0x1F).contains(&b)
+    });
     if binary {
         "application/octet-stream"
     } else {
@@ -151,7 +153,8 @@ pub async fn serve_file(headers: &HeaderMap, method: &Method, o: Opened) -> Resp
             if start > 0 && f.seek(SeekFrom::Start(start)).await.is_err() {
                 return text_response(StatusCode::INTERNAL_SERVER_ERROR, "seek failed\n");
             }
-            *res.body_mut() = Body::from_stream(ReaderStream::with_capacity(f.take(len), 64 * 1024));
+            *res.body_mut() =
+                Body::from_stream(ReaderStream::with_capacity(f.take(len), 64 * 1024));
             res
         }
     }
@@ -197,11 +200,7 @@ enum Plan {
     /// 304 / 416: nothing else to do.
     Early(Response),
     /// Headers are filled in; send `len` bytes from `start`.
-    Body {
-        res: Response,
-        start: u64,
-        len: u64,
-    },
+    Body { res: Response, start: u64, len: u64 },
 }
 
 enum RangeSpec {

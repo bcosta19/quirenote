@@ -52,9 +52,7 @@ impl std::fmt::Display for Error {
             Error::BadName => f.write_str(
                 "the name cannot contain # ^ [ ] | (Obsidian rejects them; they would break links)",
             ),
-            Error::NotImage => {
-                f.write_str("the file is not a PNG, JPEG, GIF, WebP or BMP image")
-            }
+            Error::NotImage => f.write_str("the file is not a PNG, JPEG, GIF, WebP or BMP image"),
             Error::Io { op, path, source } => {
                 if is_escape(source) {
                     write!(f, "{op} {path}: path escapes from parent")
@@ -157,7 +155,8 @@ fn ser_i64_string<S: Serializer>(v: &i64, s: S) -> std::result::Result<S::Ok, S:
 /// Whether the (relative) path goes through a hidden file or directory, such as
 /// `.obsidian`, `.stversions` or the temporary write files.
 pub fn hidden(p: &str) -> bool {
-    p.split('/').any(|part| part.starts_with('.') && part != ".")
+    p.split('/')
+        .any(|part| part.starts_with('.') && part != ".")
 }
 
 /// Whether the last element of `p` can be referenced in a `[[link]]`.
@@ -280,10 +279,7 @@ impl Vault {
 
     pub fn read_sync(&self, p: &str) -> Result<Note> {
         let p = clean(p)?;
-        let mut f = self
-            .root
-            .open(&p)
-            .map_err(|e| Error::io("openat", &p, e))?;
+        let mut f = self.root.open(&p).map_err(|e| Error::io("openat", &p, e))?;
         let mut data = Vec::new();
         f.read_to_end(&mut data).map_err(|e| Error::Io {
             op: "read",
@@ -526,9 +522,7 @@ impl Vault {
     /// Opens a vault file for reading (PDF, EPUB, images).
     pub fn open_file_sync(&self, p: &str) -> Result<File> {
         let p = clean(p)?;
-        self.root
-            .open(&p)
-            .map_err(|e| Error::io("openat", &p, e))
+        self.root.open(&p).map_err(|e| Error::io("openat", &p, e))
     }
 
     // ---- async API -----------------------------------------------------------------
@@ -586,7 +580,8 @@ impl Vault {
 
     pub async fn save_image(self: &Arc<Self>, note: &str, data: Vec<u8>) -> Result<String> {
         let note = note.to_string();
-        self.blocking(move |v| v.save_image_sync(&note, &data)).await
+        self.blocking(move |v| v.save_image_sync(&note, &data))
+            .await
     }
 
     pub async fn move_to(self: &Arc<Self>, from: &str, to: &str) -> Result<String> {

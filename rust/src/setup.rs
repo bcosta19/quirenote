@@ -79,7 +79,8 @@ pub fn prepare(mode: &str, path: &str, home: &str) -> Result<Prepared, String> {
                 return Err(format!("not a folder: {dir}"));
             }
             writable(&dir)?;
-            let obsidian = fs::metadata(Path::new(&dir).join(".obsidian")).is_ok_and(|m| m.is_dir());
+            let obsidian =
+                fs::metadata(Path::new(&dir).join(".obsidian")).is_ok_and(|m| m.is_dir());
             Ok(Prepared { dir, obsidian })
         }
         other => Err(format!("unknown mode {}", go_quote(other))),

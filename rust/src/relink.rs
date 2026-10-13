@@ -70,7 +70,11 @@ fn is_note(p: &str) -> bool {
 /// The ways to reference the file in a `[[link]]`: name only and full path, both without
 /// `.md` for notes (Obsidian omits it) and with the extension for other files.
 fn forms(p: &str) -> (String, String) {
-    let full = if is_note(p) { &p[..p.len() - golike::ext(p).len()] } else { p };
+    let full = if is_note(p) {
+        &p[..p.len() - golike::ext(p).len()]
+    } else {
+        p
+    };
     (golike::base(full).to_string(), full.to_string())
 }
 
@@ -105,9 +109,13 @@ pub fn rewrite(
         if by_name && !name_links {
             return g(0).to_string();
         }
-        let target = if by_name && name_unique { &new_name } else { &new_full };
+        let target = if by_name && name_unique {
+            &new_name
+        } else {
+            &new_full
+        };
         n += 1;
-        format!("{}{}{}{}", g(1), target, g(4), g(5))
+        format!("{}{}{}{}{}", g(1), target, g(3), g(4), g(5))
     });
     (out.into_owned(), n)
 }

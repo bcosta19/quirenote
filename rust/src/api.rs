@@ -114,24 +114,80 @@ fn no_vault() -> Response {
     )
 }
 
+/// Wraps a route so that a method it does not handle is answered like Go's mux does: a GET or
+/// HEAD falls through to the SPA (`GET /` matches every path), anything else gets
+/// `405 Method Not Allowed` with the `Allow` list of the patterns that match the path.
+fn route(
+    methods: &[&str],
+    r: axum::routing::MethodRouter<Arc<AppState>>,
+    has_static: bool,
+) -> axum::routing::MethodRouter<Arc<AppState>> {
+    let mut allow: Vec<&str> = methods.to_vec();
+    if has_static {
+        allow.push("GET");
+    }
+    if allow.contains(&"GET") {
+        allow.push("HEAD");
+    }
+    allow.sort_unstable();
+    allow.dedup();
+    let allow = allow.join(", ");
+    r.fallback(move |req: Request| {
+        let allow = allow.clone();
+        async move {
+            let m = req.method();
+            if has_static && (m == Method::GET || m == Method::HEAD) {
+                return spa::fallback(req).await;
+            }
+            method_not_allowed(&allow)
+        }
+    })
+}
+
+fn method_not_allowed(allow: &str) -> Response {
+    let mut res = text_response(StatusCode::METHOD_NOT_ALLOWED, "Method Not Allowed\n");
+    if let Ok(v) = HeaderValue::from_str(allow) {
+        res.headers_mut().insert(header::ALLOW, v);
+    }
+    res
+}
+
 pub fn router(state: Arc<AppState>) -> Router {
+    let st = state.has_static;
+    let notes = |r| route(&["GET", "POST", "PUT"], r, st);
     let mut inner = Router::new()
-        .route("/api/tree", get(tree))
-        .route("/api/notes/", get(read_note_empty).put(save_note_empty).post(create_note_empty))
-        .route("/api/notes/{*path}", get(read_note).put(save_note).post(create_note))
-        .route("/api/files/", get(file_empty))
-        .route("/api/files/{*path}", get(file))
-        .route("/api/dirs/", post(mkdir_empty))
-        .route("/api/dirs/{*path}", post(mkdir))
-        .route("/api/move", post(move_file))
-        .route("/api/trash", post(trash))
-        .route("/api/relink", get(relink_preview).post(relink_run))
-        .route("/api/images", post(save_image))
-        .route("/api/events", get(events))
-        .route("/api/search", get(search_notes))
-        .route("/api/backlinks", get(backlinks))
-        .route("/api/setup", get(setup_status).post(setup_vault));
-    inner = if state.has_static {
+        .route("/api/tree", route(&["GET"], get(tree), st))
+        .route(
+            "/api/notes/",
+            notes(
+                get(read_note_empty)
+                    .put(save_note_empty)
+                    .post(create_note_empty),
+            ),
+        )
+        .route(
+            "/api/notes/{*path}",
+            notes(get(read_note).put(save_note).post(create_note)),
+        )
+        .route("/api/files/", route(&["GET"], get(file_empty), st))
+        .route("/api/files/{*path}", route(&["GET"], get(file), st))
+        .route("/api/dirs/", route(&["POST"], post(mkdir_empty), st))
+        .route("/api/dirs/{*path}", route(&["POST"], post(mkdir), st))
+        .route("/api/move", route(&["POST"], post(move_file), st))
+        .route("/api/trash", route(&["POST"], post(trash), st))
+        .route(
+            "/api/relink",
+            route(&["GET", "POST"], get(relink_preview).post(relink_run), st),
+        )
+        .route("/api/images", route(&["POST"], post(save_image), st))
+        .route("/api/events", route(&["GET"], get(events), st))
+        .route("/api/search", route(&["GET"], get(search_notes), st))
+        .route("/api/backlinks", route(&["GET"], get(backlinks), st))
+        .route(
+            "/api/setup",
+            route(&["GET", "POST"], get(setup_status).post(setup_vault), st),
+        );
+    inner = if st {
         inner.fallback(spa::fallback)
     } else {
         inner.fallback(not_found)
@@ -143,7 +199,10 @@ pub fn router(state: Arc<AppState>) -> Router {
     Router::new()
         .fallback_service(inner)
         .layer(middleware::from_fn(mux_redirects))
-        .layer(middleware::from_fn_with_state(Arc::clone(&state), require_vault))
+        .layer(middleware::from_fn_with_state(
+            Arc::clone(&state),
+            require_vault,
+        ))
         .layer(middleware::from_fn(require_json))
         .layer(middleware::from_fn_with_state(state, log_requests))
 }
@@ -206,7 +265,11 @@ fn clean_url_path(p: &str) -> String {
     if p.is_empty() {
         return "/".into();
     }
-    let p = if p.starts_with('/') { p.to_string() } else { format!("/{p}") };
+    let p = if p.starts_with('/') {
+        p.to_string()
+    } else {
+        format!("/{p}")
+    };
     let mut np = crate::golike::clean(&p);
     if p.ends_with('/') && np != "/" {
         if p.len() == np.len() + 1 && p.starts_with(&np) {
@@ -300,7 +363,9 @@ fn write_search_err(err: &search::Error) -> Response {
 
 fn write_relink_err(err: &relink::Error) -> Response {
     match err {
-        relink::Error::TypeChanged | relink::Error::NotRenamed | relink::Error::Vault(vault::Error::BadName) => {
+        relink::Error::TypeChanged
+        | relink::Error::NotRenamed
+        | relink::Error::Vault(vault::Error::BadName) => {
             error_json(StatusCode::BAD_REQUEST, &err.to_string())
         }
         relink::Error::Search(e) => write_search_err(e),
@@ -335,7 +400,10 @@ async fn read_body(req: Request, limit: usize) -> Result<Bytes, BodyError> {
 }
 
 /// Reads and decodes a JSON request body, answering 400 `invalid JSON` like the Go handlers.
-async fn json_body<T: serde::de::DeserializeOwned>(req: Request, limit: usize) -> Result<T, Response> {
+async fn json_body<T: serde::de::DeserializeOwned>(
+    req: Request,
+    limit: usize,
+) -> Result<T, Response> {
     let bytes = read_body(req, limit).await.map_err(|_| invalid_json())?;
     decode(&bytes).ok_or_else(invalid_json)
 }
@@ -483,7 +551,10 @@ async fn save_note(State(s): S, Path(path): Path<String>, req: Request) -> Respo
         Ok(b) => b,
         Err(r) => return r,
     };
-    match v.save(&path, &body.content.unwrap_or_default(), body.mtime).await {
+    match v
+        .save(&path, &body.content.unwrap_or_default(), body.mtime)
+        .await
+    {
         Ok(note) => json_response(StatusCode::OK, &note),
         // Return the version on disk so the frontend can decide (reload or overwrite).
         Err(vault::Error::Conflict(current)) => json_response(StatusCode::CONFLICT, &*current),
@@ -711,7 +782,10 @@ async fn events(State(s): S) -> Response {
     let body = stream::unfold(st, |mut st| async move {
         if !st.connected {
             st.connected = true;
-            return Some((Ok::<_, std::convert::Infallible>(Bytes::from_static(b": connected\n\n")), st));
+            return Some((
+                Ok::<_, std::convert::Infallible>(Bytes::from_static(b": connected\n\n")),
+                st,
+            ));
         }
         loop {
             tokio::select! {

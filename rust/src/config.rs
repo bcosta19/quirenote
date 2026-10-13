@@ -124,10 +124,7 @@ pub fn load(path: &Path) -> Result<Config, String> {
             continue;
         }
         let Some((key, val)) = line.split_once('=') else {
-            return Err(format!(
-                "{}:{n}: expected key = \"value\"",
-                path.display()
-            ));
+            return Err(format!("{}:{n}: expected key = \"value\"", path.display()));
         };
         let Some(s) = go_unquote(val.trim()) else {
             return Err(format!(
@@ -147,7 +144,10 @@ pub fn save(path: &Path, c: &Config) -> io::Result<()> {
     if let Some(dir) = path.parent() {
         fs::DirBuilder::new().recursive(true).create(dir)?;
     }
-    let data = format!("# Quirenote configuration\nvault = {}\n", go_quote(&c.vault));
+    let data = format!(
+        "# Quirenote configuration\nvault = {}\n",
+        go_quote(&c.vault)
+    );
     let mut tmp = path.as_os_str().to_owned();
     tmp.push(".tmp");
     let tmp = PathBuf::from(tmp);
@@ -167,13 +167,7 @@ mod tests {
         let p = dir.path().join("sub").join("config.toml");
         assert_eq!(load(&p).unwrap(), Config::default());
         let want = r#"/home/x/My "Notes""#;
-        save(
-            &p,
-            &Config {
-                vault: want.into(),
-            },
-        )
-        .unwrap();
+        save(&p, &Config { vault: want.into() }).unwrap();
         assert_eq!(load(&p).unwrap().vault, want);
     }
 

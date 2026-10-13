@@ -25,11 +25,11 @@ impl serde_json::ser::Formatter for GoFormatter {
                 '\u{2029}' => "\\u2029",
                 _ => continue,
             };
-            w.write_all(fragment[last..i].as_bytes())?;
+            w.write_all(&fragment.as_bytes()[last..i])?;
             w.write_all(rep.as_bytes())?;
             last = i + c.len_utf8();
         }
-        w.write_all(fragment[last..].as_bytes())
+        w.write_all(&fragment.as_bytes()[last..])
     }
 }
 

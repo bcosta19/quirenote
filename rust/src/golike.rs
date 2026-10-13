@@ -81,7 +81,8 @@ pub fn valid_path(name: &str) -> bool {
     if name.is_empty() {
         return false;
     }
-    name.split('/').all(|e| !(e.is_empty() || e == "." || e == ".."))
+    name.split('/')
+        .all(|e| !(e.is_empty() || e == "." || e == ".."))
 }
 
 /// Go's `strings.ToValidUTF8(b, "\u{FFFD}")`: each *run* of invalid bytes becomes one replacement.

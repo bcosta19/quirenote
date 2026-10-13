@@ -1,5 +1,7 @@
 //! `quirenote-rs`: the Quirenote server (Rust/Axum port of cmd/quirenote).
 
+#![deny(clippy::unwrap_used, clippy::expect_used)]
+
 use std::process::ExitCode;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
@@ -147,7 +149,10 @@ fn main() -> ExitCode {
             Err(e) => return fatal(&e),
         }
     }
-    let rt = match tokio::runtime::Builder::new_multi_thread().enable_all().build() {
+    let rt = match tokio::runtime::Builder::new_multi_thread()
+        .enable_all()
+        .build()
+    {
         Ok(rt) => rt,
         Err(e) => return fatal(&e.to_string()),
     };
@@ -218,7 +223,11 @@ async fn run(addr: &str, dir: &str, cfg_path: &std::path::Path, debug: bool) -> 
                     w.push(h);
                 }
             }
-            Err(e) => eprintln!("{} ERROR watch err={}", quirenote::log_time(), kv(&e.to_string())),
+            Err(e) => eprintln!(
+                "{} ERROR watch err={}",
+                quirenote::log_time(),
+                kv(&e.to_string())
+            ),
         }
     };
 
@@ -248,9 +257,15 @@ async fn run(addr: &str, dir: &str, cfg_path: &std::path::Path, debug: bool) -> 
         state.enable_setup(
             home,
             Box::new(move |res: setup::Prepared| {
-                let nv = Vault::open(&res.dir).map_err(|e| format!("open {}: {}", res.dir, go_errno(&e)))?;
-                config::save(&cfg_file, &Config { vault: res.dir.clone() })
-                    .map_err(|e| e.to_string())?;
+                let nv = Vault::open(&res.dir)
+                    .map_err(|e| format!("open {}: {}", res.dir, go_errno(&e)))?;
+                config::save(
+                    &cfg_file,
+                    &Config {
+                        vault: res.dir.clone(),
+                    },
+                )
+                .map_err(|e| e.to_string())?;
                 serve_watch(nv.dir());
                 st.set_vault(Arc::new(nv));
                 info(
