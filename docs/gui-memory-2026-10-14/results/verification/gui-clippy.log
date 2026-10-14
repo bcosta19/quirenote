@@ -1,0 +1,1518 @@
+    Checking quirenote-gui v0.1.0 (/home/brspike/Projects/notas/.claude/worktrees/rust-gui/gui)
+warning: unused import: `self`
+  --> src/app.rs:23:19
+   |
+23 | use crate::epub::{self, Book, EpubReader};
+   |                   ^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `Id`
+  --> src/epub.rs:11:33
+   |
+11 | use eframe::egui::{self, Frame, Id, Key, Margin, Modifiers, RichText, ScrollArea, Sense, Stroke, Ui, Vec2};
+   |                                 ^^
+
+warning: unused import: `Arc`
+ --> src/markdown.rs:8:17
+  |
+8 | use std::sync::{Arc, LazyLock};
+  |                 ^^^
+
+warning: variable does not need to be mutable
+    --> src/app.rs:1203:21
+     |
+1203 |                 let mut right = |ui: &mut Ui, me: &mut Self| {
+     |                     ----^^^^^
+     |                     |
+     |                     help: remove this `mut`
+     |
+     = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> src/editor.rs:599:21
+    |
+599 |                 let mut style_scope = |ui: &mut Ui| {
+    |                     ----^^^^^^^^^^^
+    |                     |
+    |                     help: remove this `mut`
+
+warning: value assigned to `sugg` is never read
+   --> src/font_settings.rs:167:21
+    |
+167 |                     sugg = self.suggestions(prefs);
+    |                     ^^^^
+    |
+    = help: maybe it is overwritten before being read?
+    = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> src/fonts.rs:241:9
+    |
+241 |     let mut add = |defs: &mut FontDefinitions, name: &str, data: FontData| {
+    |         ----^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+    --> src/markdown.rs:1149:13
+     |
+1149 |         let mut draw_row = |ui: &mut Ui, cells: &[Vec<Inline>], bold: bool, this: &mut Self| {
+     |             ----^^^^^^^^
+     |             |
+     |             help: remove this `mut`
+
+warning: method `base` is never used
+   --> src/api.rs:156:12
+    |
+143 | impl Api {
+    | -------- method in this implementation
+...
+156 |     pub fn base(&self) -> &str {
+    |            ^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `forget` is never used
+   --> src/font_settings.rs:405:12
+    |
+ 98 | impl FontSettings {
+    | ----------------- method in this implementation
+...
+405 |     pub fn forget(&mut self) {
+    |            ^^^^^^
+
+warning: method `retain` is never used
+   --> src/markdown.rs:757:12
+    |
+731 | impl Images {
+    | ----------- method in this implementation
+...
+757 |     pub fn retain(&mut self, keep: &dyn Fn(&str) -> bool) {
+    |            ^^^^^^
+
+warning: field `scroll_thumb` is never read
+  --> src/theme.rs:24:9
+   |
+13 | pub struct Palette {
+   |            ------- field in this struct
+...
+24 |     pub scroll_thumb: Color32,
+   |         ^^^^^^^^^^^^
+   |
+   = note: `Palette` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: method `set_open` is never used
+  --> src/tree.rs:63:12
+   |
+30 | impl TreeView {
+   | ------------- method in this implementation
+...
+63 |     pub fn set_open(&mut self, dir: &str) {
+   |            ^^^^^^^^
+
+warning: this `if` statement can be collapsed
+   --> src/api.rs:356:13
+    |
+356 | /             if let Some(data) = line.strip_prefix("data:") {
+357 | |                 if let Ok(ev) = serde_json::from_str::<VaultEvent>(data.trim()) {
+358 | |                     on_event(ev);
+359 | |                 }
+360 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+    = note: `#[warn(clippy::collapsible_if)]` on by default
+help: collapse nested if block
+    |
+356 ~             if let Some(data) = line.strip_prefix("data:")
+357 ~                 && let Ok(ev) = serde_json::from_str::<VaultEvent>(data.trim()) {
+358 |                     on_event(ev);
+359 ~                 }
+    |
+
+warning: redundant closure
+   --> src/app.rs:246:44
+    |
+246 | ...note.as_deref().map(|n| links::dir_of(n)).filter(|d| !d.is_empty()).map(|d| format!("{d}/")).unwrap_or_default();
+    |                        ^^^^^^^^^^^^^^^^^^^^ help: replace the closure with the function itself: `links::dir_of`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#redundant_closure
+    = note: `#[warn(clippy::redundant_closure)]` on by default
+
+warning: this `if` statement can be collapsed
+   --> src/app.rs:354:9
+    |
+354 | /         if let Some(name) = self.restore_local.take() {
+355 | |             if self.doc.is_none() {
+356 | |                 let path = PathBuf::from(&name);
+357 | |                 if path.is_file() {
+...   |
+363 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+354 ~         if let Some(name) = self.restore_local.take()
+355 ~             && self.doc.is_none() {
+356 |                 let path = PathBuf::from(&name);
+...
+361 |                 }
+362 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/app.rs:458:17
+    |
+458 | /                 if let Ok(r) = res {
+459 | |                     if app.backlinks_req == req && app.note.as_deref() == Some(note.as_str()) {
+460 | |                         app.backlinks = Some(r);
+461 | |                     }
+462 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+458 ~                 if let Ok(r) = res
+459 ~                     && app.backlinks_req == req && app.note.as_deref() == Some(note.as_str()) {
+460 |                         app.backlinks = Some(r);
+461 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/app.rs:541:13
+    |
+541 | /             if let Some((tid, cfi, n)) = &self.epub_target {
+542 | |                 if *tid == info.id {
+543 | |                     r.target(cfi, *n);
+544 | |                 }
+545 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+541 ~             if let Some((tid, cfi, n)) = &self.epub_target
+542 ~                 && *tid == info.id {
+543 |                     r.target(cfi, *n);
+544 ~                 }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/app.rs:695:9
+    |
+695 | /         if let Some(mut ed) = self.editor.take() {
+696 | |             if ed.status == Status::Dirty {
+697 | |                 ed.save(&self.bridge, &self.api);
+698 | |             }
+699 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+695 ~         if let Some(mut ed) = self.editor.take()
+696 ~             && ed.status == Status::Dirty {
+697 |                 ed.save(&self.bridge, &self.api);
+698 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/app.rs:740:13
+    |
+740 | /             if same {
+741 | |                 if let (Some(p), Some(pg)) = (self.pdf.as_mut(), page) {
+742 | |                     p.go_to_page(pg);
+743 | |                 }
+744 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+740 ~             if same
+741 ~                 && let (Some(p), Some(pg)) = (self.pdf.as_mut(), page) {
+742 |                     p.go_to_page(pg);
+743 ~                 }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/app.rs:785:9
+    |
+785 | /         if let Some(l) = &self.local {
+786 | |             if l.name == name {
+787 | |                 if let Some(p) = page {
+788 | |                     if let Some(r) = self.pdf.as_mut() {
+...   |
+797 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+785 ~         if let Some(l) = &self.local
+786 ~             && l.name == name {
+787 |                 if let Some(p) = page {
+...
+795 |                 return;
+796 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/app.rs:787:17
+    |
+787 | /                 if let Some(p) = page {
+788 | |                     if let Some(r) = self.pdf.as_mut() {
+789 | |                         r.go_to_page(p);
+790 | |                     }
+791 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+787 ~                 if let Some(p) = page
+788 ~                     && let Some(r) = self.pdf.as_mut() {
+789 |                         r.go_to_page(p);
+790 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/app.rs:896:17
+    |
+896 | /                 if app.doc.as_deref() == Some(d.as_str()) {
+897 | |                     if let Some(p) = app.pdf.as_mut() {
+898 | |                         p.go_to_page(nav.page);
+899 | |                     }
+900 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+896 ~                 if app.doc.as_deref() == Some(d.as_str())
+897 ~                     && let Some(p) = app.pdf.as_mut() {
+898 |                         p.go_to_page(nav.page);
+899 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+    --> src/app.rs:1166:9
+     |
+1166 | /         if resp.dragged() {
+1167 | |             if let Some(pos) = resp.interact_pointer_pos() {
+1168 | |                 match kind {
+1169 | |                     Drag::Sidebar => self.prefs.sidebar_w = pos.x.clamp(160.0, 520.0),
+...    |
+1173 | |         }
+     | |_________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+1166 ~         if resp.dragged()
+1167 ~             && let Some(pos) = resp.interact_pointer_pos() {
+1168 |                 match kind {
+ ...
+1171 |                 }
+1172 ~             }
+     |
+
+warning: this `if` statement can be collapsed
+    --> src/app.rs:1310:17
+     |
+1310 | /                 if let Some(r) = self.pdf.as_mut() {
+1311 | |                     if let Some(page) = r.ui(ui, p) {
+1312 | |                         self.page = page;
+1313 | |                         self.prefs.pages.insert(r.id.clone(), page);
+1314 | |                     }
+1315 | |                 }
+     | |_________________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+1310 ~                 if let Some(r) = self.pdf.as_mut()
+1311 ~                     && let Some(page) = r.ui(ui, p) {
+1312 |                         self.page = page;
+1313 |                         self.prefs.pages.insert(r.id.clone(), page);
+1314 ~                     }
+     |
+
+warning: this `if` statement can be collapsed
+    --> src/app.rs:1326:21
+     |
+1326 | /                     if let Some(loc) = &r.location {
+1327 | |                         if self.prefs.epub.get(&loc.id) != Some(&loc.cfi) {
+1328 | |                             self.prefs.epub.insert(loc.id.clone(), loc.cfi.clone());
+1329 | |                         }
+1330 | |                     }
+     | |_____________________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+1326 ~                     if let Some(loc) = &r.location
+1327 ~                         && self.prefs.epub.get(&loc.id) != Some(&loc.cfi) {
+1328 |                             self.prefs.epub.insert(loc.id.clone(), loc.cfi.clone());
+1329 ~                         }
+     |
+
+warning: clamp-like pattern without using clamp function
+    --> src/app.rs:1401:23
+     |
+1401 |             let col = (avail - 56.0).min(44.0 * editor::SIZE).max(100.0);
+     |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: replace with clamp: `(avail - 56.0).clamp(100.0, 44.0 * editor::SIZE)`
+     |
+     = note: clamp will panic if max < min, min.is_nan(), or max.is_nan()
+     = note: clamp returns NaN if the input is NaN
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#manual_clamp
+     = note: `#[warn(clippy::manual_clamp)]` on by default
+
+warning: this `if` statement can be collapsed
+    --> src/app.rs:1920:13
+     |
+1920 | /             if hit {
+1921 | |                 if let Some(ed) = app.editor.as_mut() {
+1922 | |                     ed.set_locked(true);
+1923 | |                 }
+1924 | |             }
+     | |_____________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+1920 ~             if hit
+1921 ~                 && let Some(ed) = app.editor.as_mut() {
+1922 |                     ed.set_locked(true);
+1923 ~                 }
+     |
+
+warning: this `if` statement can be collapsed
+    --> src/app.rs:2010:13
+     |
+2010 | /             if hit {
+2011 | |                 if let Some(ed) = app.editor.as_mut() {
+2012 | |                     ed.set_locked(true);
+2013 | |                 }
+2014 | |             }
+     | |_____________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+2010 ~             if hit
+2011 ~                 && let Some(ed) = app.editor.as_mut() {
+2012 |                     ed.set_locked(true);
+2013 ~                 }
+     |
+
+warning: this `if` statement can be collapsed
+    --> src/app.rs:2071:17
+     |
+2071 | /                 if let Screen::Setup(s) = &self.screen {
+2072 | |                     if let Some(t) = s.enter_at {
+2073 | |                         if Instant::now() >= t {
+2074 | |                             self.enter_main();
+...    |
+2079 | |                 }
+     | |_________________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+2071 ~                 if let Screen::Setup(s) = &self.screen
+2072 ~                     && let Some(t) = s.enter_at {
+2073 |                         if Instant::now() >= t {
+ ...
+2077 |                         }
+2078 ~                     }
+     |
+
+warning: this `if` statement can be collapsed
+    --> src/app.rs:2102:9
+     |
+2102 | /         if let Some(ed) = self.editor.as_mut() {
+2103 | |             if matches!(ed.status, Status::Dirty) {
+2104 | |                 if let (Some(mtime), true) = (ed.base_mtime(), ed.has_base()) {
+2105 | |                     let _ = self.api.save(&ed.path, &ed.text, &mtime);
+...    |
+2108 | |         }
+     | |_________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+2102 ~         if let Some(ed) = self.editor.as_mut()
+2103 ~             && matches!(ed.status, Status::Dirty) {
+2104 |                 if let (Some(mtime), true) = (ed.base_mtime(), ed.has_base()) {
+2105 |                     let _ = self.api.save(&ed.path, &ed.text, &mtime);
+2106 |                 }
+2107 ~             }
+     |
+
+warning: this `if` statement can be collapsed
+    --> src/app.rs:2103:13
+     |
+2103 | /             if matches!(ed.status, Status::Dirty) {
+2104 | |                 if let (Some(mtime), true) = (ed.base_mtime(), ed.has_base()) {
+2105 | |                     let _ = self.api.save(&ed.path, &ed.text, &mtime);
+2106 | |                 }
+2107 | |             }
+     | |_____________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+2103 ~             if matches!(ed.status, Status::Dirty)
+2104 ~                 && let (Some(mtime), true) = (ed.base_mtime(), ed.has_base()) {
+2105 |                     let _ = self.api.save(&ed.path, &ed.text, &mtime);
+2106 ~                 }
+     |
+
+warning: this `if` statement can be collapsed
+   --> src/dialogs.rs:597:9
+    |
+597 | /         if enter {
+598 | |             if let Some(r) = self.results.get(self.selected) {
+599 | |                 out = PanelOutcome::Open(r.path.clone(), r.line);
+600 | |             }
+601 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+597 ~         if enter
+598 ~             && let Some(r) = self.results.get(self.selected) {
+599 |                 out = PanelOutcome::Open(r.path.clone(), r.line);
+600 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/dialogs.rs:705:9
+    |
+705 | /         if take(ctx, Modifiers::NONE, Key::Enter) {
+706 | |             if let Some(r) = results.get(self.selected) {
+707 | |                 out = PanelOutcome::Open(r.path.clone(), r.line);
+708 | |             }
+709 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+705 ~         if take(ctx, Modifiers::NONE, Key::Enter)
+706 ~             && let Some(r) = results.get(self.selected) {
+707 |                 out = PanelOutcome::Open(r.path.clone(), r.line);
+708 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/dialogs.rs:792:9
+    |
+792 | /         if take(ctx, Modifiers::NONE, Key::Enter) {
+793 | |             if let Some(h) = items.get(self.selected) {
+794 | |                 out = OutlineOutcome::Jump(h.line);
+795 | |             }
+796 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+792 ~         if take(ctx, Modifiers::NONE, Key::Enter)
+793 ~             && let Some(h) = items.get(self.selected) {
+794 |                 out = OutlineOutcome::Jump(h.line);
+795 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/editor.rs:591:21
+    |
+591 | / ...   if let Some(pat) = &search {
+592 | | ...       if let Some(re) = vim::search_regex(pat) {
+593 | | ...           let ranges: Vec<Range<usize>> = re.find_iter(text).filter(|m| m.start() < m.end()).map(|m| m.range()).collect();
+594 | | ...           highlight::mark_ranges(&mut job, &ranges, colors.search_match);
+595 | | ...       }
+596 | | ...   }
+    | |_______^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+591 ~                     if let Some(pat) = &search
+592 ~                         && let Some(re) = vim::search_regex(pat) {
+593 |                             let ranges: Vec<Range<usize>> = re.find_iter(text).filter(|m| m.start() < m.end()).map(|m| m.range()).collect();
+594 |                             highlight::mark_ranges(&mut job, &ranges, colors.search_match);
+595 ~                         }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/editor.rs:619:17
+    |
+619 | /                 if let Some(b) = before {
+620 | |                     if self.text != b {
+621 | |                         self.text = b; // read-only: undo whatever got through
+622 | |                     }
+623 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+619 ~                 if let Some(b) = before
+620 ~                     && self.text != b {
+621 |                         self.text = b; // read-only: undo whatever got through
+622 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/editor.rs:705:9
+    |
+705 | /         if resp.clicked() && ctx.input(|i| i.modifiers.command) {
+706 | |             if let Some(pos) = resp.interact_pointer_pos() {
+707 | |                 let c = galley.cursor_from_pos(pos - gpos).index.0;
+708 | |                 if let Some(l) = self.link_at(c) {
+...   |
+712 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+705 ~         if resp.clicked() && ctx.input(|i| i.modifiers.command)
+706 ~             && let Some(pos) = resp.interact_pointer_pos() {
+707 |                 let c = galley.cursor_from_pos(pos - gpos).index.0;
+...
+710 |                 }
+711 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/editor.rs:758:9
+    |
+758 | /         if let Some(comp) = &self.completion {
+759 | |             if focused && self.vim.mode == Mode::Insert {
+760 | |                 let c = galley.pos_from_cursor(on_char(self.cursor));
+761 | |                 let below = gpos + c.min.to_vec2() + Vec2::new(0.0, c.height() + 2.0);
+...   |
+773 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+758 ~         if let Some(comp) = &self.completion
+759 ~             && focused && self.vim.mode == Mode::Insert {
+760 |                 let c = galley.pos_from_cursor(on_char(self.cursor));
+...
+771 |                 }
+772 ~             }
+    |
+
+warning: this `if` has identical blocks
+   --> src/editor.rs:786:41
+    |
+786 |           if self.want_focus && !readonly {
+    |  _________________________________________^
+787 | |             resp.request_focus();
+788 | |             self.want_focus = false;
+789 | |         } else if self.want_focus && self.base.is_some() {
+    | |_________^
+    |
+note: same as this
+   --> src/editor.rs:789:58
+    |
+789 |           } else if self.want_focus && self.base.is_some() {
+    |  __________________________________________________________^
+790 | |             resp.request_focus();
+791 | |             self.want_focus = false;
+792 | |         }
+    | |_________^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#if_same_then_else
+    = note: `#[warn(clippy::if_same_then_else)]` on by default
+
+warning: this `if` statement can be collapsed
+   --> src/editor.rs:863:17
+    |
+863 | /                 if i.consume_key(Modifiers::NONE, Key::ArrowDown) || i.consume_key(Modifiers::COMMAND, Key::N) {
+864 | |                     if let Some(c) = &mut self.completion {
+865 | |                         c.selected = (c.selected + 1) % n.max(1);
+866 | |                     }
+867 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+863 ~                 if (i.consume_key(Modifiers::NONE, Key::ArrowDown) || i.consume_key(Modifiers::COMMAND, Key::N)) {
+864 ~                     && let Some(c) = &mut self.completion {
+865 |                         c.selected = (c.selected + 1) % n.max(1);
+866 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/editor.rs:868:17
+    |
+868 | /                 if i.consume_key(Modifiers::NONE, Key::ArrowUp) || i.consume_key(Modifiers::COMMAND, Key::P) {
+869 | |                     if let Some(c) = &mut self.completion {
+870 | |                         c.selected = (c.selected + n.max(1) - 1) % n.max(1);
+871 | |                     }
+872 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+868 ~                 if (i.consume_key(Modifiers::NONE, Key::ArrowUp) || i.consume_key(Modifiers::COMMAND, Key::P)) {
+869 ~                     && let Some(c) = &mut self.completion {
+870 |                         c.selected = (c.selected + n.max(1) - 1) % n.max(1);
+871 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/editor.rs:904:9
+    |
+904 | /         if paste && !self.readonly() {
+905 | |             if let Some(png) = clipboard_image() {
+906 | |                 ctx.input_mut(|i| i.events.retain(|e| !matches!(e, Event::Paste(_))));
+907 | |                 out.images.push((png, self.cursor));
+908 | |             }
+909 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+904 ~         if paste && !self.readonly()
+905 ~             && let Some(png) = clipboard_image() {
+906 |                 ctx.input_mut(|i| i.events.retain(|e| !matches!(e, Event::Paste(_))));
+907 |                 out.images.push((png, self.cursor));
+908 ~             }
+    |
+
+warning: call to `std::mem::drop` with a value that does not implement `Drop`. Dropping such a type only extends its contained lifetimes
+   --> src/editor.rs:948:17
+    |
+948 |                 drop(host);
+    |                 ^^^^^^^^^^
+    |
+note: argument has type `editor::EditorHost<'_>`
+   --> src/editor.rs:948:22
+    |
+948 |                 drop(host);
+    |                      ^^^^
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#drop_non_drop
+    = note: `#[warn(clippy::drop_non_drop)]` on by default
+
+warning: this `if` statement can be collapsed
+   --> src/editor.rs:976:25
+    |
+976 | /                         if *pressed {
+977 | |                             if let Some(k) = vkey(*key, *modifiers) {
+978 | |                                 keys.push(k);
+979 | |                             }
+980 | |                         }
+    | |_________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+976 ~                         if *pressed
+977 ~                             && let Some(k) = vkey(*key, *modifiers) {
+978 |                                 keys.push(k);
+979 ~                             }
+    |
+
+warning: this `if` statement can be collapsed
+    --> src/editor.rs:1189:9
+     |
+1189 | /         if closes {
+1190 | |             if let Some(m) = NAME.find(rest) {
+1191 | |                 to += m.as_str().chars().count();
+1192 | |             }
+1193 | |         }
+     | |_________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+1189 ~         if closes
+1190 ~             && let Some(m) = NAME.find(rest) {
+1191 |                 to += m.as_str().chars().count();
+1192 ~             }
+     |
+
+warning: stripping a prefix manually
+  --> src/epub.rs:67:90
+   |
+67 |     let joined = if path.is_empty() { base.to_string() } else if path.starts_with('/') { path[1..].to_string() } else { format!("{}{...
+   |                                                                                          ^^^^^^^^^
+   |
+note: the prefix was tested here
+  --> src/epub.rs:67:63
+   |
+67 |     let joined = if path.is_empty() { base.to_string() } else if path.starts_with('/') { path[1..].to_string() } else { format!("{}{...
+   |                                                               ^^^^^^^^^^^^^^^^^^^^^^^^^
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#manual_strip
+   = note: `#[warn(clippy::manual_strip)]` on by default
+help: try using the `strip_prefix` method
+   |
+67 -     let joined = if path.is_empty() { base.to_string() } else if path.starts_with('/') { path[1..].to_string() } else { format!("{}{}", dir_of(base), path) };
+67 +     let joined = if path.is_empty() { base.to_string() } else if let Some(<stripped>) = path.strip_prefix('/') { <stripped>.to_string() } else { format!("{}{}", dir_of(base), path) };
+   |
+
+warning: this `if` can be collapsed into the outer `match`
+   --> src/epub.rs:197:25
+    |
+197 | /                         if attr(&e, "type").as_deref() == Some("text") {
+198 | |                             guide_text = attr(&e, "href").map(|h| resolve(&opf_path, &h));
+199 | |                         }
+    | |_________________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_match
+    = note: `#[warn(clippy::collapsible_match)]` on by default
+help: collapse nested if block
+    |
+196 ~                     "reference"
+197 ~                         if attr(&e, "type").as_deref() == Some("text") => {
+198 |                             guide_text = attr(&e, "href").map(|h| resolve(&opf_path, &h));
+199 ~                         }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/epub.rs:219:9
+    |
+219 | /         if let Some((nav_path, _, _)) = manifest.values().find(|(_, _, props)| props.split_whitespace().any(|p| p == "nav")) {
+220 | |             if let Some(bytes) = read_file(&mut zip, nav_path) {
+221 | |                 let (items, start) = parse_nav(&text_of(&bytes), nav_path);
+222 | |                 toc = items;
+...   |
+227 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+219 ~         if let Some((nav_path, _, _)) = manifest.values().find(|(_, _, props)| props.split_whitespace().any(|p| p == "nav"))
+220 ~             && let Some(bytes) = read_file(&mut zip, nav_path) {
+221 |                 let (items, start) = parse_nav(&text_of(&bytes), nav_path);
+...
+225 |                 }
+226 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/epub.rs:232:13
+    |
+232 | /             if let Some((ncx_path, _, _)) = ncx {
+233 | |                 if let Some(bytes) = read_file(&mut zip, &ncx_path) {
+234 | |                     toc = parse_ncx(&text_of(&bytes), &ncx_path);
+235 | |                 }
+236 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+232 ~             if let Some((ncx_path, _, _)) = ncx
+233 ~                 && let Some(bytes) = read_file(&mut zip, &ncx_path) {
+234 |                     toc = parse_ncx(&text_of(&bytes), &ncx_path);
+235 ~                 }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/epub.rs:291:17
+    |
+291 | /                 if let Some(l) = &mut link {
+292 | |                     if let Some(s) = entity(&String::from_utf8_lossy(&e)) {
+293 | |                         l.1.push_str(&s);
+294 | |                     }
+295 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+291 ~                 if let Some(l) = &mut link
+292 ~                     && let Some(s) = entity(&String::from_utf8_lossy(&e)) {
+293 |                         l.1.push_str(&s);
+294 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/epub.rs:805:9
+    |
+805 | /         if let Some(saved) = self.saved.clone() {
+806 | |             if self.go_cfi(&saved) {
+807 | |                 return;
+808 | |             }
+809 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+805 ~         if let Some(saved) = self.saved.clone()
+806 ~             && self.go_cfi(&saved) {
+807 |                 return;
+808 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/epub.rs:855:9
+    |
+855 | /         if let Some((_, frag)) = href.split_once('#') {
+856 | |             if let Some(&b) = self.current.as_ref().and_then(|c| c.ids.get(frag)) {
+857 | |                 self.scroll_to = Some(Scroll::Block(b));
+858 | |             }
+859 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+855 ~         if let Some((_, frag)) = href.split_once('#')
+856 ~             && let Some(&b) = self.current.as_ref().and_then(|c| c.ids.get(frag)) {
+857 |                 self.scroll_to = Some(Scroll::Block(b));
+858 ~             }
+    |
+
+warning: clamp-like pattern without using clamp function
+    --> src/epub.rs:1070:23
+     |
+1070 |             let col = (avail - 72.0).min(760.0).max(100.0);
+     |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ help: replace with clamp: `(avail - 72.0).clamp(100.0, 760.0)`
+     |
+     = note: clamp will panic if max < min, min.is_nan(), or max.is_nan()
+     = note: clamp returns NaN if the input is NaN
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#manual_clamp
+
+warning: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
+    --> src/epub.rs:1132:9
+     |
+1132 | /         match click {
+1133 | |             Some(markdown::Click::Link(Target::Href(h))) => {
+1134 | |                 if let Some(internal) = h.strip_prefix("epub-internal:") {
+1135 | |                     self.error.clear();
+...    |
+1141 | |             _ => {}
+1142 | |         }
+     | |_________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#single_match
+     = note: `#[warn(clippy::single_match)]` on by default
+help: try
+     |
+1132 ~         if let Some(markdown::Click::Link(Target::Href(h))) = click {
+1133 +             if let Some(internal) = h.strip_prefix("epub-internal:") {
+1134 +                 self.error.clear();
+1135 +                 self.go_href(internal);
+1136 +             } else {
+1137 +                 external = Some(h);
+1138 +             }
+1139 +         }
+     |
+
+warning: this `if` statement can be collapsed
+   --> src/font_settings.rs:183:13
+    |
+183 | /             if enter {
+184 | |                 if let Some(a) = self.active.clone() {
+185 | |                     *prefs.get_mut(role) = a;
+186 | |                     self.open_role = None;
+187 | |                 }
+188 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+183 ~             if enter
+184 ~                 && let Some(a) = self.active.clone() {
+185 |                     *prefs.get_mut(role) = a;
+186 |                     self.open_role = None;
+187 ~                 }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/font_settings.rs:315:9
+    |
+315 | /         if let Some((role, rect)) = list_rect {
+316 | |             if !sugg.is_empty() {
+317 | |                 self.suggestion_list(ctx, role, rect, &sugg, prefs);
+318 | |             }
+319 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+315 ~         if let Some((role, rect)) = list_rect
+316 ~             && !sugg.is_empty() {
+317 |                 self.suggestion_list(ctx, role, rect, &sugg, prefs);
+318 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/fonts.rs:209:13
+    |
+209 | /             if !custom.is_empty() && !custom.eq_ignore_ascii_case("EB Garamond") {
+210 | |                 if let Some(f) = fc_match(&custom, style) {
+211 | |                     files.insert(format!("custom-{}{}", role.key(), suffix), f);
+212 | |                 }
+213 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+209 ~             if !custom.is_empty() && !custom.eq_ignore_ascii_case("EB Garamond")
+210 ~                 && let Some(f) = fc_match(&custom, style) {
+211 |                     files.insert(format!("custom-{}{}", role.key(), suffix), f);
+212 ~                 }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/hanging.rs:103:9
+    |
+103 | /         if joined.contains(&i) {
+104 | |             if let Some(r) = g.rows.get_mut(row - 1) {
+105 | |                 r.ends_with_newline = false;
+106 | |             }
+107 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+103 ~         if joined.contains(&i)
+104 ~             && let Some(r) = g.rows.get_mut(row - 1) {
+105 |                 r.ends_with_newline = false;
+106 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/highlight.rs:145:16
+    |
+145 |           } else if run_start.is_none() {
+    |  ________________^
+146 | |             if !list_or_quote(line) {
+147 | |                 run_start = Some(i);
+148 | |             }
+149 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+145 ~         } else if run_start.is_none()
+146 ~             && !list_or_quote(line) {
+147 |                 run_start = Some(i);
+148 ~             }
+    |
+
+warning: this boolean expression can be simplified
+   --> src/highlight.rs:460:38
+    |
+460 |                       let closing_ok = !bytes[j - 1].is_ascii_whitespace()
+    |  ______________________________________^
+461 | |                         && !(b == b'_' && bytes.get(j + 1).is_some_and(u8::is_ascii_alphanumeric));
+    | |__________________________________________________________________________________________________^ help: try: `!(bytes[j - 1].is_ascii_whitespace() || b == b'_' && bytes.get(j + 1).is_some_and(u8::is_ascii_alphanumeric))`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#nonminimal_bool
+    = note: `#[warn(clippy::nonminimal_bool)]` on by default
+
+warning: this `if` statement can be collapsed
+   --> src/highlight.rs:388:13
+    |
+388 | /             if let Some(close) = find_from(s, i + open, "](") {
+389 | |                 if !s[i + open..close].contains(['[', ']']) {
+390 | |                     if let Some(end) = find_from(s, close + 2, ")") {
+391 | |                         flush(cx, plain_start, i);
+...   |
+400 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+388 ~             if let Some(close) = find_from(s, i + open, "](")
+389 ~                 && !s[i + open..close].contains(['[', ']']) {
+390 |                     if let Some(end) = find_from(s, close + 2, ")") {
+...
+398 |                     }
+399 ~                 }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/highlight.rs:389:17
+    |
+389 | /                 if !s[i + open..close].contains(['[', ']']) {
+390 | |                     if let Some(end) = find_from(s, close + 2, ")") {
+391 | |                         flush(cx, plain_start, i);
+392 | |                         let link = Span { color: c.link, underline: c.link_underline, ..style };
+...   |
+399 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+389 ~                 if !s[i + open..close].contains(['[', ']'])
+390 ~                     && let Some(end) = find_from(s, close + 2, ")") {
+391 |                         flush(cx, plain_start, i);
+...
+397 |                         continue;
+398 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/highlight.rs:403:9
+    |
+403 | /         if b == b'<' {
+404 | |             if let Some(close) = s[i + 1..].find('>').map(|k| i + 1 + k) {
+405 | |                 let inner = &s[i + 1..close];
+406 | |                 let url = inner.contains("://") || (inner.contains('@') && !inner.contains(' '));
+...   |
+430 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+403 ~         if b == b'<'
+404 ~             && let Some(close) = s[i + 1..].find('>').map(|k| i + 1 + k) {
+405 |                 let inner = &s[i + 1..close];
+...
+428 |                 }
+429 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/highlight.rs:437:17
+    |
+437 | /                 if let Some(j) = find_from(s, i + 2, delim) {
+438 | |                     if j > i + 2 && !bytes[j - 1].is_ascii_whitespace() {
+439 | |                         flush(cx, plain_start, i);
+440 | |                         cx.push(delim, marks);
+...   |
+448 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+437 ~                 if let Some(j) = find_from(s, i + 2, delim)
+438 ~                     && j > i + 2 && !bytes[j - 1].is_ascii_whitespace() {
+439 |                         flush(cx, plain_start, i);
+...
+446 |                         continue 'outer;
+447 ~                     }
+    |
+
+warning: very complex type used. Consider factoring parts into `type` definitions
+   --> src/markdown.rs:307:12
+    |
+307 |     table: Option<(Vec<Vec<Inline>>, Vec<Vec<Vec<Inline>>>, bool)>,
+    |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#type_complexity
+    = note: `#[warn(clippy::type_complexity)]` on by default
+
+warning: this `if` statement can be collapsed
+   --> src/markdown.rs:566:17
+    |
+566 | /                 if let Some(Container::Item(it)) = self.stack.pop() {
+567 | |                     if let Some(Container::List { items, .. }) = self.stack.last_mut() {
+568 | |                         items.push(it);
+569 | |                     }
+570 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+566 ~                 if let Some(Container::Item(it)) = self.stack.pop()
+567 ~                     && let Some(Container::List { items, .. }) = self.stack.last_mut() {
+568 |                         items.push(it);
+569 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/markdown.rs:606:17
+    |
+606 | /                 if let Some((target, depth)) = self.link_stack.pop() {
+607 | |                     if let Some(cur) = self.inlines.last_mut() {
+608 | |                         let content: Vec<Inline> = cur.drain(depth.min(cur.len())..).collect();
+609 | |                         cur.push(Inline::Link(content, target));
+610 | |                     }
+611 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+606 ~                 if let Some((target, depth)) = self.link_stack.pop()
+607 ~                     && let Some(cur) = self.inlines.last_mut() {
+608 |                         let content: Vec<Inline> = cur.drain(depth.min(cur.len())..).collect();
+609 |                         cur.push(Inline::Link(content, target));
+610 ~                     }
+    |
+
+warning: this function has too many arguments (8/7)
+   --> src/markdown.rs:808:1
+    |
+808 | fn layout(look: &Look, inl: &[Inline], size: f32, color: Color32, base: Style, job: &mut LayoutJob, links: &mut Vec<(Range<usize>, Target)>, chars: &mut usize) {
+    | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#too_many_arguments
+    = note: `#[warn(clippy::too_many_arguments)]` on by default
+
+warning: this `if` statement can be collapsed
+   --> src/markdown.rs:890:9
+    |
+890 | /         if resp.clicked() {
+891 | |             if let Some(t) = resp.interact_pointer_pos().and_then(|p| link_at(&galley, p - pos, &links)) {
+892 | |                 self.click = Some(Click::Link(t));
+893 | |             }
+894 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+890 ~         if resp.clicked()
+891 ~             && let Some(t) = resp.interact_pointer_pos().and_then(|p| link_at(&galley, p - pos, &links)) {
+892 |                 self.click = Some(Click::Link(t));
+893 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/pdf.rs:276:17
+    |
+276 | /                 if let Some(s) = &mut self.selection {
+277 | |                     if s.page == page {
+278 | |                         s.rects = rects;
+279 | |                         s.text = text;
+280 | |                     }
+281 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+276 ~                 if let Some(s) = &mut self.selection
+277 ~                     && s.page == page {
+278 |                         s.rects = rects;
+279 |                         s.text = text;
+280 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/pdf.rs:358:21
+    |
+358 | /                     if let Ok(n) = self.page_input.trim().parse::<u32>() {
+359 | |                         if n >= 1 && (n as usize) <= self.total {
+360 | |                             self.go_to_page(n);
+361 | |                         }
+362 | |                     }
+    | |_____________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+358 ~                     if let Ok(n) = self.page_input.trim().parse::<u32>()
+359 ~                         && n >= 1 && (n as usize) <= self.total {
+360 |                             self.go_to_page(n);
+361 ~                         }
+    |
+
+warning: you seem to be trying to use `match` for destructuring a single pattern. Consider using `if let`
+   --> src/pdf.rs:466:17
+    |
+466 | /                 match self.textures.get(&i) {
+467 | |                     Some((_, tex)) => {
+468 | |                         egui::Image::new((tex.id(), size)).paint_at(ui, r);
+...   |
+471 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#single_match
+help: try
+    |
+466 ~                 if let Some((_, tex)) = self.textures.get(&i) {
+467 +                     egui::Image::new((tex.id(), size)).paint_at(ui, r);
+468 +                 }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/pdf.rs:482:17
+    |
+482 | /                 if resp.drag_started() {
+483 | |                     if let Some(pp) = resp.interact_pointer_pos() {
+484 | |                         let a = to_page(pp);
+485 | |                         self.selection = Some(Selection { page: i, a, b: a, rects: Vec::new(), text: String::new() });
+486 | |                     }
+487 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+482 ~                 if resp.drag_started()
+483 ~                     && let Some(pp) = resp.interact_pointer_pos() {
+484 |                         let a = to_page(pp);
+485 |                         self.selection = Some(Selection { page: i, a, b: a, rects: Vec::new(), text: String::new() });
+486 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/pdf.rs:488:17
+    |
+488 | /                 if resp.dragged() {
+489 | |                     if let (Some(pp), Some(sel)) = (resp.interact_pointer_pos(), &mut self.selection) {
+490 | |                         if sel.page == i {
+491 | |                             sel.b = to_page(pp);
+...   |
+495 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+488 ~                 if resp.dragged()
+489 ~                     && let (Some(pp), Some(sel)) = (resp.interact_pointer_pos(), &mut self.selection) {
+490 |                         if sel.page == i {
+...
+493 |                         }
+494 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/pdf.rs:489:21
+    |
+489 | / ...   if let (Some(pp), Some(sel)) = (resp.interact_pointer_pos(), &mut self.selection) {
+490 | | ...       if sel.page == i {
+491 | | ...           sel.b = to_page(pp);
+492 | | ...           let _ = self.tx.send(Req::Select(self.generation, i, [sel.a.x as f64, sel.a.y as f64, sel.b.x as f64, sel.b.y as f6...
+493 | | ...       }
+494 | | ...   }
+    | |_______^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+489 ~                     if let (Some(pp), Some(sel)) = (resp.interact_pointer_pos(), &mut self.selection)
+490 ~                         && sel.page == i {
+491 |                             sel.b = to_page(pp);
+492 |                             let _ = self.tx.send(Req::Select(self.generation, i, [sel.a.x as f64, sel.a.y as f64, sel.b.x as f64, sel.b.y as f64]));
+493 ~                         }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/pdf.rs:499:17
+    |
+499 | /                 if let Some(sel) = &self.selection {
+500 | |                     if sel.page == i {
+501 | |                         for sr in &sel.rects {
+502 | |                             let rr = Rect::from_min_max(r.min + sr.min.to_vec2() * scale, r.min + sr.max.to_vec2() * scale);
+...   |
+506 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+499 ~                 if let Some(sel) = &self.selection
+500 ~                     && sel.page == i {
+501 |                         for sr in &sel.rects {
+...
+504 |                         }
+505 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/pdf.rs:511:13
+    |
+511 | /             if ui.input(|i| i.events.iter().any(|e| matches!(e, egui::Event::Copy))) {
+512 | |                 if let Some(sel) = &self.selection {
+513 | |                     if !sel.text.is_empty() {
+514 | |                         copy_text = Some(sel.text.clone());
+...   |
+517 | |             }
+    | |_____________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+511 ~             if ui.input(|i| i.events.iter().any(|e| matches!(e, egui::Event::Copy)))
+512 ~                 && let Some(sel) = &self.selection {
+513 |                     if !sel.text.is_empty() {
+514 |                         copy_text = Some(sel.text.clone());
+515 |                     }
+516 ~                 }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/pdf.rs:512:17
+    |
+512 | /                 if let Some(sel) = &self.selection {
+513 | |                     if !sel.text.is_empty() {
+514 | |                         copy_text = Some(sel.text.clone());
+515 | |                     }
+516 | |                 }
+    | |_________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+512 ~                 if let Some(sel) = &self.selection
+513 ~                     && !sel.text.is_empty() {
+514 |                         copy_text = Some(sel.text.clone());
+515 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/state.rs:145:9
+    |
+145 | /         if let Some(s) = &mut self.session {
+146 | |             if s.page == 0 {
+147 | |                 s.page = 1;
+148 | |             }
+149 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+145 ~         if let Some(s) = &mut self.session
+146 ~             && s.page == 0 {
+147 |                 s.page = 1;
+148 ~             }
+    |
+
+warning: this `if` statement can be collapsed
+  --> src/undo.rs:53:9
+   |
+53 | /         if let Some(Entry::Full { text: top, .. }) = self.undo.last() {
+54 | |             if top == text {
+55 | |                 return; // nothing changed since the last step
+56 | |             }
+57 | |         }
+   | |_________^
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+   |
+53 ~         if let Some(Entry::Full { text: top, .. }) = self.undo.last()
+54 ~             && top == text {
+55 |                 return; // nothing changed since the last step
+56 ~             }
+   |
+
+warning: this `if` statement can be collapsed
+   --> src/vim.rs:821:5
+    |
+821 | /     if visual {
+822 | |         if let VKey::Char('i' | 'a') = k {
+823 | |             let mut j = i;
+824 | |             return match object(keys, &mut j) {
+...   |
+830 | |     }
+    | |_____^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+821 ~     if visual
+822 ~         && let VKey::Char('i' | 'a') = k {
+823 |             let mut j = i;
+...
+828 |             };
+829 ~         }
+    |
+
+warning: this `if` statement can be collapsed
+   --> src/vim.rs:954:9
+    |
+954 | /         if matches!(reg, Some('+' | '*')) {
+955 | |             if let Some(t) = host.clipboard_get() {
+956 | |                 let linewise = t.ends_with('\n');
+957 | |                 return Register { text: t, linewise };
+958 | |             }
+959 | |         }
+    | |_________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+    |
+954 ~         if matches!(reg, Some('+' | '*'))
+955 ~             && let Some(t) = host.clipboard_get() {
+956 |                 let linewise = t.ends_with('\n');
+957 |                 return Register { text: t, linewise };
+958 ~             }
+    |
+
+warning: this `if` can be collapsed into the outer `match`
+   --> src/vim.rs:971:21
+    |
+971 | /                     if text.pop().is_none() {
+972 | |                         self.cmdline = None;
+973 | |                     }
+    | |_____________________^
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_match
+help: collapse nested if block
+    |
+970 ~                 VKey::Backspace
+971 ~                     if text.pop().is_none() => {
+972 |                         self.cmdline = None;
+973 ~                     }
+    |
+
+warning: this `if` statement can be collapsed
+    --> src/vim.rs:1271:17
+     |
+1271 | /                 if let Some((s, e, linewise)) = object_range(b, b.cursor, &o, n) {
+1272 | |                     if e > s {
+1273 | |                         self.anchor = s;
+1274 | |                         b.cursor = e - 1;
+...    |
+1279 | |                 }
+     | |_________________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_if
+help: collapse nested if block
+     |
+1271 ~                 if let Some((s, e, linewise)) = object_range(b, b.cursor, &o, n)
+1272 ~                     && e > s {
+1273 |                         self.anchor = s;
+ ...
+1277 |                         }
+1278 ~                     }
+     |
+
+warning: this `if` can be collapsed into the outer `match`
+    --> src/vim.rs:1666:25
+     |
+1666 | /                         if b.cursor < b.line_end(b.cursor) {
+1667 | |                             b.cursor += 1;
+1668 | |                         }
+     | |_________________________^
+     |
+     = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.95.0/index.html#collapsible_match
+help: collapse nested if block
+     |
+1665 ~                     "a"
+1666 ~                         if b.cursor < b.line_end(b.cursor) => {
+1667 |                             b.cursor += 1;
+1668 ~                         }
+     |
+
+warning: `quirenote-gui` (bin "quirenote-gui" test) generated 86 warnings (run `cargo clippy --fix --bin "quirenote-gui" -p quirenote-gui --tests -- ` to apply 72 suggestions)
+warning: `quirenote-gui` (bin "quirenote-gui") generated 86 warnings (86 duplicates)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 4.17s

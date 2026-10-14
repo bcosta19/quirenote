@@ -1,0 +1,115 @@
+   Compiling quirenote-gui v0.1.0 (/home/brspike/Projects/notas/.claude/worktrees/rust-gui/gui)
+warning: unused import: `self`
+  --> src/app.rs:23:19
+   |
+23 | use crate::epub::{self, Book, EpubReader};
+   |                   ^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `Id`
+  --> src/epub.rs:11:33
+   |
+11 | use eframe::egui::{self, Frame, Id, Key, Margin, Modifiers, RichText, ScrollArea, Sense, Stroke, Ui, Vec2};
+   |                                 ^^
+
+warning: unused import: `Arc`
+ --> src/markdown.rs:8:17
+  |
+8 | use std::sync::{Arc, LazyLock};
+  |                 ^^^
+
+warning: variable does not need to be mutable
+    --> src/app.rs:1203:21
+     |
+1203 |                 let mut right = |ui: &mut Ui, me: &mut Self| {
+     |                     ----^^^^^
+     |                     |
+     |                     help: remove this `mut`
+     |
+     = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> src/editor.rs:599:21
+    |
+599 |                 let mut style_scope = |ui: &mut Ui| {
+    |                     ----^^^^^^^^^^^
+    |                     |
+    |                     help: remove this `mut`
+
+warning: value assigned to `sugg` is never read
+   --> src/font_settings.rs:167:21
+    |
+167 |                     sugg = self.suggestions(prefs);
+    |                     ^^^^
+    |
+    = help: maybe it is overwritten before being read?
+    = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> src/fonts.rs:241:9
+    |
+241 |     let mut add = |defs: &mut FontDefinitions, name: &str, data: FontData| {
+    |         ----^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+    --> src/markdown.rs:1149:13
+     |
+1149 |         let mut draw_row = |ui: &mut Ui, cells: &[Vec<Inline>], bold: bool, this: &mut Self| {
+     |             ----^^^^^^^^
+     |             |
+     |             help: remove this `mut`
+
+warning: method `base` is never used
+   --> src/api.rs:156:12
+    |
+143 | impl Api {
+    | -------- method in this implementation
+...
+156 |     pub fn base(&self) -> &str {
+    |            ^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `forget` is never used
+   --> src/font_settings.rs:405:12
+    |
+ 98 | impl FontSettings {
+    | ----------------- method in this implementation
+...
+405 |     pub fn forget(&mut self) {
+    |            ^^^^^^
+
+warning: method `retain` is never used
+   --> src/markdown.rs:757:12
+    |
+731 | impl Images {
+    | ----------- method in this implementation
+...
+757 |     pub fn retain(&mut self, keep: &dyn Fn(&str) -> bool) {
+    |            ^^^^^^
+
+warning: field `scroll_thumb` is never read
+  --> src/theme.rs:24:9
+   |
+13 | pub struct Palette {
+   |            ------- field in this struct
+...
+24 |     pub scroll_thumb: Color32,
+   |         ^^^^^^^^^^^^
+   |
+   = note: `Palette` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: method `set_open` is never used
+  --> src/tree.rs:63:12
+   |
+30 | impl TreeView {
+   | ------------- method in this implementation
+...
+63 |     pub fn set_open(&mut self, dir: &str) {
+   |            ^^^^^^^^
+
+warning: `quirenote-gui` (bin "quirenote-gui") generated 13 warnings (run `cargo fix --bin "quirenote-gui" -p quirenote-gui` to apply 7 suggestions)
+    Finished `release` profile [optimized] target(s) in 3m 09s

@@ -1,0 +1,4133 @@
+[
+ {
+  "stack": "go+chromium",
+  "scenario": "empty",
+  "rep": 0,
+  "alive": true,
+  "evidence": "go+chromium-empty-rep0.json",
+  "client": {
+   "rss": 1093376,
+   "pss": 418183,
+   "uss": 279332,
+   "swap": 1112,
+   "swap_pss": 16
+  },
+  "processes": [
+   {
+    "pid": 1831031,
+    "kind": "chromium",
+    "rss": 264004,
+    "pss": 153471,
+    "uss": 122828,
+    "swap": 548,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831078,
+    "kind": "utility:NetworkService",
+    "rss": 81232,
+    "pss": 29514,
+    "uss": 21824,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831044,
+    "kind": "zygote",
+    "rss": 45304,
+    "pss": 5315,
+    "uss": 352,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831046,
+    "kind": "zygote",
+    "rss": 19644,
+    "pss": 3113,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831153,
+    "kind": "renderer",
+    "rss": 111508,
+    "pss": 22950,
+    "uss": 9420,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831142,
+    "kind": "renderer",
+    "rss": 163984,
+    "pss": 54961,
+    "uss": 33928,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831133,
+    "kind": "renderer",
+    "rss": 162224,
+    "pss": 56041,
+    "uss": 37056,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831097,
+    "kind": "utility:StorageService",
+    "rss": 50084,
+    "pss": 8014,
+    "uss": 2304,
+    "swap": 564,
+    "swap_pss": 16
+   },
+   {
+    "pid": 1831043,
+    "kind": "zygote",
+    "rss": 45184,
+    "pss": 10623,
+    "uss": 864,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831076,
+    "kind": "gpu-process",
+    "rss": 150208,
+    "pss": 74181,
+    "uss": 50536,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   418183,
+   418183,
+   418183
+  ],
+  "idle_cpu_pct": 0.3333333333333333,
+  "server": {
+   "rss": 17124,
+   "pss": 15357,
+   "uss": 15332,
+   "swap": 3484,
+   "swap_pss": 0
+  },
+  "seconds": 18.1
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "empty",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+chromium-empty-rep0.json",
+  "client": {
+   "rss": 1094032,
+   "pss": 417093,
+   "uss": 277232,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1831365,
+    "kind": "chromium",
+    "rss": 265184,
+    "pss": 153520,
+    "uss": 121728,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831415,
+    "kind": "utility:NetworkService",
+    "rss": 81020,
+    "pss": 28941,
+    "uss": 21404,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831378,
+    "kind": "zygote",
+    "rss": 44568,
+    "pss": 5249,
+    "uss": 320,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831380,
+    "kind": "zygote",
+    "rss": 19688,
+    "pss": 3111,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831488,
+    "kind": "renderer",
+    "rss": 112120,
+    "pss": 23031,
+    "uss": 9440,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831477,
+    "kind": "renderer",
+    "rss": 161840,
+    "pss": 52696,
+    "uss": 31884,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831461,
+    "kind": "renderer",
+    "rss": 164088,
+    "pss": 57300,
+    "uss": 38400,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831417,
+    "kind": "utility:StorageService",
+    "rss": 50152,
+    "pss": 7992,
+    "uss": 2220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831377,
+    "kind": "zygote",
+    "rss": 44372,
+    "pss": 10679,
+    "uss": 872,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1831412,
+    "kind": "gpu-process",
+    "rss": 151000,
+    "pss": 74574,
+    "uss": 50744,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   417089,
+   417117,
+   417093
+  ],
+  "idle_cpu_pct": 0.3333333333333333,
+  "server": {
+   "rss": 8820,
+   "pss": 6100,
+   "uss": 6032,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "empty",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+gui-empty-rep0.json",
+  "client": {
+   "rss": 107048,
+   "pss": 72541,
+   "uss": 62024,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1831702,
+    "kind": "quirenote-gui",
+    "rss": 107048,
+    "pss": 72541,
+    "uss": 62024,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   72541,
+   72541,
+   72541
+  ],
+  "idle_cpu_pct": 0.0,
+  "server": {
+   "rss": 5860,
+   "pss": 3155,
+   "uss": 3072,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.5
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note",
+  "rep": 0,
+  "alive": true,
+  "evidence": "go+chromium-note-rep0.json",
+  "client": {
+   "rss": 1108112,
+   "pss": 499279,
+   "uss": 306592,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1834849,
+    "kind": "chromium",
+    "rss": 266712,
+    "pss": 172014,
+    "uss": 137988,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1834911,
+    "kind": "utility:NetworkService",
+    "rss": 80432,
+    "pss": 32988,
+    "uss": 21416,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1834862,
+    "kind": "zygote",
+    "rss": 43120,
+    "pss": 6758,
+    "uss": 336,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1834864,
+    "kind": "zygote",
+    "rss": 19936,
+    "pss": 3309,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1835001,
+    "kind": "renderer",
+    "rss": 112776,
+    "pss": 32328,
+    "uss": 9600,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1834991,
+    "kind": "renderer",
+    "rss": 175240,
+    "pss": 80225,
+    "uss": 47160,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1834979,
+    "kind": "renderer",
+    "rss": 163916,
+    "pss": 70379,
+    "uss": 38428,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1834928,
+    "kind": "utility:StorageService",
+    "rss": 50512,
+    "pss": 9952,
+    "uss": 2320,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1834861,
+    "kind": "zygote",
+    "rss": 43056,
+    "pss": 12181,
+    "uss": 1048,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1834909,
+    "kind": "gpu-process",
+    "rss": 152412,
+    "pss": 79145,
+    "uss": 48076,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   499203,
+   499279,
+   499283
+  ],
+  "idle_cpu_pct": 4.666666666666667,
+  "server": {
+   "rss": 20996,
+   "pss": 19236,
+   "uss": 19204,
+   "swap": 88,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+chromium-note-rep0.json",
+  "client": {
+   "rss": 1122824,
+   "pss": 502351,
+   "uss": 306332,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1835263,
+    "kind": "chromium",
+    "rss": 266980,
+    "pss": 172496,
+    "uss": 138260,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1835320,
+    "kind": "utility:NetworkService",
+    "rss": 80192,
+    "pss": 32850,
+    "uss": 21500,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1835286,
+    "kind": "zygote",
+    "rss": 46704,
+    "pss": 7297,
+    "uss": 328,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1835288,
+    "kind": "zygote",
+    "rss": 21512,
+    "pss": 3614,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1835395,
+    "kind": "renderer",
+    "rss": 114388,
+    "pss": 32473,
+    "uss": 9460,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1835385,
+    "kind": "renderer",
+    "rss": 177716,
+    "pss": 80715,
+    "uss": 47024,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1835376,
+    "kind": "renderer",
+    "rss": 165896,
+    "pss": 70407,
+    "uss": 37916,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1835327,
+    "kind": "utility:StorageService",
+    "rss": 52112,
+    "pss": 10262,
+    "uss": 2360,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1835285,
+    "kind": "zygote",
+    "rss": 44488,
+    "pss": 12429,
+    "uss": 928,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1835318,
+    "kind": "gpu-process",
+    "rss": 152836,
+    "pss": 79808,
+    "uss": 48336,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   502343,
+   502351,
+   502363
+  ],
+  "idle_cpu_pct": 4.0,
+  "server": {
+   "rss": 9424,
+   "pss": 6737,
+   "uss": 6660,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 18.2
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+gui-note-rep0.json",
+  "client": {
+   "rss": 108896,
+   "pss": 76334,
+   "uss": 54688,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1835671,
+    "kind": "quirenote-gui",
+    "rss": 108896,
+    "pss": 76334,
+    "uss": 54688,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   76334,
+   76334,
+   77016
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 6220,
+   "pss": 3561,
+   "uss": 3460,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.5
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note+pdf",
+  "rep": 0,
+  "alive": true,
+  "evidence": "go+chromium-note+pdf-rep0.json",
+  "client": {
+   "rss": 1154328,
+   "pss": 541058,
+   "uss": 345852,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1836739,
+    "kind": "chromium",
+    "rss": 267396,
+    "pss": 172567,
+    "uss": 138568,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1836786,
+    "kind": "utility:NetworkService",
+    "rss": 80672,
+    "pss": 33136,
+    "uss": 21512,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1836752,
+    "kind": "zygote",
+    "rss": 44256,
+    "pss": 6910,
+    "uss": 336,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1836754,
+    "kind": "zygote",
+    "rss": 19640,
+    "pss": 3277,
+    "uss": 224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1836860,
+    "kind": "renderer",
+    "rss": 112248,
+    "pss": 32077,
+    "uss": 9432,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1836850,
+    "kind": "renderer",
+    "rss": 218436,
+    "pss": 120931,
+    "uss": 86224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1836841,
+    "kind": "renderer",
+    "rss": 163600,
+    "pss": 69489,
+    "uss": 37044,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1836791,
+    "kind": "utility:StorageService",
+    "rss": 50364,
+    "pss": 9741,
+    "uss": 2324,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1836751,
+    "kind": "zygote",
+    "rss": 43632,
+    "pss": 12160,
+    "uss": 880,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1836784,
+    "kind": "gpu-process",
+    "rss": 154084,
+    "pss": 80770,
+    "uss": 49308,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   541050,
+   541058,
+   541062
+  ],
+  "idle_cpu_pct": 4.0,
+  "server": {
+   "rss": 22208,
+   "pss": 20459,
+   "uss": 20428,
+   "swap": 1484,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note+pdf",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+chromium-note+pdf-rep0.json",
+  "client": {
+   "rss": 1157708,
+   "pss": 544632,
+   "uss": 351416,
+   "swap": 304,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1837267,
+    "kind": "chromium",
+    "rss": 267708,
+    "pss": 172036,
+    "uss": 138164,
+    "swap": 152,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837314,
+    "kind": "utility:NetworkService",
+    "rss": 80884,
+    "pss": 33029,
+    "uss": 21620,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837280,
+    "kind": "zygote",
+    "rss": 42388,
+    "pss": 6657,
+    "uss": 312,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837282,
+    "kind": "zygote",
+    "rss": 19804,
+    "pss": 3292,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837387,
+    "kind": "renderer",
+    "rss": 112380,
+    "pss": 32034,
+    "uss": 9572,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837377,
+    "kind": "renderer",
+    "rss": 224400,
+    "pss": 126912,
+    "uss": 92480,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837368,
+    "kind": "renderer",
+    "rss": 162372,
+    "pss": 68348,
+    "uss": 36228,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837319,
+    "kind": "utility:StorageService",
+    "rss": 50840,
+    "pss": 9546,
+    "uss": 2208,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837279,
+    "kind": "zygote",
+    "rss": 42300,
+    "pss": 11947,
+    "uss": 900,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837312,
+    "kind": "gpu-process",
+    "rss": 154632,
+    "pss": 80831,
+    "uss": 49712,
+    "swap": 152,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   544632,
+   544636,
+   544616
+  ],
+  "idle_cpu_pct": 4.0,
+  "server": {
+   "rss": 10852,
+   "pss": 8175,
+   "uss": 8092,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note+pdf",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+gui-note+pdf-rep0.json",
+  "client": {
+   "rss": 115120,
+   "pss": 82407,
+   "uss": 60660,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1837622,
+    "kind": "quirenote-gui",
+    "rss": 115120,
+    "pss": 82407,
+    "uss": 60660,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   82407,
+   82407,
+   82407
+  ],
+  "idle_cpu_pct": 1.0,
+  "server": {
+   "rss": 6580,
+   "pss": 3942,
+   "uss": 3824,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.5
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note+epub",
+  "rep": 0,
+  "alive": true,
+  "evidence": "go+chromium-note+epub-rep0.json",
+  "client": {
+   "rss": 1121836,
+   "pss": 511343,
+   "uss": 315848,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1837855,
+    "kind": "chromium",
+    "rss": 268856,
+    "pss": 173673,
+    "uss": 138752,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837902,
+    "kind": "utility:NetworkService",
+    "rss": 80776,
+    "pss": 33416,
+    "uss": 21844,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837868,
+    "kind": "zygote",
+    "rss": 44132,
+    "pss": 6809,
+    "uss": 264,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837870,
+    "kind": "zygote",
+    "rss": 19640,
+    "pss": 3270,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837975,
+    "kind": "renderer",
+    "rss": 111672,
+    "pss": 31977,
+    "uss": 9424,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837965,
+    "kind": "renderer",
+    "rss": 184448,
+    "pss": 88646,
+    "uss": 54532,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837956,
+    "kind": "renderer",
+    "rss": 163672,
+    "pss": 70408,
+    "uss": 38356,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837906,
+    "kind": "utility:StorageService",
+    "rss": 50360,
+    "pss": 9875,
+    "uss": 2320,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837867,
+    "kind": "zygote",
+    "rss": 44476,
+    "pss": 12317,
+    "uss": 792,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1837900,
+    "kind": "gpu-process",
+    "rss": 153804,
+    "pss": 80952,
+    "uss": 49344,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   511331,
+   511343,
+   511351
+  ],
+  "idle_cpu_pct": 4.333333333333333,
+  "server": {
+   "rss": 20988,
+   "pss": 19228,
+   "uss": 19196,
+   "swap": 1360,
+   "swap_pss": 0
+  },
+  "seconds": 18.1
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note+epub",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+chromium-note+epub-rep0.json",
+  "client": {
+   "rss": 1124228,
+   "pss": 510972,
+   "uss": 316336,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1838233,
+    "kind": "chromium",
+    "rss": 268392,
+    "pss": 172716,
+    "uss": 138200,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1838286,
+    "kind": "utility:NetworkService",
+    "rss": 83428,
+    "pss": 35118,
+    "uss": 23356,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1838246,
+    "kind": "zygote",
+    "rss": 44060,
+    "pss": 6895,
+    "uss": 304,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1838248,
+    "kind": "zygote",
+    "rss": 19724,
+    "pss": 3288,
+    "uss": 212,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1838361,
+    "kind": "renderer",
+    "rss": 112348,
+    "pss": 32082,
+    "uss": 9492,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1838351,
+    "kind": "renderer",
+    "rss": 185336,
+    "pss": 89305,
+    "uss": 55392,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1838342,
+    "kind": "renderer",
+    "rss": 162284,
+    "pss": 68558,
+    "uss": 36480,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1838288,
+    "kind": "utility:StorageService",
+    "rss": 50708,
+    "pss": 9851,
+    "uss": 2268,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1838245,
+    "kind": "zygote",
+    "rss": 43484,
+    "pss": 12109,
+    "uss": 864,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1838284,
+    "kind": "gpu-process",
+    "rss": 154464,
+    "pss": 81050,
+    "uss": 49768,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   510960,
+   510972,
+   510992
+  ],
+  "idle_cpu_pct": 4.666666666666667,
+  "server": {
+   "rss": 9596,
+   "pss": 6977,
+   "uss": 6896,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note+epub",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+gui-note+epub-rep0.json",
+  "client": {
+   "rss": 113560,
+   "pss": 81826,
+   "uss": 60544,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1838616,
+    "kind": "quirenote-gui",
+    "rss": 113560,
+    "pss": 81826,
+    "uss": 60544,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   81826,
+   81826,
+   81826
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 6860,
+   "pss": 4264,
+   "uss": 4128,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.5
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "empty",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+gui-empty-rep1.json",
+  "client": {
+   "rss": 106464,
+   "pss": 74852,
+   "uss": 53604,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1841824,
+    "kind": "quirenote-gui",
+    "rss": 106464,
+    "pss": 74852,
+    "uss": 53604,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   74852,
+   74852,
+   74849
+  ],
+  "idle_cpu_pct": 0.0,
+  "server": {
+   "rss": 5884,
+   "pss": 3263,
+   "uss": 3144,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.4
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "empty",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+chromium-empty-rep1.json",
+  "client": {
+   "rss": 1088120,
+   "pss": 487314,
+   "uss": 297240,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1842044,
+    "kind": "chromium",
+    "rss": 263404,
+    "pss": 170186,
+    "uss": 136476,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842096,
+    "kind": "utility:NetworkService",
+    "rss": 80680,
+    "pss": 33714,
+    "uss": 21824,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842062,
+    "kind": "zygote",
+    "rss": 42216,
+    "pss": 6660,
+    "uss": 352,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842064,
+    "kind": "zygote",
+    "rss": 19632,
+    "pss": 3284,
+    "uss": 216,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842170,
+    "kind": "renderer",
+    "rss": 111436,
+    "pss": 31785,
+    "uss": 9480,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842159,
+    "kind": "renderer",
+    "rss": 163020,
+    "pss": 70322,
+    "uss": 38588,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842150,
+    "kind": "renderer",
+    "rss": 164348,
+    "pss": 71909,
+    "uss": 40476,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842109,
+    "kind": "utility:StorageService",
+    "rss": 50592,
+    "pss": 9795,
+    "uss": 2276,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842061,
+    "kind": "zygote",
+    "rss": 41708,
+    "pss": 11906,
+    "uss": 952,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842094,
+    "kind": "gpu-process",
+    "rss": 151084,
+    "pss": 77753,
+    "uss": 46600,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   487314,
+   487314,
+   487314
+  ],
+  "idle_cpu_pct": 1.0,
+  "server": {
+   "rss": 8620,
+   "pss": 5946,
+   "uss": 5860,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "empty",
+  "rep": 1,
+  "alive": true,
+  "evidence": "go+chromium-empty-rep1.json",
+  "client": {
+   "rss": 1091768,
+   "pss": 485851,
+   "uss": 295568,
+   "swap": 72,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1842399,
+    "kind": "chromium",
+    "rss": 265172,
+    "pss": 170437,
+    "uss": 136672,
+    "swap": 36,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842446,
+    "kind": "utility:NetworkService",
+    "rss": 82740,
+    "pss": 35422,
+    "uss": 23644,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842412,
+    "kind": "zygote",
+    "rss": 43204,
+    "pss": 6825,
+    "uss": 400,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842414,
+    "kind": "zygote",
+    "rss": 19816,
+    "pss": 3292,
+    "uss": 224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842519,
+    "kind": "renderer",
+    "rss": 112604,
+    "pss": 32152,
+    "uss": 9520,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842509,
+    "kind": "renderer",
+    "rss": 161412,
+    "pss": 68375,
+    "uss": 37024,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842500,
+    "kind": "renderer",
+    "rss": 162044,
+    "pss": 69050,
+    "uss": 37704,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842450,
+    "kind": "utility:StorageService",
+    "rss": 50652,
+    "pss": 9928,
+    "uss": 2356,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842411,
+    "kind": "zygote",
+    "rss": 42496,
+    "pss": 12017,
+    "uss": 864,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1842444,
+    "kind": "gpu-process",
+    "rss": 151628,
+    "pss": 78353,
+    "uss": 47160,
+    "swap": 36,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   485851,
+   485851,
+   485851
+  ],
+  "idle_cpu_pct": 1.0,
+  "server": {
+   "rss": 19496,
+   "pss": 17736,
+   "uss": 17704,
+   "swap": 5028,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+gui-note-rep1.json",
+  "client": {
+   "rss": 109160,
+   "pss": 77515,
+   "uss": 56232,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1842739,
+    "kind": "quirenote-gui",
+    "rss": 109160,
+    "pss": 77515,
+    "uss": 56232,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   77515,
+   77515,
+   77515
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 6296,
+   "pss": 3645,
+   "uss": 3520,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.4
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+chromium-note-rep1.json",
+  "client": {
+   "rss": 1123796,
+   "pss": 501162,
+   "uss": 303156,
+   "swap": 168,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1843125,
+    "kind": "chromium",
+    "rss": 267848,
+    "pss": 172177,
+    "uss": 137708,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843177,
+    "kind": "utility:NetworkService",
+    "rss": 80856,
+    "pss": 33443,
+    "uss": 21768,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843138,
+    "kind": "zygote",
+    "rss": 45952,
+    "pss": 7265,
+    "uss": 368,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843140,
+    "kind": "zygote",
+    "rss": 21680,
+    "pss": 3653,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843252,
+    "kind": "renderer",
+    "rss": 114044,
+    "pss": 32336,
+    "uss": 9464,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843242,
+    "kind": "renderer",
+    "rss": 176852,
+    "pss": 79733,
+    "uss": 45960,
+    "swap": 168,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843233,
+    "kind": "renderer",
+    "rss": 164244,
+    "pss": 68871,
+    "uss": 36420,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843186,
+    "kind": "utility:StorageService",
+    "rss": 52876,
+    "pss": 10472,
+    "uss": 2516,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843137,
+    "kind": "zygote",
+    "rss": 45124,
+    "pss": 13111,
+    "uss": 1012,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843175,
+    "kind": "gpu-process",
+    "rss": 154320,
+    "pss": 80101,
+    "uss": 47720,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   501158,
+   501162,
+   501178
+  ],
+  "idle_cpu_pct": 5.0,
+  "server": {
+   "rss": 9012,
+   "pss": 6395,
+   "uss": 6312,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note",
+  "rep": 1,
+  "alive": true,
+  "evidence": "go+chromium-note-rep1.json",
+  "client": {
+   "rss": 1118992,
+   "pss": 503859,
+   "uss": 307912,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1843492,
+    "kind": "chromium",
+    "rss": 268448,
+    "pss": 173621,
+    "uss": 139468,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843544,
+    "kind": "utility:NetworkService",
+    "rss": 81224,
+    "pss": 33528,
+    "uss": 21848,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843505,
+    "kind": "zygote",
+    "rss": 45776,
+    "pss": 7050,
+    "uss": 308,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843512,
+    "kind": "zygote",
+    "rss": 19652,
+    "pss": 3280,
+    "uss": 216,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843617,
+    "kind": "renderer",
+    "rss": 111576,
+    "pss": 31852,
+    "uss": 9468,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843607,
+    "kind": "renderer",
+    "rss": 175896,
+    "pss": 80782,
+    "uss": 47360,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843598,
+    "kind": "renderer",
+    "rss": 163864,
+    "pss": 70456,
+    "uss": 38396,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843548,
+    "kind": "utility:StorageService",
+    "rss": 50768,
+    "pss": 9909,
+    "uss": 2348,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843504,
+    "kind": "zygote",
+    "rss": 47348,
+    "pss": 13308,
+    "uss": 828,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1843542,
+    "kind": "gpu-process",
+    "rss": 154440,
+    "pss": 80073,
+    "uss": 47672,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   503765,
+   503859,
+   503879
+  ],
+  "idle_cpu_pct": 4.333333333333333,
+  "server": {
+   "rss": 17952,
+   "pss": 16192,
+   "uss": 16160,
+   "swap": 4692,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note+pdf",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+gui-note+pdf-rep1.json",
+  "client": {
+   "rss": 115540,
+   "pss": 82836,
+   "uss": 61080,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1843880,
+    "kind": "quirenote-gui",
+    "rss": 115540,
+    "pss": 82836,
+    "uss": 61080,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   82836,
+   82836,
+   82836
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 6760,
+   "pss": 4136,
+   "uss": 4016,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.4
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note+pdf",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+chromium-note+pdf-rep1.json",
+  "client": {
+   "rss": 1158152,
+   "pss": 543514,
+   "uss": 347712,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1844167,
+    "kind": "chromium",
+    "rss": 267040,
+    "pss": 171267,
+    "uss": 136956,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844215,
+    "kind": "utility:NetworkService",
+    "rss": 81052,
+    "pss": 33778,
+    "uss": 21928,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844181,
+    "kind": "zygote",
+    "rss": 43076,
+    "pss": 6600,
+    "uss": 228,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844183,
+    "kind": "zygote",
+    "rss": 19572,
+    "pss": 3268,
+    "uss": 224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844288,
+    "kind": "renderer",
+    "rss": 112552,
+    "pss": 32154,
+    "uss": 9656,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844278,
+    "kind": "renderer",
+    "rss": 221568,
+    "pss": 124200,
+    "uss": 89992,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844269,
+    "kind": "renderer",
+    "rss": 162588,
+    "pss": 68570,
+    "uss": 36484,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844219,
+    "kind": "utility:StorageService",
+    "rss": 50100,
+    "pss": 9594,
+    "uss": 2328,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844180,
+    "kind": "zygote",
+    "rss": 44548,
+    "pss": 12889,
+    "uss": 884,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844213,
+    "kind": "gpu-process",
+    "rss": 156056,
+    "pss": 81194,
+    "uss": 49032,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   543502,
+   543514,
+   543518
+  ],
+  "idle_cpu_pct": 4.333333333333333,
+  "server": {
+   "rss": 10940,
+   "pss": 8252,
+   "uss": 8164,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 18.1
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note+pdf",
+  "rep": 1,
+  "alive": true,
+  "evidence": "go+chromium-note+pdf-rep1.json",
+  "client": {
+   "rss": 1162648,
+   "pss": 549507,
+   "uss": 353672,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1844533,
+    "kind": "chromium",
+    "rss": 268804,
+    "pss": 174098,
+    "uss": 139912,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844585,
+    "kind": "utility:NetworkService",
+    "rss": 80864,
+    "pss": 32960,
+    "uss": 21360,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844551,
+    "kind": "zygote",
+    "rss": 42472,
+    "pss": 6547,
+    "uss": 292,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844553,
+    "kind": "zygote",
+    "rss": 19740,
+    "pss": 3286,
+    "uss": 224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844658,
+    "kind": "renderer",
+    "rss": 111720,
+    "pss": 31880,
+    "uss": 9580,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844648,
+    "kind": "renderer",
+    "rss": 223696,
+    "pss": 126348,
+    "uss": 91616,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844639,
+    "kind": "renderer",
+    "rss": 163972,
+    "pss": 70183,
+    "uss": 37900,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844589,
+    "kind": "utility:StorageService",
+    "rss": 50524,
+    "pss": 9523,
+    "uss": 2280,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844550,
+    "kind": "zygote",
+    "rss": 44628,
+    "pss": 12933,
+    "uss": 888,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1844583,
+    "kind": "gpu-process",
+    "rss": 156228,
+    "pss": 81749,
+    "uss": 49620,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   549499,
+   549507,
+   549527
+  ],
+  "idle_cpu_pct": 5.0,
+  "server": {
+   "rss": 19152,
+   "pss": 17392,
+   "uss": 17360,
+   "swap": 4596,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note+epub",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+gui-note+epub-rep1.json",
+  "client": {
+   "rss": 113160,
+   "pss": 81588,
+   "uss": 60380,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1844970,
+    "kind": "quirenote-gui",
+    "rss": 113160,
+    "pss": 81588,
+    "uss": 60380,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   81588,
+   81588,
+   81588
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 6648,
+   "pss": 4027,
+   "uss": 3908,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.4
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note+epub",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+chromium-note+epub-rep1.json",
+  "client": {
+   "rss": 1121292,
+   "pss": 507262,
+   "uss": 311892,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1845222,
+    "kind": "chromium",
+    "rss": 265800,
+    "pss": 169495,
+    "uss": 134576,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845270,
+    "kind": "utility:NetworkService",
+    "rss": 82904,
+    "pss": 35368,
+    "uss": 23700,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845236,
+    "kind": "zygote",
+    "rss": 44448,
+    "pss": 6782,
+    "uss": 192,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845238,
+    "kind": "zygote",
+    "rss": 19764,
+    "pss": 3286,
+    "uss": 212,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845349,
+    "kind": "renderer",
+    "rss": 111992,
+    "pss": 32004,
+    "uss": 9488,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845334,
+    "kind": "renderer",
+    "rss": 184648,
+    "pss": 88547,
+    "uss": 54632,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845325,
+    "kind": "renderer",
+    "rss": 162396,
+    "pss": 68466,
+    "uss": 36252,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845274,
+    "kind": "utility:StorageService",
+    "rss": 50476,
+    "pss": 9783,
+    "uss": 2228,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845235,
+    "kind": "zygote",
+    "rss": 44780,
+    "pss": 12420,
+    "uss": 880,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845268,
+    "kind": "gpu-process",
+    "rss": 154084,
+    "pss": 81111,
+    "uss": 49732,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   507262,
+   507262,
+   507278
+  ],
+  "idle_cpu_pct": 4.333333333333333,
+  "server": {
+   "rss": 9732,
+   "pss": 7064,
+   "uss": 6980,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note+epub",
+  "rep": 1,
+  "alive": true,
+  "evidence": "go+chromium-note+epub-rep1.json",
+  "client": {
+   "rss": 1119240,
+   "pss": 508473,
+   "uss": 314912,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1845599,
+    "kind": "chromium",
+    "rss": 268376,
+    "pss": 172772,
+    "uss": 138108,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845646,
+    "kind": "utility:NetworkService",
+    "rss": 80616,
+    "pss": 32767,
+    "uss": 21244,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845612,
+    "kind": "zygote",
+    "rss": 43308,
+    "pss": 6762,
+    "uss": 312,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845614,
+    "kind": "zygote",
+    "rss": 19704,
+    "pss": 3285,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845726,
+    "kind": "renderer",
+    "rss": 111812,
+    "pss": 31755,
+    "uss": 9404,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845716,
+    "kind": "renderer",
+    "rss": 184076,
+    "pss": 88138,
+    "uss": 54388,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845707,
+    "kind": "renderer",
+    "rss": 164536,
+    "pss": 70820,
+    "uss": 38864,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845657,
+    "kind": "utility:StorageService",
+    "rss": 50572,
+    "pss": 9746,
+    "uss": 2196,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845611,
+    "kind": "zygote",
+    "rss": 42696,
+    "pss": 11966,
+    "uss": 880,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1845644,
+    "kind": "gpu-process",
+    "rss": 153544,
+    "pss": 80462,
+    "uss": 49296,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   508465,
+   508473,
+   508489
+  ],
+  "idle_cpu_pct": 3.6666666666666665,
+  "server": {
+   "rss": 20144,
+   "pss": 18384,
+   "uss": 18352,
+   "swap": 4432,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "empty",
+  "rep": 2,
+  "alive": true,
+  "evidence": "go+chromium-empty-rep2.json",
+  "client": {
+   "rss": 1091464,
+   "pss": 483821,
+   "uss": 296088,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1849252,
+    "kind": "chromium",
+    "rss": 263164,
+    "pss": 168210,
+    "uss": 134372,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849299,
+    "kind": "utility:NetworkService",
+    "rss": 82324,
+    "pss": 34692,
+    "uss": 23680,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849265,
+    "kind": "zygote",
+    "rss": 41952,
+    "pss": 6559,
+    "uss": 364,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849267,
+    "kind": "zygote",
+    "rss": 19640,
+    "pss": 3237,
+    "uss": 212,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849373,
+    "kind": "renderer",
+    "rss": 112480,
+    "pss": 31640,
+    "uss": 9456,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849362,
+    "kind": "renderer",
+    "rss": 164228,
+    "pss": 70455,
+    "uss": 39168,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849353,
+    "kind": "renderer",
+    "rss": 164576,
+    "pss": 70993,
+    "uss": 39908,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849303,
+    "kind": "utility:StorageService",
+    "rss": 50556,
+    "pss": 9555,
+    "uss": 2212,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849264,
+    "kind": "zygote",
+    "rss": 41676,
+    "pss": 11689,
+    "uss": 792,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849297,
+    "kind": "gpu-process",
+    "rss": 150868,
+    "pss": 76791,
+    "uss": 45924,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   483821,
+   483821,
+   483825
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 19748,
+   "pss": 17990,
+   "uss": 17956,
+   "swap": 4360,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "empty",
+  "rep": 2,
+  "alive": true,
+  "evidence": "rust+chromium-empty-rep2.json",
+  "client": {
+   "rss": 1090216,
+   "pss": 479501,
+   "uss": 290324,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1849647,
+    "kind": "chromium",
+    "rss": 263284,
+    "pss": 168131,
+    "uss": 133888,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849695,
+    "kind": "utility:NetworkService",
+    "rss": 80784,
+    "pss": 32760,
+    "uss": 21564,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849661,
+    "kind": "zygote",
+    "rss": 44032,
+    "pss": 6751,
+    "uss": 300,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849663,
+    "kind": "zygote",
+    "rss": 19940,
+    "pss": 3281,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849768,
+    "kind": "renderer",
+    "rss": 112632,
+    "pss": 31731,
+    "uss": 9524,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849758,
+    "kind": "renderer",
+    "rss": 162132,
+    "pss": 68575,
+    "uss": 37512,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849749,
+    "kind": "renderer",
+    "rss": 162088,
+    "pss": 68705,
+    "uss": 37780,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849699,
+    "kind": "utility:StorageService",
+    "rss": 50372,
+    "pss": 9493,
+    "uss": 2148,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849660,
+    "kind": "zygote",
+    "rss": 43888,
+    "pss": 12213,
+    "uss": 888,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1849693,
+    "kind": "gpu-process",
+    "rss": 151064,
+    "pss": 77861,
+    "uss": 46500,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   479501,
+   479501,
+   479505
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 8664,
+   "pss": 6038,
+   "uss": 5952,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "empty",
+  "rep": 2,
+  "alive": true,
+  "evidence": "rust+gui-empty-rep2.json",
+  "client": {
+   "rss": 106808,
+   "pss": 75444,
+   "uss": 53908,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1850016,
+    "kind": "quirenote-gui",
+    "rss": 106808,
+    "pss": 75444,
+    "uss": 53908,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   75444,
+   75444,
+   75444
+  ],
+  "idle_cpu_pct": 0.0,
+  "server": {
+   "rss": 6076,
+   "pss": 3467,
+   "uss": 3328,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.4
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note",
+  "rep": 2,
+  "alive": true,
+  "evidence": "go+chromium-note-rep2.json",
+  "client": {
+   "rss": 1105496,
+   "pss": 495192,
+   "uss": 304752,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1850303,
+    "kind": "chromium",
+    "rss": 267868,
+    "pss": 172820,
+    "uss": 138240,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850351,
+    "kind": "utility:NetworkService",
+    "rss": 81380,
+    "pss": 32896,
+    "uss": 21548,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850316,
+    "kind": "zygote",
+    "rss": 42320,
+    "pss": 6547,
+    "uss": 268,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850319,
+    "kind": "zygote",
+    "rss": 19740,
+    "pss": 3267,
+    "uss": 224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850430,
+    "kind": "renderer",
+    "rss": 111440,
+    "pss": 31317,
+    "uss": 9516,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850416,
+    "kind": "renderer",
+    "rss": 174500,
+    "pss": 79134,
+    "uss": 46412,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850407,
+    "kind": "renderer",
+    "rss": 162616,
+    "pss": 68934,
+    "uss": 37556,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850353,
+    "kind": "utility:StorageService",
+    "rss": 50548,
+    "pss": 9469,
+    "uss": 2204,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850315,
+    "kind": "zygote",
+    "rss": 42076,
+    "pss": 11840,
+    "uss": 836,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850349,
+    "kind": "gpu-process",
+    "rss": 153008,
+    "pss": 78968,
+    "uss": 47948,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   495184,
+   495192,
+   495204
+  ],
+  "idle_cpu_pct": 3.6666666666666665,
+  "server": {
+   "rss": 17972,
+   "pss": 16214,
+   "uss": 16180,
+   "swap": 4360,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note",
+  "rep": 2,
+  "alive": true,
+  "evidence": "rust+chromium-note-rep2.json",
+  "client": {
+   "rss": 1102576,
+   "pss": 492940,
+   "uss": 302684,
+   "swap": 312,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1850650,
+    "kind": "chromium",
+    "rss": 266568,
+    "pss": 171962,
+    "uss": 137660,
+    "swap": 156,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850697,
+    "kind": "utility:NetworkService",
+    "rss": 80180,
+    "pss": 32388,
+    "uss": 21356,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850663,
+    "kind": "zygote",
+    "rss": 42408,
+    "pss": 6617,
+    "uss": 344,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850665,
+    "kind": "zygote",
+    "rss": 19768,
+    "pss": 3267,
+    "uss": 224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850770,
+    "kind": "renderer",
+    "rss": 111712,
+    "pss": 31515,
+    "uss": 9556,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850760,
+    "kind": "renderer",
+    "rss": 174332,
+    "pss": 78731,
+    "uss": 45812,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850751,
+    "kind": "renderer",
+    "rss": 162592,
+    "pss": 68597,
+    "uss": 36980,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850701,
+    "kind": "utility:StorageService",
+    "rss": 50520,
+    "pss": 9532,
+    "uss": 2284,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850662,
+    "kind": "zygote",
+    "rss": 41832,
+    "pss": 11793,
+    "uss": 944,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1850695,
+    "kind": "gpu-process",
+    "rss": 152664,
+    "pss": 78538,
+    "uss": 47524,
+    "swap": 156,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   492876,
+   492940,
+   492956
+  ],
+  "idle_cpu_pct": 4.666666666666667,
+  "server": {
+   "rss": 9160,
+   "pss": 6484,
+   "uss": 6400,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note",
+  "rep": 2,
+  "alive": true,
+  "evidence": "rust+gui-note-rep2.json",
+  "client": {
+   "rss": 108064,
+   "pss": 76546,
+   "uss": 55168,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1851073,
+    "kind": "quirenote-gui",
+    "rss": 108064,
+    "pss": 76546,
+    "uss": 55168,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   76546,
+   76546,
+   76546
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 6160,
+   "pss": 3495,
+   "uss": 3380,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.4
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note+pdf",
+  "rep": 2,
+  "alive": true,
+  "evidence": "go+chromium-note+pdf-rep2.json",
+  "client": {
+   "rss": 1151296,
+   "pss": 534349,
+   "uss": 341592,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1851286,
+    "kind": "chromium",
+    "rss": 265172,
+    "pss": 168331,
+    "uss": 133704,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851333,
+    "kind": "utility:NetworkService",
+    "rss": 81064,
+    "pss": 33112,
+    "uss": 21624,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851299,
+    "kind": "zygote",
+    "rss": 43724,
+    "pss": 6696,
+    "uss": 352,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851301,
+    "kind": "zygote",
+    "rss": 19724,
+    "pss": 3272,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851406,
+    "kind": "renderer",
+    "rss": 111592,
+    "pss": 31347,
+    "uss": 9464,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851396,
+    "kind": "renderer",
+    "rss": 218740,
+    "pss": 120835,
+    "uss": 86736,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851387,
+    "kind": "renderer",
+    "rss": 163960,
+    "pss": 69796,
+    "uss": 38140,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851336,
+    "kind": "utility:StorageService",
+    "rss": 50472,
+    "pss": 9286,
+    "uss": 2248,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851298,
+    "kind": "zygote",
+    "rss": 43336,
+    "pss": 12105,
+    "uss": 900,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851331,
+    "kind": "gpu-process",
+    "rss": 153512,
+    "pss": 79569,
+    "uss": 48204,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   534333,
+   534349,
+   534357
+  ],
+  "idle_cpu_pct": 3.0,
+  "server": {
+   "rss": 17436,
+   "pss": 15675,
+   "uss": 15644,
+   "swap": 4360,
+   "swap_pss": 0
+  },
+  "seconds": 18.1
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note+pdf",
+  "rep": 2,
+  "alive": true,
+  "evidence": "rust+chromium-note+pdf-rep2.json",
+  "client": {
+   "rss": 1162420,
+   "pss": 542278,
+   "uss": 348156,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1851628,
+    "kind": "chromium",
+    "rss": 265860,
+    "pss": 168639,
+    "uss": 134212,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851676,
+    "kind": "utility:NetworkService",
+    "rss": 81228,
+    "pss": 33062,
+    "uss": 21560,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851641,
+    "kind": "zygote",
+    "rss": 44200,
+    "pss": 6646,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851643,
+    "kind": "zygote",
+    "rss": 19696,
+    "pss": 3256,
+    "uss": 224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851748,
+    "kind": "renderer",
+    "rss": 112052,
+    "pss": 31507,
+    "uss": 9484,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851738,
+    "kind": "renderer",
+    "rss": 222928,
+    "pss": 125346,
+    "uss": 91548,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851729,
+    "kind": "renderer",
+    "rss": 164196,
+    "pss": 69860,
+    "uss": 38188,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851680,
+    "kind": "utility:StorageService",
+    "rss": 50140,
+    "pss": 9287,
+    "uss": 2212,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851640,
+    "kind": "zygote",
+    "rss": 46412,
+    "pss": 13222,
+    "uss": 916,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1851674,
+    "kind": "gpu-process",
+    "rss": 155708,
+    "pss": 81453,
+    "uss": 49592,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   542198,
+   542278,
+   542286
+  ],
+  "idle_cpu_pct": 2.6666666666666665,
+  "server": {
+   "rss": 10748,
+   "pss": 8053,
+   "uss": 7972,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note+pdf",
+  "rep": 2,
+  "alive": true,
+  "evidence": "rust+gui-note+pdf-rep2.json",
+  "client": {
+   "rss": 115172,
+   "pss": 77833,
+   "uss": 59292,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1852044,
+    "kind": "quirenote-gui",
+    "rss": 115172,
+    "pss": 77833,
+    "uss": 59292,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   77833,
+   77833,
+   77833
+  ],
+  "idle_cpu_pct": 1.0,
+  "server": {
+   "rss": 6680,
+   "pss": 3997,
+   "uss": 3920,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.4
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note+epub",
+  "rep": 2,
+  "alive": true,
+  "evidence": "go+chromium-note+epub-rep2.json",
+  "client": {
+   "rss": 1118648,
+   "pss": 503557,
+   "uss": 312852,
+   "swap": 13892,
+   "swap_pss": 68
+  },
+  "processes": [
+   {
+    "pid": 1852301,
+    "kind": "chromium",
+    "rss": 267140,
+    "pss": 170657,
+    "uss": 136232,
+    "swap": 9108,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1852350,
+    "kind": "utility:NetworkService",
+    "rss": 81100,
+    "pss": 32972,
+    "uss": 21668,
+    "swap": 712,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1852315,
+    "kind": "zygote",
+    "rss": 42676,
+    "pss": 6469,
+    "uss": 236,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1852317,
+    "kind": "zygote",
+    "rss": 19820,
+    "pss": 3255,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1852422,
+    "kind": "renderer",
+    "rss": 112440,
+    "pss": 31523,
+    "uss": 9384,
+    "swap": 252,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1852412,
+    "kind": "renderer",
+    "rss": 186300,
+    "pss": 89767,
+    "uss": 56708,
+    "swap": 252,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1852403,
+    "kind": "renderer",
+    "rss": 162968,
+    "pss": 68451,
+    "uss": 36952,
+    "swap": 2248,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1852354,
+    "kind": "utility:StorageService",
+    "rss": 50332,
+    "pss": 9368,
+    "uss": 2008,
+    "swap": 820,
+    "swap_pss": 68
+   },
+   {
+    "pid": 1852314,
+    "kind": "zygote",
+    "rss": 42280,
+    "pss": 11759,
+    "uss": 812,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1852348,
+    "kind": "gpu-process",
+    "rss": 153592,
+    "pss": 79336,
+    "uss": 48632,
+    "swap": 500,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   503762,
+   503537,
+   503557
+  ],
+  "idle_cpu_pct": 4.666666666666667,
+  "server": {
+   "rss": 17688,
+   "pss": 15927,
+   "uss": 15896,
+   "swap": 4360,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note+epub",
+  "rep": 2,
+  "alive": true,
+  "evidence": "rust+chromium-note+epub-rep2.json",
+  "client": {
+   "rss": 1125600,
+   "pss": 505328,
+   "uss": 310732,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1852996,
+    "kind": "chromium",
+    "rss": 268268,
+    "pss": 171244,
+    "uss": 136144,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1853053,
+    "kind": "utility:NetworkService",
+    "rss": 81840,
+    "pss": 33689,
+    "uss": 22172,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1853018,
+    "kind": "zygote",
+    "rss": 45704,
+    "pss": 6902,
+    "uss": 264,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1853020,
+    "kind": "zygote",
+    "rss": 19648,
+    "pss": 3250,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1853126,
+    "kind": "renderer",
+    "rss": 111740,
+    "pss": 31653,
+    "uss": 9688,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1853116,
+    "kind": "renderer",
+    "rss": 183092,
+    "pss": 86933,
+    "uss": 53780,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1853085,
+    "kind": "renderer",
+    "rss": 161176,
+    "pss": 67407,
+    "uss": 35996,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1853055,
+    "kind": "utility:StorageService",
+    "rss": 50320,
+    "pss": 9518,
+    "uss": 2288,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1853017,
+    "kind": "zygote",
+    "rss": 47488,
+    "pss": 13203,
+    "uss": 832,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1853051,
+    "kind": "gpu-process",
+    "rss": 156324,
+    "pss": 81529,
+    "uss": 49348,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   505328,
+   505340,
+   505308
+  ],
+  "idle_cpu_pct": 4.0,
+  "server": {
+   "rss": 9572,
+   "pss": 6873,
+   "uss": 6788,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note+epub",
+  "rep": 2,
+  "alive": true,
+  "evidence": "rust+gui-note+epub-rep2.json",
+  "client": {
+   "rss": 113404,
+   "pss": 81866,
+   "uss": 60508,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1853468,
+    "kind": "quirenote-gui",
+    "rss": 113404,
+    "pss": 81866,
+    "uss": 60508,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   81866,
+   81866,
+   81866
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 6640,
+   "pss": 3981,
+   "uss": 3864,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.4
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "workout",
+  "rep": 0,
+  "alive": true,
+  "evidence": "go+chromium-workout-rep0.json",
+  "client": {
+   "rss": 1128940,
+   "pss": 601558,
+   "uss": 407520,
+   "swap": 16352,
+   "swap_pss": 76
+  },
+  "processes": [
+   {
+    "pid": 1860416,
+    "kind": "chromium",
+    "rss": 267576,
+    "pss": 169905,
+    "uss": 134684,
+    "swap": 10008,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1860463,
+    "kind": "utility:NetworkService",
+    "rss": 81008,
+    "pss": 33865,
+    "uss": 21680,
+    "swap": 576,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1860429,
+    "kind": "zygote",
+    "rss": 42248,
+    "pss": 6849,
+    "uss": 200,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1860431,
+    "kind": "zygote",
+    "rss": 19760,
+    "pss": 3820,
+    "uss": 256,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1860523,
+    "kind": "renderer",
+    "rss": 315808,
+    "pss": 222428,
+    "uss": 176704,
+    "swap": 1868,
+    "swap_pss": 24
+   },
+   {
+    "pid": 1860517,
+    "kind": "renderer",
+    "rss": 152628,
+    "pss": 66984,
+    "uss": 27072,
+    "swap": 2320,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1860475,
+    "kind": "utility:StorageService",
+    "rss": 50556,
+    "pss": 10350,
+    "uss": 2260,
+    "swap": 748,
+    "swap_pss": 52
+   },
+   {
+    "pid": 1860428,
+    "kind": "zygote",
+    "rss": 42128,
+    "pss": 11718,
+    "uss": 824,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1860462,
+    "kind": "gpu-process",
+    "rss": 157228,
+    "pss": 75639,
+    "uss": 43840,
+    "swap": 832,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   605760,
+   601370,
+   601558
+  ],
+  "idle_cpu_pct": 11.0,
+  "server": {
+   "rss": 21532,
+   "pss": 19740,
+   "uss": 19680,
+   "swap": 1232,
+   "swap_pss": 0
+  },
+  "seconds": 70.0
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "workout",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+chromium-workout-rep0.json",
+  "client": {
+   "rss": 1146428,
+   "pss": 617155,
+   "uss": 421728,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1861525,
+    "kind": "chromium",
+    "rss": 270996,
+    "pss": 172909,
+    "uss": 137676,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1861572,
+    "kind": "utility:NetworkService",
+    "rss": 81448,
+    "pss": 34295,
+    "uss": 22356,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1861538,
+    "kind": "zygote",
+    "rss": 43456,
+    "pss": 7160,
+    "uss": 248,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1861540,
+    "kind": "zygote",
+    "rss": 19904,
+    "pss": 3836,
+    "uss": 252,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1861635,
+    "kind": "renderer",
+    "rss": 322936,
+    "pss": 229676,
+    "uss": 183828,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1861604,
+    "kind": "renderer",
+    "rss": 154904,
+    "pss": 68833,
+    "uss": 28440,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1861574,
+    "kind": "utility:StorageService",
+    "rss": 50492,
+    "pss": 10475,
+    "uss": 2308,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1861537,
+    "kind": "zygote",
+    "rss": 43072,
+    "pss": 12024,
+    "uss": 848,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1861570,
+    "kind": "gpu-process",
+    "rss": 159220,
+    "pss": 77947,
+    "uss": 45772,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   617155,
+   617211,
+   608747
+  ],
+  "idle_cpu_pct": 4.666666666666667,
+  "server": {
+   "rss": 11260,
+   "pss": 8579,
+   "uss": 8500,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 65.4
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "workout",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+gui-workout-rep0.json",
+  "client": {
+   "rss": 161936,
+   "pss": 119610,
+   "uss": 99944,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1862349,
+    "kind": "quirenote-gui",
+    "rss": 161936,
+    "pss": 119610,
+    "uss": 99944,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   119610,
+   119610,
+   119610
+  ],
+  "idle_cpu_pct": 1.0,
+  "server": {
+   "rss": 7128,
+   "pss": 4454,
+   "uss": 4352,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 64.4
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "workout",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+gui-workout-rep1.json",
+  "client": {
+   "rss": 161852,
+   "pss": 119441,
+   "uss": 99720,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1863015,
+    "kind": "quirenote-gui",
+    "rss": 161852,
+    "pss": 119441,
+    "uss": 99720,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   119441,
+   119441,
+   119441
+  ],
+  "idle_cpu_pct": 1.0,
+  "server": {
+   "rss": 7172,
+   "pss": 4494,
+   "uss": 4376,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 64.2
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "workout",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+chromium-workout-rep1.json",
+  "client": {
+   "rss": 1065344,
+   "pss": 571200,
+   "uss": 393056,
+   "swap": 138748,
+   "swap_pss": 75409
+  },
+  "processes": [
+   {
+    "pid": 1863879,
+    "kind": "chromium",
+    "rss": 219044,
+    "pss": 125563,
+    "uss": 92676,
+    "swap": 40880,
+    "swap_pss": 22316
+   },
+   {
+    "pid": 1863932,
+    "kind": "utility:NetworkService",
+    "rss": 78088,
+    "pss": 32830,
+    "uss": 21416,
+    "swap": 4492,
+    "swap_pss": 1344
+   },
+   {
+    "pid": 1863893,
+    "kind": "zygote",
+    "rss": 40820,
+    "pss": 6571,
+    "uss": 324,
+    "swap": 3800,
+    "swap_pss": 775
+   },
+   {
+    "pid": 1863895,
+    "kind": "zygote",
+    "rss": 15912,
+    "pss": 3062,
+    "uss": 252,
+    "swap": 3784,
+    "swap_pss": 759
+   },
+   {
+    "pid": 1863991,
+    "kind": "renderer",
+    "rss": 352840,
+    "pss": 264618,
+    "uss": 220520,
+    "swap": 32516,
+    "swap_pss": 18294
+   },
+   {
+    "pid": 1863985,
+    "kind": "renderer",
+    "rss": 138616,
+    "pss": 57436,
+    "uss": 18744,
+    "swap": 16752,
+    "swap_pss": 9646
+   },
+   {
+    "pid": 1863950,
+    "kind": "utility:StorageService",
+    "rss": 45928,
+    "pss": 8886,
+    "uss": 1336,
+    "swap": 5504,
+    "swap_pss": 1599
+   },
+   {
+    "pid": 1863892,
+    "kind": "zygote",
+    "rss": 38564,
+    "pss": 9073,
+    "uss": 648,
+    "swap": 5628,
+    "swap_pss": 2882
+   },
+   {
+    "pid": 1863928,
+    "kind": "gpu-process",
+    "rss": 135532,
+    "pss": 63161,
+    "uss": 37140,
+    "swap": 25392,
+    "swap_pss": 17794
+   }
+  ],
+  "client_pss_samples": [
+   571216,
+   571200,
+   569419
+  ],
+  "idle_cpu_pct": 15.666666666666666,
+  "server": {
+   "rss": 10396,
+   "pss": 7711,
+   "uss": 7636,
+   "swap": 1084,
+   "swap_pss": 1084
+  },
+  "seconds": 65.6
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "workout",
+  "rep": 1,
+  "alive": true,
+  "evidence": "go+chromium-workout-rep1.json",
+  "client": {
+   "rss": 1136196,
+   "pss": 619921,
+   "uss": 431236,
+   "swap": 38360,
+   "swap_pss": 1336
+  },
+  "processes": [
+   {
+    "pid": 1864912,
+    "kind": "chromium",
+    "rss": 263068,
+    "pss": 169058,
+    "uss": 136152,
+    "swap": 20212,
+    "swap_pss": 1244
+   },
+   {
+    "pid": 1864961,
+    "kind": "utility:NetworkService",
+    "rss": 81200,
+    "pss": 34237,
+    "uss": 22340,
+    "swap": 2760,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1864926,
+    "kind": "zygote",
+    "rss": 43560,
+    "pss": 7214,
+    "uss": 236,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1864928,
+    "kind": "zygote",
+    "rss": 19912,
+    "pss": 3867,
+    "uss": 256,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1865023,
+    "kind": "renderer",
+    "rss": 324212,
+    "pss": 232009,
+    "uss": 186772,
+    "swap": 10964,
+    "swap_pss": 28
+   },
+   {
+    "pid": 1865014,
+    "kind": "renderer",
+    "rss": 153052,
+    "pss": 67966,
+    "uss": 28148,
+    "swap": 2672,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1864995,
+    "kind": "utility:StorageService",
+    "rss": 50380,
+    "pss": 10462,
+    "uss": 2244,
+    "swap": 864,
+    "swap_pss": 64
+   },
+   {
+    "pid": 1864925,
+    "kind": "zygote",
+    "rss": 43268,
+    "pss": 12029,
+    "uss": 808,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1864956,
+    "kind": "gpu-process",
+    "rss": 157544,
+    "pss": 83079,
+    "uss": 54280,
+    "swap": 888,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   619921,
+   619921,
+   614884
+  ],
+  "idle_cpu_pct": 6.333333333333333,
+  "server": {
+   "rss": 16780,
+   "pss": 15018,
+   "uss": 14984,
+   "swap": 4956,
+   "swap_pss": 0
+  },
+  "seconds": 65.3
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "workout",
+  "rep": 2,
+  "alive": true,
+  "evidence": "go+chromium-workout-rep2.json",
+  "client": {
+   "rss": 1143360,
+   "pss": 626280,
+   "uss": 433380,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1866077,
+    "kind": "chromium",
+    "rss": 268588,
+    "pss": 174218,
+    "uss": 140300,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866126,
+    "kind": "utility:NetworkService",
+    "rss": 81588,
+    "pss": 34759,
+    "uss": 22172,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866090,
+    "kind": "zygote",
+    "rss": 42780,
+    "pss": 7022,
+    "uss": 176,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866092,
+    "kind": "zygote",
+    "rss": 19868,
+    "pss": 3843,
+    "uss": 256,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866188,
+    "kind": "renderer",
+    "rss": 323564,
+    "pss": 231568,
+    "uss": 186176,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866168,
+    "kind": "renderer",
+    "rss": 152472,
+    "pss": 67441,
+    "uss": 27364,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866128,
+    "kind": "utility:StorageService",
+    "rss": 50304,
+    "pss": 10622,
+    "uss": 2248,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866089,
+    "kind": "zygote",
+    "rss": 44336,
+    "pss": 12920,
+    "uss": 888,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866124,
+    "kind": "gpu-process",
+    "rss": 159860,
+    "pss": 83887,
+    "uss": 53800,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   626280,
+   626280,
+   618672
+  ],
+  "idle_cpu_pct": 9.333333333333334,
+  "server": {
+   "rss": 17424,
+   "pss": 15693,
+   "uss": 15660,
+   "swap": 4932,
+   "swap_pss": 0
+  },
+  "seconds": 65.2
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "workout",
+  "rep": 2,
+  "alive": true,
+  "evidence": "rust+chromium-workout-rep2.json",
+  "client": {
+   "rss": 1125532,
+   "pss": 601750,
+   "uss": 407432,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1866916,
+    "kind": "chromium",
+    "rss": 269184,
+    "pss": 173851,
+    "uss": 139780,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866967,
+    "kind": "utility:NetworkService",
+    "rss": 80948,
+    "pss": 33869,
+    "uss": 21796,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866932,
+    "kind": "zygote",
+    "rss": 45800,
+    "pss": 7548,
+    "uss": 216,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866934,
+    "kind": "zygote",
+    "rss": 19860,
+    "pss": 3864,
+    "uss": 256,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1867029,
+    "kind": "renderer",
+    "rss": 299224,
+    "pss": 206611,
+    "uss": 160744,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1867020,
+    "kind": "renderer",
+    "rss": 153080,
+    "pss": 67643,
+    "uss": 27272,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866969,
+    "kind": "utility:StorageService",
+    "rss": 50716,
+    "pss": 10735,
+    "uss": 2336,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866931,
+    "kind": "zygote",
+    "rss": 46852,
+    "pss": 13333,
+    "uss": 928,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1866965,
+    "kind": "gpu-process",
+    "rss": 159868,
+    "pss": 84296,
+    "uss": 54104,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   601750,
+   601754,
+   593467
+  ],
+  "idle_cpu_pct": 4.666666666666667,
+  "server": {
+   "rss": 11308,
+   "pss": 8630,
+   "uss": 8556,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 65.2
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "workout",
+  "rep": 2,
+  "alive": true,
+  "evidence": "rust+gui-workout-rep2.json",
+  "client": {
+   "rss": 165528,
+   "pss": 130244,
+   "uss": 114476,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1867697,
+    "kind": "quirenote-gui",
+    "rss": 165528,
+    "pss": 130244,
+    "uss": 114476,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   130244,
+   129570,
+   138628
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 7012,
+   "pss": 4377,
+   "uss": 4268,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 64.2
+ }
+]

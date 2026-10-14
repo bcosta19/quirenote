@@ -1,0 +1,18 @@
+{
+  "url": "http://127.0.0.1:9181/#note=Demo%2FTudo.md&doc=Livros%2Flivro.epub&page=1",
+  "scenario": "note+epub",
+  "errors": [],
+  "pdfPage": null,
+  "chapters": [
+    "Capítulo 1",
+    "Capítulo 1",
+    "Capítulo 2",
+    "  Seção 2.1",
+    "Capítulo 3",
+    "Capítulo 4",
+    "  Seção 4.1",
+    "Capítulo 5",
+    "Capítulo 6",
+    "  Seção 6.1"
+  ]
+}

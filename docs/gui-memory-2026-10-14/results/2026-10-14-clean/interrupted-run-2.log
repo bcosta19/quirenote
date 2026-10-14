@@ -1,0 +1,20 @@
+Resuming 42 completed samples
+go+chromium    workout    rep 2: client PSS  621.7 MiB RSS 1110.5 USS  434.0 procs 9 idle CPU 7.67% server PSS 18.9
+file:///home/brspike/Projects/notas/.claude/worktrees/rust-gui/bench/gui/verify_web.mjs:43
+    throw new Error('No EPUB reading position was recorded')
+          ^
+
+Error: No EPUB reading position was recorded
+    at file:///home/brspike/Projects/notas/.claude/worktrees/rust-gui/bench/gui/verify_web.mjs:43:11
+
+Node.js v26.5.0
+Traceback (most recent call last):
+  File "/home/brspike/Projects/notas/.claude/worktrees/rust-gui/bench/gui/measure_ram.py", line 468, in <module>
+    r = run_one(st, sc, rep, args.port)
+  File "/home/brspike/Projects/notas/.claude/worktrees/rust-gui/bench/gui/measure_ram.py", line 306, in run_one
+    subprocess.run(["node", os.path.join(HERE, "verify_web.mjs"), profile, scenario, evidence + ".json"], check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['node', '/home/brspike/Projects/notas/.claude/worktrees/rust-gui/bench/gui/verify_web.mjs', '/tmp/qbench/qram-blrv1lji/chromium', 'workout', 'bench/gui/results/2026-10-14-clean/rust+chromium-workout-rep2.json']' returned non-zero exit status 1.

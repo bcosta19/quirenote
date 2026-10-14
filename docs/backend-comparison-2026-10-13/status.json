@@ -1,0 +1,27 @@
+{
+  "measurement_complete": true,
+  "consistency_failures": [
+    {
+      "name": "rs",
+      "rep": 1,
+      "checks": [
+        {
+          "name": "relink: no note left with the old link unless reported as skipped",
+          "ok": false,
+          "detail": "10 stale"
+        }
+      ]
+    },
+    {
+      "name": "rs",
+      "rep": 3,
+      "checks": [
+        {
+          "name": "relink: no note left with the old link unless reported as skipped",
+          "ok": false,
+          "detail": "1 stale"
+        }
+      ]
+    }
+  ]
+}

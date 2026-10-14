@@ -1,0 +1,150 @@
+   Compiling quirenote-gui v0.1.0 (/home/brspike/Projects/notas/.claude/worktrees/rust-gui/gui)
+warning: unused import: `self`
+  --> src/app.rs:23:19
+   |
+23 | use crate::epub::{self, Book, EpubReader};
+   |                   ^^^^
+   |
+   = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `Id`
+  --> src/epub.rs:11:33
+   |
+11 | use eframe::egui::{self, Frame, Id, Key, Margin, Modifiers, RichText, ScrollArea, Sense, Stroke, Ui, Vec2};
+   |                                 ^^
+
+warning: unused import: `Arc`
+ --> src/markdown.rs:8:17
+  |
+8 | use std::sync::{Arc, LazyLock};
+  |                 ^^^
+
+warning: variable does not need to be mutable
+    --> src/app.rs:1203:21
+     |
+1203 |                 let mut right = |ui: &mut Ui, me: &mut Self| {
+     |                     ----^^^^^
+     |                     |
+     |                     help: remove this `mut`
+     |
+     = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> src/editor.rs:599:21
+    |
+599 |                 let mut style_scope = |ui: &mut Ui| {
+    |                     ----^^^^^^^^^^^
+    |                     |
+    |                     help: remove this `mut`
+
+warning: value assigned to `sugg` is never read
+   --> src/font_settings.rs:167:21
+    |
+167 |                     sugg = self.suggestions(prefs);
+    |                     ^^^^
+    |
+    = help: maybe it is overwritten before being read?
+    = note: `#[warn(unused_assignments)]` (part of `#[warn(unused)]`) on by default
+
+warning: variable does not need to be mutable
+   --> src/fonts.rs:241:9
+    |
+241 |     let mut add = |defs: &mut FontDefinitions, name: &str, data: FontData| {
+    |         ----^^^
+    |         |
+    |         help: remove this `mut`
+
+warning: variable does not need to be mutable
+    --> src/markdown.rs:1149:13
+     |
+1149 |         let mut draw_row = |ui: &mut Ui, cells: &[Vec<Inline>], bold: bool, this: &mut Self| {
+     |             ----^^^^^^^^
+     |             |
+     |             help: remove this `mut`
+
+warning: method `base` is never used
+   --> src/api.rs:156:12
+    |
+143 | impl Api {
+    | -------- method in this implementation
+...
+156 |     pub fn base(&self) -> &str {
+    |            ^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: method `forget` is never used
+   --> src/font_settings.rs:405:12
+    |
+ 98 | impl FontSettings {
+    | ----------------- method in this implementation
+...
+405 |     pub fn forget(&mut self) {
+    |            ^^^^^^
+
+warning: method `retain` is never used
+   --> src/markdown.rs:757:12
+    |
+731 | impl Images {
+    | ----------- method in this implementation
+...
+757 |     pub fn retain(&mut self, keep: &dyn Fn(&str) -> bool) {
+    |            ^^^^^^
+
+warning: field `scroll_thumb` is never read
+  --> src/theme.rs:24:9
+   |
+13 | pub struct Palette {
+   |            ------- field in this struct
+...
+24 |     pub scroll_thumb: Color32,
+   |         ^^^^^^^^^^^^
+   |
+   = note: `Palette` has derived impls for the traits `Debug` and `Clone`, but these are intentionally ignored during dead code analysis
+
+warning: method `set_open` is never used
+  --> src/tree.rs:63:12
+   |
+30 | impl TreeView {
+   | ------------- method in this implementation
+...
+63 |     pub fn set_open(&mut self, dir: &str) {
+   |            ^^^^^^^^
+
+warning: `quirenote-gui` (bin "quirenote-gui" test) generated 13 warnings (run `cargo fix --bin "quirenote-gui" -p quirenote-gui --tests` to apply 7 suggestions)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.95s
+     Running unittests src/main.rs (gui/target/debug/deps/quirenote_gui-157db4e50fbac5cc)
+
+running 30 tests
+test editor::tests::typed_text_of_an_insert_session ... ok
+test api::tests::encodes_like_encode_uri_component ... ok
+test fonts::tests::cleans_names_like_the_web_app ... ok
+test epub::tests::chapter_blocks_with_paths_ids_and_links ... ok
+test epub::tests::parses_cfis_from_foliate_and_from_here ... ok
+test fuzzy::tests::matches_in_order_ignoring_accents ... ok
+test highlight::tests::headings_marks_and_code ... ok
+test highlight::tests::multi_line_setext_headings ... ok
+test highlight::tests::job_text_is_the_buffer ... ok
+test links::tests::parses_page_alias_and_escapes ... ok
+test epub::tests::resolves_hrefs_inside_the_zip ... ok
+test undo::tests::a_new_change_drops_the_redo_steps ... ok
+test undo::tests::undo_and_redo_walk_the_history ... ok
+test vim::tests::changes_and_insert ... ok
+test vim::tests::motions_and_deletes ... ok
+test vim::tests::repeat_and_case_and_forward_pairs ... ok
+test vim::tests::word_motions ... ok
+test links::tests::resolves_like_obsidian ... ok
+test links::tests::finds_link_under_column ... ok
+test vim::tests::yank_put_join_case_undo ... ok
+test editor::tests::toggles_tasks_and_marks_the_note_dirty ... ok
+test editor::tests::completes_links_keeping_alias_and_closing_brackets ... ok
+test markdown::tests::frontmatter_props_and_lines ... ok
+test markdown::tests::headings_skip_code_and_count_frontmatter ... ok
+test vim::tests::visual_and_search_and_ex ... ok
+test markdown::tests::page_links_get_a_label_and_urls_are_linked ... ok
+test pdf::tests::page_width_is_fitted_when_sizes_arrive_after_the_first_frame ... ok
+test pdf::tests::a_page_selected_between_frames_is_reported_to_the_session ... ok
+test markdown::tests::wikilinks_tasks_and_embeds ... ok
+test markdown::tests::raw_html_images_and_blocks ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s

@@ -1,5 +1,5 @@
 [Unit]
-Description=Quirenote — markdown notes with a PDF/EPUB reader, over the web
+Description=Quirenote — Rust backend for the native notes and PDF/EPUB application
 After=network-online.target
 
 [Service]

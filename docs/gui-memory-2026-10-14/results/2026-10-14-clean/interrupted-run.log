@@ -1,0 +1,58 @@
+Resuming 3 completed samples
+go+chromium    note       rep 0: client PSS  487.6 MiB RSS 1082.1 USS  299.4 procs 10 idle CPU 4.67% server PSS 18.8
+rust+chromium  note       rep 0: client PSS  490.6 MiB RSS 1096.5 USS  299.2 procs 10 idle CPU 4.00% server PSS 6.6
+rust+gui       note       rep 0: client PSS   74.5 MiB RSS  106.3 USS   53.4 procs 1 idle CPU 0.67% server PSS 3.5
+go+chromium    note+pdf   rep 0: client PSS  528.4 MiB RSS 1127.3 USS  337.7 procs 10 idle CPU 4.00% server PSS 20.0
+rust+chromium  note+pdf   rep 0: client PSS  531.9 MiB RSS 1130.6 USS  343.2 procs 10 idle CPU 4.00% server PSS 8.0
+rust+gui       note+pdf   rep 0: client PSS   80.5 MiB RSS  112.4 USS   59.2 procs 1 idle CPU 1.00% server PSS 3.8
+go+chromium    note+epub  rep 0: client PSS  499.4 MiB RSS 1095.5 USS  308.4 procs 10 idle CPU 4.33% server PSS 18.8
+rust+chromium  note+epub  rep 0: client PSS  499.0 MiB RSS 1097.9 USS  308.9 procs 10 idle CPU 4.67% server PSS 6.8
+rust+gui       note+epub  rep 0: client PSS   79.9 MiB RSS  110.9 USS   59.1 procs 1 idle CPU 0.67% server PSS 4.2
+go+chromium    workout    rep 0: client PSS  614.4 MiB RSS 1123.1 USS  418.6 procs 9 idle CPU 8.00% server PSS 19.6
+rust+chromium  workout    rep 0: client PSS  612.1 MiB RSS 1121.2 USS  415.8 procs 9 idle CPU 7.00% server PSS 8.7
+rust+gui       workout    rep 0: client PSS  115.8 MiB RSS  147.9 USS   94.6 procs 1 idle CPU 0.67% server PSS 4.3
+rust+gui       empty      rep 1: client PSS   73.1 MiB RSS  104.0 USS   52.3 procs 1 idle CPU 0.00% server PSS 3.2
+rust+chromium  empty      rep 1: client PSS  475.9 MiB RSS 1062.6 USS  290.3 procs 10 idle CPU 1.00% server PSS 5.8
+go+chromium    empty      rep 1: client PSS  474.5 MiB RSS 1066.2 USS  288.6 procs 10 idle CPU 1.00% server PSS 17.3
+rust+gui       note       rep 1: client PSS   75.7 MiB RSS  106.6 USS   54.9 procs 1 idle CPU 0.67% server PSS 3.6
+rust+chromium  note       rep 1: client PSS  489.4 MiB RSS 1097.5 USS  296.1 procs 10 idle CPU 5.00% server PSS 6.2
+go+chromium    note       rep 1: client PSS  492.0 MiB RSS 1092.8 USS  300.7 procs 10 idle CPU 4.33% server PSS 15.8
+rust+gui       note+pdf   rep 1: client PSS   80.9 MiB RSS  112.8 USS   59.6 procs 1 idle CPU 0.67% server PSS 4.0
+rust+chromium  note+pdf   rep 1: client PSS  530.8 MiB RSS 1131.0 USS  339.6 procs 10 idle CPU 4.33% server PSS 8.1
+go+chromium    note+pdf   rep 1: client PSS  536.6 MiB RSS 1135.4 USS  345.4 procs 10 idle CPU 5.00% server PSS 17.0
+rust+gui       note+epub  rep 1: client PSS   79.7 MiB RSS  110.5 USS   59.0 procs 1 idle CPU 0.67% server PSS 3.9
+rust+chromium  note+epub  rep 1: client PSS  495.4 MiB RSS 1095.0 USS  304.6 procs 10 idle CPU 4.33% server PSS 6.9
+go+chromium    note+epub  rep 1: client PSS  496.6 MiB RSS 1093.0 USS  307.5 procs 10 idle CPU 3.67% server PSS 18.0
+rust+gui       workout    rep 1: client PSS  123.4 MiB RSS  155.5 USS  102.1 procs 1 idle CPU 1.00% server PSS 4.3
+rust+chromium  workout    rep 1: client PSS  611.1 MiB RSS 1121.0 USS  414.2 procs 9 idle CPU 5.67% server PSS 8.5
+go+chromium    workout    rep 1: client PSS  626.1 MiB RSS 1138.3 USS  428.3 procs 9 idle CPU 18.33% server PSS 19.5
+go+chromium    empty      rep 2: client PSS  472.5 MiB RSS 1065.9 USS  289.1 procs 10 idle CPU 0.67% server PSS 17.6
+rust+chromium  empty      rep 2: client PSS  468.3 MiB RSS 1064.7 USS  283.5 procs 10 idle CPU 0.67% server PSS 5.9
+rust+gui       empty      rep 2: client PSS   73.7 MiB RSS  104.3 USS   52.6 procs 1 idle CPU 0.00% server PSS 3.4
+go+chromium    note       rep 2: client PSS  483.6 MiB RSS 1079.6 USS  297.6 procs 10 idle CPU 3.67% server PSS 15.8
+rust+chromium  note       rep 2: client PSS  481.4 MiB RSS 1076.7 USS  295.6 procs 10 idle CPU 4.67% server PSS 6.3
+rust+gui       note       rep 2: client PSS   74.8 MiB RSS  105.5 USS   53.9 procs 1 idle CPU 0.67% server PSS 3.4
+go+chromium    note+pdf   rep 2: client PSS  521.8 MiB RSS 1124.3 USS  333.6 procs 10 idle CPU 3.00% server PSS 15.3
+rust+chromium  note+pdf   rep 2: client PSS  529.6 MiB RSS 1135.2 USS  340.0 procs 10 idle CPU 2.67% server PSS 7.9
+rust+gui       note+pdf   rep 2: client PSS   76.0 MiB RSS  112.5 USS   57.9 procs 1 idle CPU 1.00% server PSS 3.9
+go+chromium    note+epub  rep 2: client PSS  491.8 MiB RSS 1092.4 USS  305.5 procs 10 idle CPU 4.67% server PSS 15.6
+rust+chromium  note+epub  rep 2: client PSS  493.5 MiB RSS 1099.2 USS  303.4 procs 10 idle CPU 4.00% server PSS 6.7
+rust+gui       note+epub  rep 2: client PSS   79.9 MiB RSS  110.7 USS   59.1 procs 1 idle CPU 0.67% server PSS 3.9
+file:///home/brspike/Projects/notas/.claude/worktrees/rust-gui/bench/gui/verify_web.mjs:43
+    throw new Error('No EPUB reading position was recorded')
+          ^
+
+Error: No EPUB reading position was recorded
+    at file:///home/brspike/Projects/notas/.claude/worktrees/rust-gui/bench/gui/verify_web.mjs:43:11
+
+Node.js v26.5.0
+Traceback (most recent call last):
+  File "/home/brspike/Projects/notas/.claude/worktrees/rust-gui/bench/gui/measure_ram.py", line 468, in <module>
+    r = run_one(st, sc, rep, args.port)
+  File "/home/brspike/Projects/notas/.claude/worktrees/rust-gui/bench/gui/measure_ram.py", line 306, in run_one
+    subprocess.run(["node", os.path.join(HERE, "verify_web.mjs"), profile, scenario, evidence + ".json"], check=True)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['node', '/home/brspike/Projects/notas/.claude/worktrees/rust-gui/bench/gui/verify_web.mjs', '/tmp/qbench/qram-5gs4akon/chromium', 'workout', 'bench/gui/results/2026-10-14-clean/go+chromium-workout-rep2.json']' returned non-zero exit status 1.

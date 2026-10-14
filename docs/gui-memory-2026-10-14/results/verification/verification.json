@@ -1,0 +1,33 @@
+{
+  "gui_tests": {
+    "passed": 30,
+    "failed": 0
+  },
+  "pdf_regressions": {
+    "failed_before": 2,
+    "passed_after": 2
+  },
+  "release_build": {
+    "passed": true,
+    "compiler_warnings": 13
+  },
+  "clippy": {
+    "exit_code": 0,
+    "warnings": 86,
+    "warnings_as_errors": false
+  },
+  "rustfmt": {
+    "passed": false,
+    "reason": "Existing GUI files do not follow default rustfmt formatting"
+  },
+  "native_flow": {
+    "passed": 3,
+    "result": "../native-flow-fixed/result.json"
+  },
+  "frontend": {
+    "files_per_backend": 163,
+    "same_bytes": true,
+    "result": "../frontend-verification.json"
+  },
+  "scope": "Synthetic vaults and fresh profiles. Full feature parity was not established."
+}

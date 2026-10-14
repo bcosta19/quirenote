@@ -1,0 +1,2255 @@
+[
+ {
+  "stack": "go+chromium",
+  "scenario": "empty",
+  "rep": 0,
+  "alive": true,
+  "evidence": "go+chromium-empty-rep0.json",
+  "client": {
+   "rss": 1094108,
+   "pss": 495193,
+   "uss": 298092,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1805362,
+    "kind": "chromium",
+    "rss": 264040,
+    "pss": 173287,
+    "uss": 135984,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805409,
+    "kind": "chromium",
+    "rss": 81140,
+    "pss": 32886,
+    "uss": 20948,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805375,
+    "kind": "chromium",
+    "rss": 43412,
+    "pss": 6911,
+    "uss": 244,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805377,
+    "kind": "chromium",
+    "rss": 19936,
+    "pss": 3309,
+    "uss": 224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805483,
+    "kind": "chromium",
+    "rss": 112552,
+    "pss": 32230,
+    "uss": 9720,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805472,
+    "kind": "chromium",
+    "rss": 162544,
+    "pss": 69714,
+    "uss": 38388,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805463,
+    "kind": "chromium",
+    "rss": 164564,
+    "pss": 71944,
+    "uss": 40776,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805413,
+    "kind": "chromium",
+    "rss": 50192,
+    "pss": 9728,
+    "uss": 2132,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805374,
+    "kind": "chromium",
+    "rss": 43952,
+    "pss": 12521,
+    "uss": 944,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805407,
+    "kind": "chromium",
+    "rss": 151776,
+    "pss": 82663,
+    "uss": 48732,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   495193,
+   495193,
+   495193
+  ],
+  "idle_cpu_pct": 0.0,
+  "server": {
+   "rss": 17132,
+   "pss": 15385,
+   "uss": 15352,
+   "swap": 108,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "empty",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+chromium-empty-rep0.json",
+  "client": {
+   "rss": 1092348,
+   "pss": 494089,
+   "uss": 296204,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1805690,
+    "kind": "chromium",
+    "rss": 264044,
+    "pss": 173219,
+    "uss": 135532,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805739,
+    "kind": "chromium",
+    "rss": 80976,
+    "pss": 33073,
+    "uss": 20912,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805703,
+    "kind": "chromium",
+    "rss": 44836,
+    "pss": 7188,
+    "uss": 296,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805705,
+    "kind": "chromium",
+    "rss": 19688,
+    "pss": 3279,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805812,
+    "kind": "chromium",
+    "rss": 111552,
+    "pss": 31892,
+    "uss": 9560,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805802,
+    "kind": "chromium",
+    "rss": 162276,
+    "pss": 70020,
+    "uss": 38680,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805793,
+    "kind": "chromium",
+    "rss": 163312,
+    "pss": 71101,
+    "uss": 39860,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805743,
+    "kind": "chromium",
+    "rss": 50104,
+    "pss": 9838,
+    "uss": 2324,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805702,
+    "kind": "chromium",
+    "rss": 44232,
+    "pss": 12423,
+    "uss": 832,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1805737,
+    "kind": "chromium",
+    "rss": 151328,
+    "pss": 82056,
+    "uss": 47988,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   494089,
+   494089,
+   494089
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 8644,
+   "pss": 5952,
+   "uss": 5860,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "empty",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+gui-empty-rep0.json",
+  "client": {
+   "rss": 107520,
+   "pss": 86514,
+   "uss": 72256,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1806031,
+    "kind": "quirenote-gui",
+    "rss": 107520,
+    "pss": 86514,
+    "uss": 72256,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   86514,
+   86514,
+   86514
+  ],
+  "idle_cpu_pct": 0.0,
+  "server": {
+   "rss": 5880,
+   "pss": 3248,
+   "uss": 3108,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.5
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note",
+  "rep": 0,
+  "alive": true,
+  "evidence": "go+chromium-note-rep0.json",
+  "client": {
+   "rss": 1109632,
+   "pss": 505756,
+   "uss": 305128,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1806306,
+    "kind": "chromium",
+    "rss": 266696,
+    "pss": 175282,
+    "uss": 137404,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806372,
+    "kind": "chromium",
+    "rss": 80836,
+    "pss": 32935,
+    "uss": 20916,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806319,
+    "kind": "chromium",
+    "rss": 45192,
+    "pss": 7200,
+    "uss": 252,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806321,
+    "kind": "chromium",
+    "rss": 19656,
+    "pss": 3287,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806445,
+    "kind": "chromium",
+    "rss": 111576,
+    "pss": 31851,
+    "uss": 9584,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806435,
+    "kind": "chromium",
+    "rss": 174284,
+    "pss": 79505,
+    "uss": 46248,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806426,
+    "kind": "chromium",
+    "rss": 162668,
+    "pss": 69527,
+    "uss": 37512,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806376,
+    "kind": "chromium",
+    "rss": 50632,
+    "pss": 9811,
+    "uss": 2328,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806318,
+    "kind": "chromium",
+    "rss": 45144,
+    "pss": 12625,
+    "uss": 872,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806370,
+    "kind": "chromium",
+    "rss": 152948,
+    "pss": 83733,
+    "uss": 49792,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   505740,
+   505756,
+   505776
+  ],
+  "idle_cpu_pct": 4.0,
+  "server": {
+   "rss": 19608,
+   "pss": 17817,
+   "uss": 17756,
+   "swap": 108,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+chromium-note-rep0.json",
+  "client": {
+   "rss": 1107448,
+   "pss": 506851,
+   "uss": 306680,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1806660,
+    "kind": "chromium",
+    "rss": 266140,
+    "pss": 175117,
+    "uss": 137160,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806707,
+    "kind": "chromium",
+    "rss": 81764,
+    "pss": 34576,
+    "uss": 22772,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806673,
+    "kind": "chromium",
+    "rss": 43968,
+    "pss": 7204,
+    "uss": 516,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806675,
+    "kind": "chromium",
+    "rss": 19932,
+    "pss": 3309,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806781,
+    "kind": "chromium",
+    "rss": 112400,
+    "pss": 32245,
+    "uss": 9584,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806771,
+    "kind": "chromium",
+    "rss": 174824,
+    "pss": 79867,
+    "uss": 46824,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806762,
+    "kind": "chromium",
+    "rss": 161856,
+    "pss": 68615,
+    "uss": 36820,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806711,
+    "kind": "chromium",
+    "rss": 49808,
+    "pss": 9771,
+    "uss": 2256,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806672,
+    "kind": "chromium",
+    "rss": 43800,
+    "pss": 12459,
+    "uss": 940,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1806705,
+    "kind": "chromium",
+    "rss": 152956,
+    "pss": 83688,
+    "uss": 49588,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   506847,
+   506851,
+   506871
+  ],
+  "idle_cpu_pct": 4.0,
+  "server": {
+   "rss": 9368,
+   "pss": 6682,
+   "uss": 6592,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+gui-note-rep0.json",
+  "client": {
+   "rss": 108808,
+   "pss": 87755,
+   "uss": 73504,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1806987,
+    "kind": "quirenote-gui",
+    "rss": 108808,
+    "pss": 87755,
+    "uss": 73504,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   87755,
+   87755,
+   87755
+  ],
+  "idle_cpu_pct": 0.3333333333333333,
+  "server": {
+   "rss": 6168,
+   "pss": 3540,
+   "uss": 3404,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.5
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note+pdf",
+  "rep": 0,
+  "alive": true,
+  "evidence": "go+chromium-note+pdf-rep0.json",
+  "client": {
+   "rss": 1157812,
+   "pss": 545235,
+   "uss": 346092,
+   "swap": 22888,
+   "swap_pss": 156
+  },
+  "processes": [
+   {
+    "pid": 1807187,
+    "kind": "chromium",
+    "rss": 265540,
+    "pss": 171596,
+    "uss": 133648,
+    "swap": 11224,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807235,
+    "kind": "chromium",
+    "rss": 80664,
+    "pss": 32694,
+    "uss": 20880,
+    "swap": 2748,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807201,
+    "kind": "chromium",
+    "rss": 44572,
+    "pss": 7100,
+    "uss": 332,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807203,
+    "kind": "chromium",
+    "rss": 19864,
+    "pss": 3279,
+    "uss": 224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807327,
+    "kind": "chromium",
+    "rss": 112516,
+    "pss": 31490,
+    "uss": 9484,
+    "swap": 412,
+    "swap_pss": 56
+   },
+   {
+    "pid": 1807298,
+    "kind": "chromium",
+    "rss": 223124,
+    "pss": 124962,
+    "uss": 91188,
+    "swap": 4504,
+    "swap_pss": 36
+   },
+   {
+    "pid": 1807289,
+    "kind": "chromium",
+    "rss": 163580,
+    "pss": 68992,
+    "uss": 37428,
+    "swap": 2680,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807239,
+    "kind": "chromium",
+    "rss": 50508,
+    "pss": 9082,
+    "uss": 1988,
+    "swap": 816,
+    "swap_pss": 64
+   },
+   {
+    "pid": 1807200,
+    "kind": "chromium",
+    "rss": 43496,
+    "pss": 12155,
+    "uss": 840,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807233,
+    "kind": "chromium",
+    "rss": 153948,
+    "pss": 83885,
+    "uss": 50080,
+    "swap": 504,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   545266,
+   545231,
+   545235
+  ],
+  "idle_cpu_pct": 2.6666666666666665,
+  "server": {
+   "rss": 19260,
+   "pss": 17493,
+   "uss": 17436,
+   "swap": 1556,
+   "swap_pss": 0
+  },
+  "seconds": 26.2
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note+pdf",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+chromium-note+pdf-rep0.json",
+  "client": {
+   "rss": 1149728,
+   "pss": 541851,
+   "uss": 343004,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1807708,
+    "kind": "chromium",
+    "rss": 265544,
+    "pss": 172941,
+    "uss": 135092,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807796,
+    "kind": "chromium",
+    "rss": 80504,
+    "pss": 32705,
+    "uss": 20908,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807742,
+    "kind": "chromium",
+    "rss": 42424,
+    "pss": 6652,
+    "uss": 212,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807745,
+    "kind": "chromium",
+    "rss": 19800,
+    "pss": 3273,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807886,
+    "kind": "chromium",
+    "rss": 112132,
+    "pss": 31491,
+    "uss": 9568,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807852,
+    "kind": "chromium",
+    "rss": 218380,
+    "pss": 120341,
+    "uss": 86276,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807839,
+    "kind": "chromium",
+    "rss": 163724,
+    "pss": 69208,
+    "uss": 37456,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807798,
+    "kind": "chromium",
+    "rss": 50540,
+    "pss": 9207,
+    "uss": 2152,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807741,
+    "kind": "chromium",
+    "rss": 42240,
+    "pss": 12001,
+    "uss": 856,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1807794,
+    "kind": "chromium",
+    "rss": 154440,
+    "pss": 84032,
+    "uss": 50264,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   541851,
+   541851,
+   541827
+  ],
+  "idle_cpu_pct": 3.6666666666666665,
+  "server": {
+   "rss": 10596,
+   "pss": 7923,
+   "uss": 7832,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note+pdf",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+gui-note+pdf-rep0.json",
+  "client": {
+   "rss": 116032,
+   "pss": 94233,
+   "uss": 79408,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1808111,
+    "kind": "quirenote-gui",
+    "rss": 116032,
+    "pss": 94233,
+    "uss": 79408,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   94233,
+   94233,
+   94233
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 6696,
+   "pss": 4076,
+   "uss": 3940,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.5
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note+epub",
+  "rep": 0,
+  "alive": true,
+  "evidence": "go+chromium-note+epub-rep0.json",
+  "client": {
+   "rss": 1119232,
+   "pss": 511392,
+   "uss": 312920,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1808400,
+    "kind": "chromium",
+    "rss": 266932,
+    "pss": 173757,
+    "uss": 135380,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808447,
+    "kind": "chromium",
+    "rss": 80664,
+    "pss": 32424,
+    "uss": 20640,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808413,
+    "kind": "chromium",
+    "rss": 43464,
+    "pss": 6825,
+    "uss": 320,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808415,
+    "kind": "chromium",
+    "rss": 19932,
+    "pss": 3275,
+    "uss": 224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808522,
+    "kind": "chromium",
+    "rss": 112544,
+    "pss": 31680,
+    "uss": 9476,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808511,
+    "kind": "chromium",
+    "rss": 184740,
+    "pss": 88324,
+    "uss": 55324,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808502,
+    "kind": "chromium",
+    "rss": 163444,
+    "pss": 69327,
+    "uss": 37956,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808451,
+    "kind": "chromium",
+    "rss": 49968,
+    "pss": 9464,
+    "uss": 2208,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808412,
+    "kind": "chromium",
+    "rss": 43768,
+    "pss": 12316,
+    "uss": 932,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808445,
+    "kind": "chromium",
+    "rss": 153776,
+    "pss": 84000,
+    "uss": 50460,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   511426,
+   511368,
+   511392
+  ],
+  "idle_cpu_pct": 3.3333333333333335,
+  "server": {
+   "rss": 20984,
+   "pss": 19197,
+   "uss": 19136,
+   "swap": 1456,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note+epub",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+chromium-note+epub-rep0.json",
+  "client": {
+   "rss": 1120720,
+   "pss": 514980,
+   "uss": 316120,
+   "swap": 276,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1808731,
+    "kind": "chromium",
+    "rss": 268196,
+    "pss": 175107,
+    "uss": 136600,
+    "swap": 140,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808780,
+    "kind": "chromium",
+    "rss": 82828,
+    "pss": 34640,
+    "uss": 22908,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808744,
+    "kind": "chromium",
+    "rss": 43668,
+    "pss": 6897,
+    "uss": 348,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808746,
+    "kind": "chromium",
+    "rss": 19648,
+    "pss": 3247,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808854,
+    "kind": "chromium",
+    "rss": 111136,
+    "pss": 31274,
+    "uss": 9432,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808844,
+    "kind": "chromium",
+    "rss": 183548,
+    "pss": 87500,
+    "uss": 54264,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808835,
+    "kind": "chromium",
+    "rss": 163636,
+    "pss": 70149,
+    "uss": 38772,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808785,
+    "kind": "chromium",
+    "rss": 50140,
+    "pss": 9358,
+    "uss": 2136,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808743,
+    "kind": "chromium",
+    "rss": 43800,
+    "pss": 12376,
+    "uss": 860,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1808778,
+    "kind": "chromium",
+    "rss": 154120,
+    "pss": 84432,
+    "uss": 50580,
+    "swap": 136,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   514980,
+   514829,
+   514992
+  ],
+  "idle_cpu_pct": 4.333333333333333,
+  "server": {
+   "rss": 9784,
+   "pss": 7090,
+   "uss": 6988,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note+epub",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+gui-note+epub-rep0.json",
+  "client": {
+   "rss": 113972,
+   "pss": 92897,
+   "uss": 78616,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1809176,
+    "kind": "quirenote-gui",
+    "rss": 113972,
+    "pss": 92897,
+    "uss": 78616,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   92897,
+   92897,
+   92897
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 6560,
+   "pss": 3961,
+   "uss": 3820,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.5
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "workout",
+  "rep": 0,
+  "alive": true,
+  "evidence": "go+chromium-workout-rep0.json",
+  "client": {
+   "rss": 899392,
+   "pss": 300800,
+   "uss": 174708,
+   "swap": 275292,
+   "swap_pss": 167629
+  },
+  "processes": [
+   {
+    "pid": 1809352,
+    "kind": "chromium",
+    "rss": 233200,
+    "pss": 82483,
+    "uss": 28112,
+    "swap": 50580,
+    "swap_pss": 29808
+   },
+   {
+    "pid": 1809400,
+    "kind": "chromium",
+    "rss": 63252,
+    "pss": 9299,
+    "uss": 2876,
+    "swap": 19588,
+    "swap_pss": 16320
+   },
+   {
+    "pid": 1809365,
+    "kind": "chromium",
+    "rss": 29508,
+    "pss": 2413,
+    "uss": 8,
+    "swap": 12548,
+    "swap_pss": 2756
+   },
+   {
+    "pid": 1809367,
+    "kind": "chromium",
+    "rss": 7040,
+    "pss": 746,
+    "uss": 0,
+    "swap": 12652,
+    "swap_pss": 2854
+   },
+   {
+    "pid": 1809464,
+    "kind": "chromium",
+    "rss": 264972,
+    "pss": 148287,
+    "uss": 128208,
+    "swap": 67772,
+    "swap_pss": 46445
+   },
+   {
+    "pid": 1809455,
+    "kind": "chromium",
+    "rss": 120444,
+    "pss": 18568,
+    "uss": 5028,
+    "swap": 37520,
+    "swap_pss": 23606
+   },
+   {
+    "pid": 1809404,
+    "kind": "chromium",
+    "rss": 36372,
+    "pss": 3227,
+    "uss": 492,
+    "swap": 14448,
+    "swap_pss": 3904
+   },
+   {
+    "pid": 1809364,
+    "kind": "chromium",
+    "rss": 27208,
+    "pss": 2189,
+    "uss": 8,
+    "swap": 14832,
+    "swap_pss": 7776
+   },
+   {
+    "pid": 1809398,
+    "kind": "chromium",
+    "rss": 117396,
+    "pss": 33588,
+    "uss": 9976,
+    "swap": 45352,
+    "swap_pss": 34160
+   }
+  ],
+  "client_pss_samples": [
+   300800,
+   300860,
+   294814
+  ],
+  "idle_cpu_pct": 14.666666666666666,
+  "server": {
+   "rss": 8584,
+   "pss": 6786,
+   "uss": 6732,
+   "swap": 13752,
+   "swap_pss": 2144
+  },
+  "seconds": 65.2
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "workout",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+chromium-workout-rep0.json",
+  "client": {
+   "rss": 1003396,
+   "pss": 398351,
+   "uss": 269368,
+   "swap": 174776,
+   "swap_pss": 70725
+  },
+  "processes": [
+   {
+    "pid": 1811041,
+    "kind": "chromium",
+    "rss": 260468,
+    "pss": 110688,
+    "uss": 56060,
+    "swap": 23524,
+    "swap_pss": 3880
+   },
+   {
+    "pid": 1811110,
+    "kind": "chromium",
+    "rss": 67472,
+    "pss": 13235,
+    "uss": 6880,
+    "swap": 15796,
+    "swap_pss": 12932
+   },
+   {
+    "pid": 1811072,
+    "kind": "chromium",
+    "rss": 31940,
+    "pss": 2491,
+    "uss": 20,
+    "swap": 12028,
+    "swap_pss": 2617
+   },
+   {
+    "pid": 1811078,
+    "kind": "chromium",
+    "rss": 7912,
+    "pss": 1084,
+    "uss": 208,
+    "swap": 11940,
+    "swap_pss": 2521
+   },
+   {
+    "pid": 1811173,
+    "kind": "chromium",
+    "rss": 300676,
+    "pss": 182361,
+    "uss": 161484,
+    "swap": 28764,
+    "swap_pss": 7323
+   },
+   {
+    "pid": 1811153,
+    "kind": "chromium",
+    "rss": 140020,
+    "pss": 37421,
+    "uss": 22952,
+    "swap": 20464,
+    "swap_pss": 7038
+   },
+   {
+    "pid": 1811114,
+    "kind": "chromium",
+    "rss": 37248,
+    "pss": 3674,
+    "uss": 892,
+    "swap": 13640,
+    "swap_pss": 3490
+   },
+   {
+    "pid": 1811071,
+    "kind": "chromium",
+    "rss": 29224,
+    "pss": 2380,
+    "uss": 28,
+    "swap": 14504,
+    "swap_pss": 7604
+   },
+   {
+    "pid": 1811107,
+    "kind": "chromium",
+    "rss": 128436,
+    "pss": 45017,
+    "uss": 20844,
+    "swap": 34116,
+    "swap_pss": 23320
+   }
+  ],
+  "client_pss_samples": [
+   398411,
+   398351,
+   393421
+  ],
+  "idle_cpu_pct": 9.0,
+  "server": {
+   "rss": 9916,
+   "pss": 7194,
+   "uss": 7128,
+   "swap": 460,
+   "swap_pss": 460
+  },
+  "seconds": 65.1
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "workout",
+  "rep": 0,
+  "alive": true,
+  "evidence": "rust+gui-workout-rep0.json",
+  "client": {
+   "rss": 98532,
+   "pss": 54497,
+   "uss": 36368,
+   "swap": 41040,
+   "swap_pss": 41032
+  },
+  "processes": [
+   {
+    "pid": 1812037,
+    "kind": "quirenote-gui",
+    "rss": 98532,
+    "pss": 54497,
+    "uss": 36368,
+    "swap": 41040,
+    "swap_pss": 41032
+   }
+  ],
+  "client_pss_samples": [
+   54494,
+   54497,
+   54497
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 3992,
+   "pss": 1307,
+   "uss": 1236,
+   "swap": 1584,
+   "swap_pss": 1584
+  },
+  "seconds": 64.4
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "empty",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+gui-empty-rep1.json",
+  "client": {
+   "rss": 105988,
+   "pss": 81893,
+   "uss": 72992,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1813674,
+    "kind": "quirenote-gui",
+    "rss": 105988,
+    "pss": 81893,
+    "uss": 72992,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   81920,
+   81893,
+   81549
+  ],
+  "idle_cpu_pct": 0.0,
+  "server": {
+   "rss": 5744,
+   "pss": 3056,
+   "uss": 2984,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.4
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "empty",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+chromium-empty-rep1.json",
+  "client": {
+   "rss": 1100220,
+   "pss": 420431,
+   "uss": 267696,
+   "swap": 8116,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1813964,
+    "kind": "chromium",
+    "rss": 261648,
+    "pss": 151403,
+    "uss": 113428,
+    "swap": 5436,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814034,
+    "kind": "chromium",
+    "rss": 80352,
+    "pss": 28602,
+    "uss": 20824,
+    "swap": 660,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814000,
+    "kind": "chromium",
+    "rss": 46036,
+    "pss": 5919,
+    "uss": 240,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814003,
+    "kind": "chromium",
+    "rss": 21588,
+    "pss": 3503,
+    "uss": 224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814107,
+    "kind": "chromium",
+    "rss": 112204,
+    "pss": 23030,
+    "uss": 9576,
+    "swap": 252,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814094,
+    "kind": "chromium",
+    "rss": 163156,
+    "pss": 52473,
+    "uss": 33004,
+    "swap": 252,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814088,
+    "kind": "chromium",
+    "rss": 164440,
+    "pss": 57732,
+    "uss": 39644,
+    "swap": 252,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814066,
+    "kind": "chromium",
+    "rss": 52172,
+    "pss": 7959,
+    "uss": 2176,
+    "swap": 800,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1813999,
+    "kind": "chromium",
+    "rss": 46420,
+    "pss": 11963,
+    "uss": 848,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814033,
+    "kind": "chromium",
+    "rss": 152204,
+    "pss": 77847,
+    "uss": 47732,
+    "swap": 464,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   420435,
+   420427,
+   420431
+  ],
+  "idle_cpu_pct": 2.6666666666666665,
+  "server": {
+   "rss": 8640,
+   "pss": 5942,
+   "uss": 5880,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "empty",
+  "rep": 1,
+  "alive": true,
+  "evidence": "go+chromium-empty-rep1.json",
+  "client": {
+   "rss": 1089276,
+   "pss": 416071,
+   "uss": 264296,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1814433,
+    "kind": "chromium",
+    "rss": 262828,
+    "pss": 150854,
+    "uss": 112288,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814498,
+    "kind": "chromium",
+    "rss": 80768,
+    "pss": 29143,
+    "uss": 21128,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814462,
+    "kind": "chromium",
+    "rss": 43472,
+    "pss": 5589,
+    "uss": 268,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814464,
+    "kind": "chromium",
+    "rss": 19632,
+    "pss": 3137,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814571,
+    "kind": "chromium",
+    "rss": 111860,
+    "pss": 23046,
+    "uss": 9440,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814561,
+    "kind": "chromium",
+    "rss": 161668,
+    "pss": 51416,
+    "uss": 31800,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814552,
+    "kind": "chromium",
+    "rss": 162868,
+    "pss": 56400,
+    "uss": 38004,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814507,
+    "kind": "chromium",
+    "rss": 50368,
+    "pss": 7756,
+    "uss": 2136,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814461,
+    "kind": "chromium",
+    "rss": 44052,
+    "pss": 11088,
+    "uss": 852,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1814496,
+    "kind": "chromium",
+    "rss": 151760,
+    "pss": 77642,
+    "uss": 48160,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   416051,
+   416071,
+   416079
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 15384,
+   "pss": 13597,
+   "uss": 13544,
+   "swap": 6976,
+   "swap_pss": 0
+  },
+  "seconds": 17.9
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+gui-note-rep1.json",
+  "client": {
+   "rss": 108336,
+   "pss": 84558,
+   "uss": 75664,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1814827,
+    "kind": "quirenote-gui",
+    "rss": 108336,
+    "pss": 84558,
+    "uss": 75664,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   84558,
+   84558,
+   84562
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 6224,
+   "pss": 3537,
+   "uss": 3464,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.4
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+chromium-note-rep1.json",
+  "client": {
+   "rss": 1110612,
+   "pss": 396994,
+   "uss": 257272,
+   "swap": 20464,
+   "swap_pss": 140
+  },
+  "processes": [
+   {
+    "pid": 1815082,
+    "kind": "chromium",
+    "rss": 264876,
+    "pss": 141978,
+    "uss": 98556,
+    "swap": 10032,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815138,
+    "kind": "chromium",
+    "rss": 83184,
+    "pss": 29268,
+    "uss": 22164,
+    "swap": 2788,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815101,
+    "kind": "chromium",
+    "rss": 44572,
+    "pss": 5311,
+    "uss": 208,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815106,
+    "kind": "chromium",
+    "rss": 19924,
+    "pss": 3089,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815211,
+    "kind": "chromium",
+    "rss": 112500,
+    "pss": 18653,
+    "uss": 9256,
+    "swap": 408,
+    "swap_pss": 56
+   },
+   {
+    "pid": 1815201,
+    "kind": "chromium",
+    "rss": 174172,
+    "pss": 53389,
+    "uss": 38600,
+    "swap": 3360,
+    "swap_pss": 32
+   },
+   {
+    "pid": 1815181,
+    "kind": "chromium",
+    "rss": 164152,
+    "pss": 50147,
+    "uss": 37324,
+    "swap": 2540,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815140,
+    "kind": "chromium",
+    "rss": 50252,
+    "pss": 6925,
+    "uss": 1968,
+    "swap": 840,
+    "swap_pss": 52
+   },
+   {
+    "pid": 1815100,
+    "kind": "chromium",
+    "rss": 44632,
+    "pss": 10873,
+    "uss": 828,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815136,
+    "kind": "chromium",
+    "rss": 152348,
+    "pss": 77361,
+    "uss": 48148,
+    "swap": 496,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   401959,
+   396285,
+   396994
+  ],
+  "idle_cpu_pct": 3.6666666666666665,
+  "server": {
+   "rss": 9220,
+   "pss": 6489,
+   "uss": 6428,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 18.1
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note",
+  "rep": 1,
+  "alive": true,
+  "evidence": "go+chromium-note-rep1.json",
+  "client": {
+   "rss": 1103948,
+   "pss": 394083,
+   "uss": 255976,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1815674,
+    "kind": "chromium",
+    "rss": 265480,
+    "pss": 141104,
+    "uss": 98104,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815722,
+    "kind": "chromium",
+    "rss": 81080,
+    "pss": 27345,
+    "uss": 20292,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815688,
+    "kind": "chromium",
+    "rss": 42568,
+    "pss": 5241,
+    "uss": 252,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815690,
+    "kind": "chromium",
+    "rss": 19764,
+    "pss": 3094,
+    "uss": 224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815796,
+    "kind": "chromium",
+    "rss": 111016,
+    "pss": 18697,
+    "uss": 9312,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815785,
+    "kind": "chromium",
+    "rss": 173852,
+    "pss": 53241,
+    "uss": 38776,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815754,
+    "kind": "chromium",
+    "rss": 164864,
+    "pss": 51453,
+    "uss": 38760,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815724,
+    "kind": "chromium",
+    "rss": 50240,
+    "pss": 7035,
+    "uss": 2080,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815687,
+    "kind": "chromium",
+    "rss": 42808,
+    "pss": 10580,
+    "uss": 864,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1815720,
+    "kind": "chromium",
+    "rss": 152276,
+    "pss": 76293,
+    "uss": 47312,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   394071,
+   394083,
+   394095
+  ],
+  "idle_cpu_pct": 3.0,
+  "server": {
+   "rss": 15064,
+   "pss": 13264,
+   "uss": 13212,
+   "swap": 6480,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note+pdf",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+gui-note+pdf-rep1.json",
+  "client": {
+   "rss": 113996,
+   "pss": 88504,
+   "uss": 78684,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1816014,
+    "kind": "quirenote-gui",
+    "rss": 113996,
+    "pss": 88504,
+    "uss": 78684,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   88504,
+   88504,
+   88504
+  ],
+  "idle_cpu_pct": 1.0,
+  "server": {
+   "rss": 6516,
+   "pss": 3854,
+   "uss": 3780,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.4
+ },
+ {
+  "stack": "rust+chromium",
+  "scenario": "note+pdf",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+chromium-note+pdf-rep1.json",
+  "client": {
+   "rss": 1157452,
+   "pss": 432393,
+   "uss": 290632,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1816235,
+    "kind": "chromium",
+    "rss": 262852,
+    "pss": 138048,
+    "uss": 94936,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816283,
+    "kind": "chromium",
+    "rss": 80876,
+    "pss": 27244,
+    "uss": 20200,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816248,
+    "kind": "chromium",
+    "rss": 45236,
+    "pss": 5649,
+    "uss": 284,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816250,
+    "kind": "chromium",
+    "rss": 21612,
+    "pss": 3445,
+    "uss": 220,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816378,
+    "kind": "chromium",
+    "rss": 113200,
+    "pss": 19301,
+    "uss": 9468,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816368,
+    "kind": "chromium",
+    "rss": 220472,
+    "pss": 94633,
+    "uss": 78676,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816351,
+    "kind": "chromium",
+    "rss": 163348,
+    "pss": 48616,
+    "uss": 35452,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816309,
+    "kind": "chromium",
+    "rss": 52616,
+    "pss": 7350,
+    "uss": 2072,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816247,
+    "kind": "chromium",
+    "rss": 43768,
+    "pss": 10659,
+    "uss": 836,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816281,
+    "kind": "chromium",
+    "rss": 153472,
+    "pss": 77448,
+    "uss": 48488,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   432600,
+   432393,
+   428799
+  ],
+  "idle_cpu_pct": 3.3333333333333335,
+  "server": {
+   "rss": 10608,
+   "pss": 7963,
+   "uss": 7908,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "go+chromium",
+  "scenario": "note+pdf",
+  "rep": 1,
+  "alive": true,
+  "evidence": "go+chromium-note+pdf-rep1.json",
+  "client": {
+   "rss": 1161616,
+   "pss": 435315,
+   "uss": 293252,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1816599,
+    "kind": "chromium",
+    "rss": 264188,
+    "pss": 139213,
+    "uss": 96324,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816647,
+    "kind": "chromium",
+    "rss": 80608,
+    "pss": 27130,
+    "uss": 20056,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816613,
+    "kind": "chromium",
+    "rss": 44484,
+    "pss": 5610,
+    "uss": 264,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816615,
+    "kind": "chromium",
+    "rss": 21560,
+    "pss": 3431,
+    "uss": 224,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816721,
+    "kind": "chromium",
+    "rss": 112984,
+    "pss": 18848,
+    "uss": 9360,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816711,
+    "kind": "chromium",
+    "rss": 221980,
+    "pss": 95972,
+    "uss": 80860,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816702,
+    "kind": "chromium",
+    "rss": 163684,
+    "pss": 48470,
+    "uss": 35776,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816651,
+    "kind": "chromium",
+    "rss": 52252,
+    "pss": 7242,
+    "uss": 2004,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816611,
+    "kind": "chromium",
+    "rss": 44236,
+    "pss": 11596,
+    "uss": 948,
+    "swap": 0,
+    "swap_pss": 0
+   },
+   {
+    "pid": 1816645,
+    "kind": "chromium",
+    "rss": 155640,
+    "pss": 77803,
+    "uss": 47436,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   435311,
+   435315,
+   435335
+  ],
+  "idle_cpu_pct": 3.3333333333333335,
+  "server": {
+   "rss": 16736,
+   "pss": 14936,
+   "uss": 14884,
+   "swap": 5036,
+   "swap_pss": 0
+  },
+  "seconds": 18.0
+ },
+ {
+  "stack": "rust+gui",
+  "scenario": "note+epub",
+  "rep": 1,
+  "alive": true,
+  "evidence": "rust+gui-note+epub-rep1.json",
+  "client": {
+   "rss": 113416,
+   "pss": 88610,
+   "uss": 78948,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "processes": [
+   {
+    "pid": 1816992,
+    "kind": "quirenote-gui",
+    "rss": 113416,
+    "pss": 88610,
+    "uss": 78948,
+    "swap": 0,
+    "swap_pss": 0
+   }
+  ],
+  "client_pss_samples": [
+   88610,
+   88610,
+   88610
+  ],
+  "idle_cpu_pct": 0.6666666666666666,
+  "server": {
+   "rss": 6748,
+   "pss": 4029,
+   "uss": 3960,
+   "swap": 0,
+   "swap_pss": 0
+  },
+  "seconds": 17.4
+ }
+]

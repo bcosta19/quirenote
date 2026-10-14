@@ -1,0 +1,28 @@
+{
+  "approved": true,
+  "archive": "/home/brspike/Projects/notas/.claude/tmp-archive-2026-10-14",
+  "moves": [
+    {
+      "source": "/tmp/quirenote-review-gocache",
+      "destination": "/home/brspike/Projects/notas/.claude/tmp-archive-2026-10-14/quirenote-review-gocache",
+      "files": 10048,
+      "bytes": 887787136,
+      "verified": true
+    },
+    {
+      "source": "/tmp/qbench/corrected-ebt2nj_9/target",
+      "destination": "/home/brspike/Projects/notas/.claude/tmp-archive-2026-10-14/corrected-ebt2nj_9-target",
+      "files": 981,
+      "bytes": 322922220,
+      "verified": true
+    }
+  ],
+  "tmp_filesystem": "tmpfs",
+  "occupancy_before_percent": 80,
+  "occupancy_after_percent": 37,
+  "capacity": "2.8 GiB",
+  "after_used": "1.1 GiB",
+  "ram_available_immediately_after": "1.5 GiB",
+  "swap_used_immediately_after": "5.8 GiB",
+  "verification": "File count and total logical bytes match before and after each move."
+}

@@ -1,23 +1,22 @@
-#!/bin/bash
-# Opens Quirenote in an app window (Chromium without an address bar) on Omarchy.
-# If the window already exists, it just focuses it; if the server is down, it starts the service.
+#!/usr/bin/env bash
+# Start the local Rust service when needed, then open the native Rust interface.
+set -euo pipefail
 url=${QUIRENOTE_URL:-${NOTAS_URL:-http://127.0.0.1:8080}}
 
-if ! curl -fs -o /dev/null "$url/api/tree"; then
+ready() { curl --connect-timeout 1 --max-time 2 -fs -o /dev/null "$url/api/setup"; }
+if ! ready; then
+  if [[ "$url" != "http://127.0.0.1:8080" && "$url" != "http://localhost:8080" ]]; then
+    echo "Quirenote: backend unavailable at $url" >&2
+    exit 1
+  fi
   systemctl --user start quirenote
-  for _ in $(seq 50); do
-    curl -fs -o /dev/null "$url/api/tree" && break
+  for _ in {1..50}; do
+    ready && break
     sleep 0.2
   done
+  if ! ready; then
+    echo "Quirenote: the local backend did not become ready" >&2
+    exit 1
+  fi
 fi
-
-# Chromium app windows have the class chrome-<host>__-Default (without the port).
-host=${url#*//}
-host=${host%%[:/]*}
-# Dedicated Chromium profile: no extensions, a single renderer and no background tasks (less RAM).
-# The app only opens pages from its own server, so one renderer is enough.
-profile=${XDG_DATA_HOME:-$HOME/.local/share}/quirenote/chromium
-exec omarchy-launch-or-focus-webapp "chrome-${host}__" "$url" --user-data-dir="$profile" --disable-extensions --no-first-run --no-default-browser-check \
-  --disable-features=SpareRendererForSitePerProcess,Translate --lang=en-US
- --renderer-process-limit=1 \
-  --disable-background-networking --disable-component-update
+exec quirenote-gui --server "$url" "$@"

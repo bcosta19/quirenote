@@ -1,0 +1,24 @@
+[
+  {
+    "backend": "go",
+    "http_cases": 378,
+    "invariants_passed": 46,
+    "invariants_total": 46,
+    "setup_cases": 33,
+    "setup_invariants_passed": 3,
+    "frontend": "9/9 steps passed",
+    "lost_update": "SUMMARY: 0/5 rounds lost updates; 0 accepted writes lost in total",
+    "create_move": "0/200 rounds: create answered 201 AND move answered 200 (one of the two files was silently destroyed)"
+  },
+  {
+    "backend": "rs",
+    "http_cases": 378,
+    "invariants_passed": 46,
+    "invariants_total": 46,
+    "setup_cases": 33,
+    "setup_invariants_passed": 3,
+    "frontend": "9/9 steps passed",
+    "lost_update": "SUMMARY: 0/5 rounds lost updates; 0 accepted writes lost in total",
+    "create_move": "0/200 rounds: create answered 201 AND move answered 200 (one of the two files was silently destroyed)"
+  }
+]

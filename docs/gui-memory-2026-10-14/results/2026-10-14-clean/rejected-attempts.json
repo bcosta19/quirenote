@@ -1,0 +1,18 @@
+[
+  {
+    "stack": "go+chromium",
+    "scenario": "workout",
+    "rep": 2,
+    "reason": "No EPUB reading position was recorded at the end of the timed navigation sequence",
+    "accepted": false,
+    "cause": "Not isolated; the sequence uses fixed waits between keyboard actions"
+  },
+  {
+    "stack": "rust+chromium",
+    "scenario": "workout",
+    "rep": 2,
+    "reason": "No EPUB reading position was recorded at the end of the timed navigation sequence",
+    "accepted": false,
+    "cause": "Not isolated; an EPUB-ready checkpoint was added afterward"
+  }
+]

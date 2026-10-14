@@ -1,0 +1,10 @@
+{
+  "measurement_complete": true,
+  "accepted_samples": 45,
+  "repetitions": 3,
+  "synchronized_workout_samples": 9,
+  "final_pdf_page": 14,
+  "rejected_fixed_wait_attempts": 2,
+  "superseded_fixed_wait_workout_samples": 7,
+  "previous_pre_cleanup_campaign_excluded": true
+}

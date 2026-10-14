@@ -1,0 +1,11 @@
+go-fixed frontend.log exit 0
+9/9 steps passed
+go-fixed contract.log exit 0
+go-fixed contract 378 checks 46 46
+go-fixed lost-update.log exit 0
+SUMMARY: 0/5 rounds lost updates; 0 accepted writes lost in total
+go-fixed create-move.log exit 0
+0/200 rounds: create answered 201 AND move answered 200 (one of the two files was silently destroyed)
+go-fixed setup.log exit 0
+go-fixed setup 33 checks 3 3
+artifacts /tmp/qbench/review-codex/go-fixed-z2lhf1c2

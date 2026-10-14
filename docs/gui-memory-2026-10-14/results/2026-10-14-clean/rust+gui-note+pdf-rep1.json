@@ -1,0 +1,21 @@
+{
+  "sidebar": true,
+  "notes": true,
+  "sidebar_w": 260.0,
+  "notes_pct": 42.0,
+  "theme": "light",
+  "fonts": {
+    "ui": "",
+    "editor": "",
+    "mono": ""
+  },
+  "recent": [],
+  "session": {
+    "note": "Demo/Tudo.md",
+    "doc": "Livros/livro.pdf",
+    "page": 1,
+    "local": null
+  },
+  "pages": {},
+  "epub": {}
+}

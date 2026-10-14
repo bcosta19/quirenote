@@ -1,0 +1,43 @@
+[package]
+name = "quirenote-rs"
+version = "0.1.0"
+edition = "2024"
+description = "Quirenote backend: confined Markdown vault, HTTP API and live updates"
+license = "MIT"
+
+[lib]
+name = "quirenote"
+path = "src/lib.rs"
+
+[[bin]]
+name = "quirenote-rs"
+path = "src/main.rs"
+
+[dependencies]
+axum = { version = "0.8", default-features = false, features = ["http1", "tokio"] }
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "fs", "process", "signal", "sync", "time", "net", "io-util"] }
+tokio-util = { version = "0.7", features = ["io"] }
+futures-util = { version = "0.3", default-features = false }
+bytes = "1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+cap-std = "4"
+rustix = { version = "1", default-features = false, features = ["fs", "std"] }
+inotify = "0.11"
+base64 = "0.22"
+regex = "1"
+chrono = { version = "0.4", default-features = false, features = ["clock", "std"] }
+getrandom = "0.3"
+percent-encoding = "2"
+httpdate = "1"
+http-body-util = "0.1"
+
+[dev-dependencies]
+tempfile = "3"
+tower = { version = "0.5", features = ["util"] }
+
+[profile.release]
+lto = "fat"
+codegen-units = 1
+strip = true
+opt-level = 3

@@ -1,6 +1,7 @@
 /bin/
-web/node_modules/
-web/dist/*
-!web/dist/.keep
 # Claude Code local state (agent worktrees)
 /.claude/
+gui/target/
+
+# Rust native interface build cache
+/gui/target/

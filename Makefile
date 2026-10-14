@@ -1,45 +1,60 @@
-# Empty: use the vault from ~/.config/quirenote/config.toml (or the first-run screen).
+# The vault defaults to ~/.config/quirenote/config.toml (or native first-run setup).
 VAULT ?=
-ADDR  ?= 127.0.0.1:8080
+ADDR ?= 127.0.0.1:8080
+CARGO_FLAGS ?= --locked
+CARGO_JOBS ?= 1
+SERVER_TARGET_DIR ?= rust/target
+GUI_TARGET_DIR ?= gui/target
+PREFIX ?= $(HOME)/.local
 
-.PHONY: dev dev-api dev-web build front check install clean
+.PHONY: dev dev-api dev-gui build build-dev check fmt install clean
 
-# Dev: Go on :8080 + Vite (hot reload) on :5173, which proxies /api to Go.
-dev:
-	@$(MAKE) -j2 dev-api dev-web
+build:
+	cargo build $(CARGO_FLAGS) --release --manifest-path rust/Cargo.toml --target-dir $(SERVER_TARGET_DIR) -j $(CARGO_JOBS)
+	cargo build $(CARGO_FLAGS) --release --manifest-path gui/Cargo.toml --target-dir $(GUI_TARGET_DIR) -j $(CARGO_JOBS)
+	install -Dm755 $(SERVER_TARGET_DIR)/release/quirenote-rs bin/quirenote
+	install -Dm755 $(GUI_TARGET_DIR)/release/quirenote-gui bin/quirenote-gui
+
+build-dev:
+	cargo build $(CARGO_FLAGS) --manifest-path rust/Cargo.toml --target-dir $(SERVER_TARGET_DIR) -j $(CARGO_JOBS)
+	cargo build $(CARGO_FLAGS) --manifest-path gui/Cargo.toml --target-dir $(GUI_TARGET_DIR) -j $(CARGO_JOBS)
+	install -Dm755 $(SERVER_TARGET_DIR)/debug/quirenote-rs bin/quirenote-dev
+	install -Dm755 $(GUI_TARGET_DIR)/debug/quirenote-gui bin/quirenote-gui-dev
+
+dev: build-dev
+	./scripts/dev.sh $(if $(VAULT),-vault "$(VAULT)") -addr $(ADDR) -debug
 
 dev-api:
-	./scripts/dev-api.sh $(if $(VAULT),-vault "$(VAULT)") -addr $(ADDR) -debug
+	cargo run $(CARGO_FLAGS) --manifest-path rust/Cargo.toml --target-dir $(SERVER_TARGET_DIR) -j $(CARGO_JOBS) -- $(if $(VAULT),-vault "$(VAULT)") -addr $(ADDR) -debug
 
-dev-web:
-	cd web && npm run dev
-
-front:
-	cd web && npm ci && npm run build
-	@touch web/dist/.keep
-
-build: front
-	go build -trimpath -ldflags="-s -w" -o bin/quirenote ./cmd/quirenote
+dev-gui:
+	cargo run $(CARGO_FLAGS) --manifest-path gui/Cargo.toml --target-dir $(GUI_TARGET_DIR) -j $(CARGO_JOBS) -- --server http://$(ADDR)
 
 check:
-	gofmt -l . | (! grep .)
-	go vet ./...
-	go run honnef.co/go/tools/cmd/staticcheck@latest ./...
-	go run github.com/kisielk/errcheck@latest ./...
-	go run go.uber.org/nilaway/cmd/nilaway@latest ./...
-	go test -race ./...
-	cd web && npm run check
+	cargo fmt --manifest-path rust/Cargo.toml -- --check
+	cargo fmt --manifest-path gui/Cargo.toml -- --check
+	cargo clippy $(CARGO_FLAGS) --manifest-path rust/Cargo.toml --target-dir $(SERVER_TARGET_DIR) -j $(CARGO_JOBS) --all-targets -- -D warnings
+	cargo clippy $(CARGO_FLAGS) --manifest-path gui/Cargo.toml --target-dir $(GUI_TARGET_DIR) -j $(CARGO_JOBS) --all-targets -- -D warnings
+	cargo test $(CARGO_FLAGS) --manifest-path rust/Cargo.toml --target-dir $(SERVER_TARGET_DIR) -j $(CARGO_JOBS)
+	cargo test $(CARGO_FLAGS) --manifest-path gui/Cargo.toml --target-dir $(GUI_TARGET_DIR) -j $(CARGO_JOBS)
+	bash -n deploy/quirenote-app scripts/dev.sh
+
+fmt:
+	cargo fmt --manifest-path rust/Cargo.toml
+	cargo fmt --manifest-path gui/Cargo.toml
 
 install: build
-	install -Dm755 bin/quirenote $(HOME)/.local/bin/quirenote
+	install -Dm755 bin/quirenote $(PREFIX)/bin/quirenote
+	install -Dm755 bin/quirenote-gui $(PREFIX)/bin/quirenote-gui
+	install -Dm755 deploy/quirenote-app $(PREFIX)/bin/quirenote-app
 	install -Dm644 deploy/quirenote.service $(HOME)/.config/systemd/user/quirenote.service
-	install -Dm755 deploy/quirenote-app $(HOME)/.local/bin/quirenote-app
-	install -Dm644 web/public/icon-512.png $(HOME)/.local/share/icons/hicolor/512x512/apps/quirenote.png
-	# Absolute path in Icon=: the launcher finds it even without an icon cache.
-	sed 's|^Icon=.*|Icon=$(HOME)/.local/share/icons/hicolor/512x512/apps/quirenote.png|' deploy/quirenote.desktop > $(HOME)/.local/share/applications/quirenote.desktop
+	install -Dm644 assets/icon-512.png $(PREFIX)/share/icons/hicolor/512x512/apps/quirenote.png
+	install -d $(PREFIX)/share/applications
+	sed 's|^Icon=.*|Icon=$(PREFIX)/share/icons/hicolor/512x512/apps/quirenote.png|' deploy/quirenote.desktop > $(PREFIX)/share/applications/quirenote.desktop
 	systemctl --user daemon-reload
-	@echo "Done. Enable with: systemctl --user enable --now quirenote (the 'Quirenote' launcher entry is installed)"
-
+	@echo "Installed the Rust backend and native interface. Start with quirenote-app."
 
 clean:
-	rm -rf bin web/dist/assets web/dist/index.html web/dist/icon.svg web/dist/icon-512.png web/dist/manifest.webmanifest
+	cargo clean --manifest-path rust/Cargo.toml --target-dir $(SERVER_TARGET_DIR)
+	cargo clean --manifest-path gui/Cargo.toml --target-dir $(GUI_TARGET_DIR)
+	rm -f bin/quirenote bin/quirenote-gui bin/quirenote-dev bin/quirenote-gui-dev

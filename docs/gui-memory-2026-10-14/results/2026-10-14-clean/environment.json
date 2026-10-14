@@ -1,0 +1,14 @@
+{
+  "cpu": "AMD Ryzen 7 7735HS with Radeon Graphics",
+  "memory_snapshot": {
+    "MemTotal": "5731188 kB",
+    "MemAvailable": "2039260 kB",
+    "SwapTotal": "11463088 kB",
+    "SwapFree": "7075424 kB",
+    "Shmem": "88600 kB"
+  },
+  "wayland_resolution": "1920x1080",
+  "wayland_scale": 1.25,
+  "renderer": "gles2",
+  "compositor_libraries": "/tmp/qbench/wl/root/usr/lib"
+}

@@ -2,108 +2,64 @@
 
 *[Read in English](README.md)*
 
-Notas em markdown com um leitor de PDF/EPUB ao lado, servidas por um binário Go, com editor em modo vim.
-As notas são arquivos `.md` comuns numa pasta (sem banco), então Neovim, Obsidian ou qualquer editor trabalham
-nos mesmos arquivos. Vaults do Obsidian funcionam como estão: `[[links]]`, `![[imagens]]`, a pasta de anexos e
-a `.trash` são compatíveis.
+Aplicação nativa em Rust para notas Markdown, com leitor de PDF/EPUB ao lado. A interface usa egui e o backend usa Axum. As notas continuam sendo arquivos comuns na pasta escolhida, compatíveis com links, anexos e lixeira do Obsidian.
 
-![Editor com o leitor de PDF ao lado](docs/img/editor-and-reader.png)
+![Interface nativa com nota e PDF](docs/gui-memory-2026-10-14/results/2026-10-14-clean/rust+gui-note+pdf-rep0.png)
 
-## Funcionalidades
+## Compilar e executar
 
-**Leitor e notas lado a lado.** O PDF (ou EPUB) fica à esquerda e a nota à direita; os dois painéis recolhem e
-redimensionam. `Ctrl+Shift+L` insere um link para a página atual, e clicar nele volta exatamente lá.
-
-**Preview do markdown** (`Ctrl+E`): títulos, `[[links]]`, imagens, propriedades e tarefas clicáveis.
-
-![Preview da nota](docs/img/preview.png)
-
-**Busca rápida** (`Ctrl+O`) por nome, sem diferenciar acentos, e **busca no conteúdo** (`Ctrl+Shift+F`) com trechos destacados.
-
-![Busca rápida](docs/img/quick-switcher.png) ![Busca no conteúdo](docs/img/full-text-search.png)
-
-**Backlinks** (botão ↩ N): quais notas apontam para a nota aberta.
-
-![Backlinks](docs/img/backlinks.png)
-
-**Tema escuro** (botão lua/sol no topo):
-
-![Tema escuro](docs/img/dark-theme.png)
-
-## Primeiro acesso
-
-Sem vault configurado, o app abre uma tela de configuração com duas opções:
-
-- **Start fresh** (começar do zero): cria uma pasta (padrão `~/Quirenote`) com uma nota de boas-vindas.
-- **Use an existing folder** (usar uma pasta existente): qualquer pasta de notas em markdown. Um vault do
-  Obsidian é detectado e usado no lugar; nada é copiado, e as notas continuam funcionando no Obsidian.
-
-A escolha fica em `~/.config/quirenote/config.toml`. Depois de configurado, o navegador não consegue mais trocar
-o vault (assim ninguém na rede aponta o servidor para outras pastas); use o terminal:
+Requer Rust atual, Linux, ripgrep, fontconfig e bibliotecas de desenvolvimento Poppler GLib, Cairo, GLib, xkbcommon e Wayland/X11. No Arch, os pacotes correspondentes incluem `rust`, `ripgrep`, `fontconfig`, `poppler-glib`, `cairo`, `glib2`, `libxkbcommon`, `wayland`, `libx11` e `libxrandr`. O primeiro build baixa as dependências fixadas no Cargo.lock; com cache pronto, use `CARGO_FLAGS="--offline --locked"`.
 
 ```sh
-quirenote init ~/Notas   # pasta existente é usada como está; inexistente é criada
-quirenote init           # mostra o vault atual
+make check       # rustfmt, Clippy estrito, testes do backend/GUI, sintaxe shell
+make build       # release: bin/quirenote e bin/quirenote-gui
+make dev         # backend e janela nativa debug; encerra seu backend ao fechar
+make install     # instala os dois binários Rust, lançador, ícone e serviço de usuário
+quirenote-app    # inicia o serviço local se necessário e abre a interface nativa
 ```
 
-## Uso
+A compilação usa um job por padrão para limitar RAM. É possível definir `CARGO_JOBS`, `SERVER_TARGET_DIR` e `GUI_TARGET_DIR`. `make dev-api` e `make dev-gui` executam os componentes separadamente. Reinicie o modo de desenvolvimento após alterar os fontes.
+
+Sem instalar:
 
 ```sh
-make dev        # Go :8080 + Vite :5173 (abra http://localhost:5173)
-make build      # gera bin/quirenote com o front embutido
-make install    # instala em ~/.local/bin + unit systemd --user
-systemctl --user enable --now quirenote
-make check      # gofmt, vet, staticcheck, errcheck, nilaway, testes -race, svelte-check
+bin/quirenote -addr 127.0.0.1:8080
+# Em outro terminal:
+bin/quirenote-gui --server http://127.0.0.1:8080
 ```
 
-O vault vem de `-vault`, depois `QUIRENOTE_VAULT`, depois do arquivo de configuração. O endereço vem de
-`-addr` / `QUIRENOTE_ADDR` (padrão `127.0.0.1:8080`). Para acesso remoto, ponha o IP do NetBird em `QUIRENOTE_ADDR`
-no unit; quem está na rede acessa sem login.
+## Notas e configuração
+
+Na primeira abertura, escolha uma pasta nova ou um vault existente. A escolha fica em `~/.config/quirenote/config.toml`; os arquivos existentes são usados no lugar, sem cópia. Depois de configurar, troque a pasta pelo terminal:
+
+```sh
+bin/quirenote init ~/Notas
+bin/quirenote init
+```
+
+Backend: `-vault` / `QUIRENOTE_VAULT`, `-addr` / `QUIRENOTE_ADDR`. Interface: `--server` / `QUIRENOTE_URL`, `--note`, `--doc`, `--page`, `--state-dir`. Preferências e sessão ficam em `$XDG_STATE_HOME/quirenote-gui`, normalmente `~/.local/state/quirenote-gui`. A porta HTTP serve a API; acesso remoto requer o cliente nativo e acesso à rede do backend. A main não oferece interface de navegador nem autenticação na API.
 
 ## Atalhos
 
 | Atalho | Ação |
 |---|---|
-| `Ctrl+\` / `Alt+\` / `Ctrl+Shift+\` | recolher notas / leitor / barra lateral |
-| `Ctrl+E` | alternar preview / edição |
-| `Ctrl+O` / `Ctrl+P` | busca rápida de notas e PDFs (Shift+Enter cria) |
-| `Ctrl+Shift+F` | busca no conteúdo (requer ripgrep) |
-| `Ctrl+Shift+O` | sumário da nota |
-| `[[` | autocompletar links |
-| `Ctrl+clique` / `Ctrl+Enter` | seguir `[[link]]`; numa tarefa, alterna `[ ]`/`[x]` |
-| `Ctrl+Shift+L` | inserir link da posição atual do leitor (`#page=N` ou `#cfi=…`) |
-| `Alt+↑/↓` · `Alt+Shift+↑/↓` | rolar · virar página do leitor sem sair do editor |
-| `Tab` / `Shift+Tab` | indentar / desindentar |
-| `:w` / `Ctrl+S` | salvar (também salva sozinho após 1 s) |
+| `Ctrl+O` / `Ctrl+P` | abrir nota, PDF ou EPUB |
+| `Ctrl+Shift+F` | busca no conteúdo |
+| `Ctrl+Shift+O` | títulos da nota |
+| `Ctrl+E` | edição / preview Markdown |
+| `Ctrl+S` / `:w` | salvar (também há autosave) |
+| `Ctrl+Shift+L` | inserir link para a posição de leitura |
+| `Alt+↑/↓` / `Alt+Shift+↑/↓` | rolar / virar página do leitor |
+| `Ctrl+\` / `Alt+\` / `Ctrl+Shift+\` | recolher notas / leitor / árvore |
 
-- Barra lateral: nova nota, nova pasta (também dentro de cada pasta) e abrir PDF/EPUB do
-  dispositivo sem enviar nada ao servidor. Clique direito: renomear/mover (atualiza os `[[links]]`) e lixeira
-  (`.trash` do vault; nada é apagado).
-- Colar ou arrastar uma imagem a grava na pasta de anexos do Obsidian e insere `![[…]]`.
-- A interface do app é em inglês.
-- **↩ N** na barra superior lista os backlinks. Divisórias arrastáveis; duplo clique restaura.
+Editor com movimentos Vim, wikilinks, imagens, desfazer e refazer. A barra permite escolher tema e fontes por função. O PDF usa Poppler; EPUB e preview Markdown são desenhados pela interface nativa.
 
-## App de desktop (Omarchy)
+## Estrutura e backup
 
-`make install` instala `quirenote-app`, o atalho "Quirenote" do launcher e o ícone. `quirenote-app` abre o Quirenote numa janela
-de app do Chromium (sem barra de endereço) com um perfil próprio e leve, sobe o serviço systemd se ele estiver parado e, se a janela já
-existir, só foca nela. No Hyprland: `SUPER+SHIFT+L` (em `~/.config/hypr/bindings.lua`:
-`o.bind("SUPER + SHIFT + L", "Quirenote", { launch = "quirenote-app" })`). O app também pode ser instalado como PWA.
+`rust/`: vault confinado, salvamento atômico, conflitos de versão, configuração inicial, busca, atualização de links e eventos. `gui/`: janela, fontes, editor e leitores nativos. `deploy/` e Makefile compilam, instalam e iniciam os dois binários Rust.
 
-## Aparência
+A versão anterior Go/Svelte está preservada em **`backup/go-svelte-2026-10-14`**. Abra outra worktree para consultar ou compilar o backup sem substituir esta main. O benchmark de backend fica em `bench/rust-axum-vs-go`; o [relatório de memória da GUI](docs/gui-memory-2026-10-14/RELATORIO.pt-BR.md) registra redução de 80–85% no PSS do cliente nesta máquina. A medição compara arquiteturas, não comprova superioridade universal da linguagem nem equivalência completa de funcionalidades.
 
-Tema claro "papel" (o botão lua/sol alterna para o escuro) e EB Garamond embutida. Cores: `web/src/lib/theme.ts` e `web/src/app.css`.
+Ainda existem diferenças de geometria e reflow EPUB; atalhos de ajuda podem cortar em larguras estreitas. Ao renomear, a atualização de links lê todas as notas visíveis e salva com verificação de versão; uma edição conflitante é informada como ignorada, preservando seu conteúdo.
 
-O botão `A` ao lado do tema escolhe as fontes: uma para a interface, uma para as notas (editor
-e preview) e uma para o código. Ele lista as fontes instaladas no aparelho (o Chromium pede
-permissão; nos outros navegadores basta digitar o nome), cada campo mostra a fonte que está
-escolhendo e a escolha fica salva por aparelho.
-
-## Estrutura
-
-Go (`net/http`, `os.Root` confina o acesso ao vault, escrita atômica, conflito por mtime, fsnotify + SSE) em
-`cmd/` e `internal/`; front Svelte 5 + CodeMirror 6 + PDF.js + foliate-js em `web/`. O `mtime` vai como string
-no JSON porque em nanossegundos perde precisão no `Number` do JS. A página tem CSP `script-src 'self'`, que
-também bloqueia JavaScript embutido em EPUBs.
-
-Ícones: [Lucide](https://lucide.dev) (licença ISC), herdam a cor do tema.
+Fontes EB Garamond (OFL) e ícones Lucide (ISC), com licenças em `gui/assets/fonts/`.
