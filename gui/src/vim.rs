@@ -568,7 +568,14 @@ fn object_range(b: &Buf, pos: usize, obj: &Object, count: usize) -> Option<(usiz
                 }
                 i -= 1;
             }
-            let a = a?;
+            // Not inside a pair: the next one on the line, like codemirror-vim.
+            let a = match a {
+                Some(a) => a,
+                None => {
+                    let e = b.line_end(pos);
+                    (pos..e).find(|&i| b.chars[i] == *open)?
+                }
+            };
             let mut depth = 0;
             let mut z = None;
             for j in a + 1..b.len() {
@@ -1748,7 +1755,8 @@ impl Vim {
                     if word.trim().is_empty() {
                         return Outcome::None;
                     }
-                    self.last_search = Some((format!("\\b{}\\b", regex::escape(&word)), s == "*"));
+                    // codemirror-vim's * and # ignore case.
+                    self.last_search = Some((format!("(?i)\\b{}\\b", regex::escape(&word)), s == "*"));
                     self.highlight = true;
                     if let Some(p) = self.search(b, if s == "*" { b.cursor.max(ws) } else { ws }, s == "*", n) {
                         b.cursor = p;
@@ -1959,8 +1967,11 @@ pub fn search_regex(pat: &str) -> Option<Regex> {
     if pat.is_empty() {
         return None;
     }
+    // smartcase, like codemirror-vim: a pattern without capitals ignores case.
+    let ci = !pat.chars().any(char::is_uppercase) && !pat.starts_with("(?");
     let conv = pat.replace("\\<", "\\b").replace("\\>", "\\b");
-    Regex::new(&conv).ok().or_else(|| Regex::new(&regex::escape(pat)).ok())
+    let conv = if ci { format!("(?i){conv}") } else { conv };
+    Regex::new(&conv).ok().or_else(|| Regex::new(&format!("{}{}", if ci { "(?i)" } else { "" }, regex::escape(pat))).ok())
 }
 
 impl Buf {
@@ -2021,6 +2032,7 @@ mod tests {
         let mut v = Vim::default();
         let mut h = H::default();
         let mut b = Buf::new(text, cursor);
+        let mut before: Option<String> = None;
         for c in keys.chars() {
             let k = match c {
                 '\u{1b}' => VKey::Esc,
@@ -2034,10 +2046,13 @@ mod tests {
                 continue;
             }
             if v.mode == Mode::Insert {
-                v.leave_insert(&mut b, None);
+                let typed = before.take().and_then(|bf| crate::editor::inserted(&bf, &b.text()));
+                v.leave_insert(&mut b, typed);
                 continue;
             }
-            v.key(k, &mut b, &mut h);
+            if let Outcome::Insert = v.key(k, &mut b, &mut h) {
+                before = Some(b.text());
+            }
         }
         (b.text(), b.cursor, v.mode)
     }
@@ -2106,6 +2121,15 @@ mod tests {
         assert_eq!(run("a/b", 0, ":s#/#-#\r").0, "a-b");
         assert_eq!(run("a/b", 0, ":s/\\//-/\r").0, "a-b");
         assert_eq!(run("ab cd", 0, ":s/(\\w+)/[\\1]/g\r").0, "[ab] [cd]");
+    }
+
+    #[test]
+    fn repeat_and_case_and_forward_pairs() {
+        assert_eq!(run("a\nb\nc", 0, "ccnovo\u{1b}j.").0, "novo\nnovo\nc");
+        assert_eq!(run("one two", 0, "cwX\u{1b}w.").0, "X X");
+        assert_eq!(run("Um X", 3, "0~~").0, "uM X");
+        assert_eq!(run("ab [cd] e", 0, "ca[X\u{1b}").0, "ab X e");
+        assert_eq!(run("ab (cd) e", 0, "di(").0, "ab () e");
     }
 
     #[test]

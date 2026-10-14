@@ -235,6 +235,7 @@ impl FontSettings {
                             let r = ui.add(
                                 TextEdit::singleline(&mut text)
                                     .id(id)
+                                    .event_filter(crate::dialogs::PANEL_KEYS)
                                     .frame(Frame::NONE)
                                     .font(font.clone())
                                     .desired_width(w - 16.0)

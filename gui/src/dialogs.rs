@@ -71,10 +71,15 @@ fn input_frame(ui: &mut Ui, p: &Palette, content: impl FnOnce(&mut Ui)) {
 }
 
 /// The search-style text field of the panels: 15px, no frame, transparent.
+/// The keys the panels handle themselves: egui would move the focus with the arrows and drop
+/// it with Escape before the panel sees them.
+pub const PANEL_KEYS: egui::EventFilter = egui::EventFilter { tab: false, horizontal_arrows: true, vertical_arrows: true, escape: true };
+
 fn panel_input(ui: &mut Ui, id: Id, text: &mut String, hint: &str, p: &Palette, width: f32) -> egui::Response {
     ui.add(
         TextEdit::singleline(text)
             .id(id)
+            .event_filter(PANEL_KEYS)
             .frame(Frame::NONE)
             .font(fonts::ui(15.0))
             .hint_text(RichText::new(hint).color(p.muted).font(fonts::ui(15.0)))
@@ -188,7 +193,9 @@ fn kit_input(ui: &mut Ui, id: Id, text: &mut String, p: &Palette) -> egui::Respo
         .corner_radius(4)
         .inner_margin(Margin::symmetric(10, 8))
         .show(ui, |ui| {
-            ui.add(TextEdit::singleline(text).id(id).frame(Frame::NONE).font(fonts::ui(14.0)).desired_width(f32::INFINITY))
+            ui.add(
+                TextEdit::singleline(text).id(id).event_filter(PANEL_KEYS).frame(Frame::NONE).font(fonts::ui(14.0)).desired_width(f32::INFINITY),
+            )
         })
         .inner
 }

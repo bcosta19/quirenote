@@ -118,6 +118,12 @@ pub struct Editor {
     scroll_align: Option<Align>,
 }
 
+/// The cursor on a character: at a wrap, the first character of the next screen line (vim's
+/// cursor sits on characters; egui's default puts a boundary index at the end of the row above).
+fn on_char(i: usize) -> CCursor {
+    CCursor { index: i.into(), prefer_next_row: true }
+}
+
 fn hash_str(s: &str) -> u64 {
     let mut h = DefaultHasher::new();
     s.hash(&mut h);
@@ -489,7 +495,7 @@ impl Editor {
         let mut st = TextEdit::load_state(ctx, id).unwrap_or_default();
         let range = match sel {
             Some(a) => CCursorRange::two(CCursor::new(a), CCursor::new(pos)),
-            None => CCursorRange::one(CCursor::new(pos)),
+            None => CCursorRange::one(on_char(pos)),
         };
         st.cursor.set_char_range(Some(range));
         st.store(ctx, id);
@@ -558,6 +564,8 @@ impl Editor {
         let normal_like = self.vim.mode != Mode::Insert;
         let caret = ec.caret;
         let sel_color = ec.selection;
+        // Bringing the cursor into view must happen inside the scroll area, this frame.
+        let scroll_req = self.scroll_to.take();
         let scroll_out = scroll.show(ui, |ui| {
             let avail = ui.available_width();
             let col = COLUMN.min((avail - GUTTER - 16.0).max(120.0));
@@ -604,6 +612,8 @@ impl Editor {
                     .desired_width(col)
                     .desired_rows(1)
                     .lock_focus(true)
+                    // Escape is vim's: egui would otherwise take the focus away from the field.
+                    .event_filter(egui::EventFilter { tab: true, horizontal_arrows: true, vertical_arrows: true, escape: true })
                     .layouter(&mut layouter);
                 let o = te.show(ui);
                 if let Some(b) = before {
@@ -616,6 +626,11 @@ impl Editor {
             });
             // Breathing room at the end: you can write in the middle of the screen (40vh).
             ui.add_space(self.viewport_h * 0.4);
+            if let (Some((g, pos, _)), Some((cpos, align))) = (&galley_out, scroll_req) {
+                let c = g.pos_from_cursor(on_char(cpos));
+                let r = Rect::from_min_size(*pos + c.min.to_vec2(), Vec2::new(2.0, c.height()));
+                ui.scroll_to_rect(r.expand2(Vec2::new(0.0, 30.0)), align);
+            }
             if let Some((g, pos, _)) = &galley_out {
                 // Code block lines on their own background, the full column wide.
                 let mut shapes = Vec::new();
@@ -652,21 +667,28 @@ impl Editor {
             }
         }
 
-        // Cursor and selection after the text field handled the mouse/keys.
+        // Cursor and selection after the text field handled the mouse/keys. In visual mode
+        // the field shows our selection (end exclusive): it is not read back, unless the
+        // mouse is selecting.
         let range = TextEdit::load_state(&ctx, id).and_then(|s| s.cursor.char_range());
+        let visual = matches!(self.vim.mode, Mode::Visual | Mode::VisualLine);
         if let Some(r) = range {
-            let head = r.primary.index.0;
-            if head != self.cursor || text_changed {
-                self.cursor = head;
+            let (p, sec) = (r.primary.index.0, r.secondary.index.0);
+            if visual && resp.dragged() {
+                // Dragging extends the selection: the cursor is on the last selected character.
+                self.vim.anchor = sec;
+                self.cursor = if p > sec { p - 1 } else { p };
+            } else if !visual && (p != self.cursor || text_changed) {
+                self.cursor = p;
                 if self.vim.mode == Mode::Insert {
                     self.update_completion(files);
                 }
             }
             // A mouse selection in normal mode starts visual mode, like codemirror-vim.
-            if r.primary != r.secondary && self.vim.mode == Mode::Normal && resp.dragged() {
+            if p != sec && self.vim.mode == Mode::Normal && resp.dragged() {
                 self.vim.mode = Mode::Visual;
-                self.vim.anchor = r.secondary.index.0;
-                self.cursor = r.primary.index.0.saturating_sub(if r.primary.index.0 > r.secondary.index.0 { 1 } else { 0 });
+                self.vim.anchor = sec;
+                self.cursor = if p > sec { p - 1 } else { p };
             }
         }
         if resp.clicked() && self.vim.mode != Mode::Insert {
@@ -718,8 +740,8 @@ impl Editor {
 
         // The block cursor of normal/visual mode (.cm-fat-cursor).
         if self.vim.mode != Mode::Insert && self.base.is_some() {
-            let c = galley.pos_from_cursor(CCursor::new(self.cursor));
-            let next = galley.pos_from_cursor(CCursor::new(self.cursor + 1));
+            let c = galley.pos_from_cursor(on_char(self.cursor));
+            let next = galley.pos_from_cursor(on_char(self.cursor + 1));
             let ch = self.text.chars().nth(self.cursor);
             let w = if ch.is_none_or(|c| c == '\n') || next.min.y != c.min.y { SIZE * 0.5 } else { (next.min.x - c.min.x).max(2.0) };
             let r = Rect::from_min_size(gpos + c.min.to_vec2(), Vec2::new(w, c.height()));
@@ -730,19 +752,12 @@ impl Editor {
             }
         }
 
-        // Keep the cursor in view after vim moves it; center it for search results.
-        if let Some((pos, align)) = self.scroll_to.take() {
-            let c = galley.pos_from_cursor(CCursor::new(pos));
-            let r = Rect::from_min_size(gpos + c.min.to_vec2(), Vec2::new(2.0, c.height()));
-            ui.scroll_to_rect(r.expand2(Vec2::new(0.0, 30.0)), align);
-            ctx.request_repaint();
-        }
         let _ = scroll_out;
 
         // [[link]] completion list under the cursor.
         if let Some(comp) = &self.completion {
             if focused && self.vim.mode == Mode::Insert {
-                let c = galley.pos_from_cursor(CCursor::new(self.cursor));
+                let c = galley.pos_from_cursor(on_char(self.cursor));
                 let below = gpos + c.min.to_vec2() + Vec2::new(0.0, c.height() + 2.0);
                 // Like CodeMirror's tooltip: above the line when it does not fit below.
                 let popup_h = (comp.items.len() as f32 * 22.0 + 4.0).min(18.0 * 14.0 * 1.2);
@@ -1015,81 +1030,107 @@ impl Editor {
 
     /// CodeMirror's closeBrackets: typing ( [ { " ' inserts the pair (or wraps the selection),
     /// typing the closer in front of the same closer steps over it, Backspace between an empty
-    /// pair deletes both.
+    /// pair deletes both. The typing of this frame is applied here, in order, up to the first
+    /// key the text field must handle itself (arrows, Enter…), so nothing is reordered.
     fn close_brackets(&mut self, ctx: &egui::Context) {
         let id = self.id();
         let events = ctx.input(|i| i.events.clone());
-        let mut handled = Vec::new();
-        for (n, e) in events.iter().enumerate() {
-            let range = TextEdit::load_state(ctx, id).and_then(|s| s.cursor.char_range());
-            let Some(r) = range else { continue };
-            let (a, z) = {
-                let (x, y) = (r.primary.index.0, r.secondary.index.0);
-                (x.min(y), x.max(y))
-            };
-            let chars: Vec<char> = self.text.chars().collect();
-            let next = chars.get(z).copied();
-            let prev = a.checked_sub(1).and_then(|i| chars.get(i)).copied();
-            let closer = |c: char| match c {
-                '(' => Some(')'),
-                '[' => Some(']'),
-                '{' => Some('}'),
-                '"' => Some('"'),
-                '\'' => Some('\''),
-                _ => None,
-            };
+        const BRACKETS: [char; 8] = ['(', '[', '{', '"', '\'', ')', ']', '}'];
+        let interesting = events.iter().any(|e| match e {
+            Event::Text(t) => t.contains(BRACKETS),
+            Event::Key { key: Key::Backspace, pressed: true, .. } => true,
+            _ => false,
+        });
+        if !interesting {
+            return;
+        }
+        let Some(r) = TextEdit::load_state(ctx, id).and_then(|s| s.cursor.char_range()) else { return };
+        let (x, y) = (r.primary.index.0, r.secondary.index.0);
+        let (mut a, mut z) = (x.min(y), x.max(y));
+        let mut chars: Vec<char> = self.text.chars().collect();
+        let mut handled = 0;
+        let closer = |c: char| match c {
+            '(' => Some(')'),
+            '[' => Some(']'),
+            '{' => Some('}'),
+            '"' => Some('"'),
+            '\'' => Some('\''),
+            _ => None,
+        };
+        for e in &events {
             match e {
-                Event::Text(t) if t.chars().count() == 1 => {
-                    let c = t.chars().next().unwrap_or(' ');
-                    // Step over a closer that is already there.
-                    if a == z && matches!(c, ')' | ']' | '}' | '"' | '\'') && next == Some(c) {
-                        self.set_cursor_state(ctx, a + 1, None);
-                        handled.push(n);
-                        continue;
-                    }
-                    let Some(close) = closer(c) else { continue };
-                    let quote = c == '"' || c == '\'';
-                    if a != z {
-                        let inner: String = chars[a..z].iter().collect();
-                        let (ba, bz) = (char_to_byte(&self.text, a), char_to_byte(&self.text, z));
-                        self.text.replace_range(ba..bz, &format!("{c}{inner}{close}"));
-                        self.set_cursor_state(ctx, z + 1, Some(a + 1));
-                        handled.push(n);
-                        continue;
-                    }
-                    // Only before whitespace, the end or a closer; quotes not right after a word.
-                    let free_after = next.is_none_or(|ch| ch.is_whitespace() || ")]}".contains(ch));
-                    let word_before = prev.is_some_and(|ch| ch.is_alphanumeric());
-                    if !free_after || (quote && word_before) {
-                        continue;
-                    }
-                    let b = char_to_byte(&self.text, a);
-                    self.text.insert_str(b, &format!("{c}{close}"));
-                    self.set_cursor_state(ctx, a + 1, None);
-                    handled.push(n);
-                }
-                Event::Key { key: Key::Backspace, pressed: true, modifiers, .. } if modifiers.is_none() && a == z => {
-                    if let (Some(p), Some(nx)) = (prev, next) {
-                        if closer(p) == Some(nx) {
-                            let (ba, bz) = (char_to_byte(&self.text, a - 1), char_to_byte(&self.text, a + 1));
-                            self.text.replace_range(ba..bz, "");
-                            self.set_cursor_state(ctx, a - 1, None);
-                            handled.push(n);
+                Event::Text(t) => {
+                    for c in t.chars() {
+                        let next = chars.get(z).copied();
+                        let prev = a.checked_sub(1).and_then(|i| chars.get(i)).copied();
+                        if a == z && matches!(c, ')' | ']' | '}' | '"' | '\'') && next == Some(c) {
+                            a += 1; // step over the closer already there
+                            z = a;
+                            continue;
+                        }
+                        let quote = c == '"' || c == '\'';
+                        let free_after = next.is_none_or(|ch| ch.is_whitespace() || ")]}".contains(ch));
+                        let word_before = prev.is_some_and(char::is_alphanumeric);
+                        match closer(c) {
+                            Some(close) if a != z => {
+                                chars.insert(z, close);
+                                chars.insert(a, c);
+                                a += 1;
+                                z += 1;
+                            }
+                            Some(close) if free_after && !(quote && word_before) => {
+                                chars.splice(a..z, [c, close]);
+                                a += 1;
+                                z = a;
+                            }
+                            _ => {
+                                chars.splice(a..z, [c]);
+                                a += 1;
+                                z = a;
+                            }
                         }
                     }
+                    handled += 1;
                 }
-                _ => {}
+                Event::Key { key: Key::Backspace, pressed, modifiers, .. } if modifiers.is_none() => {
+                    if *pressed {
+                        if a != z {
+                            chars.drain(a..z);
+                            z = a;
+                        } else if a > 0 {
+                            let pair = chars.get(a).is_some_and(|&nx| closer(chars[a - 1]) == Some(nx));
+                            chars.drain(a - 1..if pair { a + 1 } else { a });
+                            a -= 1;
+                            z = a;
+                        }
+                    }
+                    handled += 1;
+                }
+                // Keys of printed characters (their Text event does the typing) and releases.
+                Event::Key { modifiers, pressed, key, .. }
+                    if !*pressed || (modifiers.is_none() || *modifiers == Modifiers::SHIFT) && key.name().chars().count() == 1 =>
+                {
+                    handled += 1;
+                }
+                _ => break,
             }
         }
-        if !handled.is_empty() {
-            ctx.input_mut(|i| {
-                let mut n = 0;
-                i.events.retain(|_| {
-                    let keep = !handled.contains(&n);
-                    n += 1;
-                    keep
-                });
+        if handled == 0 {
+            return;
+        }
+        ctx.input_mut(|i| {
+            let mut n = 0;
+            i.events.retain(|e| {
+                n += 1;
+                // The handled prefix goes (except key events, harmless and wanted by others).
+                n > handled || matches!(e, Event::Key { .. } if !matches!(e, Event::Key { key: Key::Backspace, .. }))
             });
+        });
+        self.text = chars.into_iter().collect();
+        if a == z {
+            self.set_cursor_state(ctx, a, None);
+        } else {
+            self.set_cursor_state(ctx, z, Some(a));
         }
     }
 
@@ -1164,7 +1205,7 @@ impl Editor {
 }
 
 /// The text typed during an insert session, when it was a plain insertion.
-fn inserted(before: &str, after: &str) -> Option<String> {
+pub fn inserted(before: &str, after: &str) -> Option<String> {
     let a: Vec<char> = before.chars().collect();
     let b: Vec<char> = after.chars().collect();
     if b.len() < a.len() {
@@ -1274,7 +1315,7 @@ impl Host for EditorHost<'_> {
         let galley = self.ed.galley.clone();
         match galley {
             Some(g) if !stale && g.job.text.chars().count() == buf.chars.len() => {
-                let c = CCursor::new(buf.cursor);
+                let c = on_char(buf.cursor);
                 let (n, x) = if delta > 0 { g.cursor_down_one_row(&c, *col_x) } else { g.cursor_up_one_row(&c, *col_x) };
                 *col_x = x.or(*col_x);
                 // At the first/last row the cursor stays where it was (no jump to the ends).
