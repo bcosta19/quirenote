@@ -1,0 +1,15 @@
+{
+  "checks": [
+    "First-run setup persisted its vault and refused later changes",
+    "Atomic save persisted and a stale version returned conflict",
+    "Real HTTP rename rewrote its reference",
+    "The release backend serves the API without a browser frontend",
+    "Restart restored the configured vault and saved contents",
+    "CLI init created a separate vault and updated its isolated configuration"
+  ],
+  "source_commit": "b6f05f93ea72a9052423ad388a2183871faebd2b",
+  "binary_sha256": {
+    "quirenote": "a04b3a5d1e16862ec4e8d1743b15557327cba3d0747fbc2bbce065dfd7d6121c",
+    "quirenote-gui": "870bb58eb56b1bd8a1b5cab7cbd9309d80f1837c338a4967b7a644bbb9854f34"
+  }
+}

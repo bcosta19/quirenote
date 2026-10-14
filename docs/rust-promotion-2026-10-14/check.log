@@ -1,0 +1,117 @@
+cargo fmt --manifest-path rust/Cargo.toml -- --check
+cargo fmt --manifest-path gui/Cargo.toml -- --check
+cargo clippy --offline --locked --manifest-path rust/Cargo.toml --target-dir .claude/worktrees/rust-gui/rust/target -j 1 --all-targets -- -D warnings
+    Checking quirenote-rs v0.1.0 (/home/brspike/Projects/notas/rust)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 2.17s
+cargo clippy --offline --locked --manifest-path gui/Cargo.toml --target-dir .claude/worktrees/rust-gui/gui/target -j 1 --all-targets -- -D warnings
+    Checking quirenote-gui v0.1.0 (/home/brspike/Projects/notas/gui)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 17.51s
+cargo test --offline --locked --manifest-path rust/Cargo.toml --target-dir .claude/worktrees/rust-gui/rust/target -j 1
+   Compiling quirenote-rs v0.1.0 (/home/brspike/Projects/notas/rust)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 31.95s
+     Running unittests src/lib.rs (.claude/worktrees/rust-gui/rust/target/debug/deps/quirenote-9347f7fbb22ea96d)
+
+running 38 tests
+test golike::tests::clean_matches_go ... ok
+test golike::tests::ext_base_dir ... ok
+test config::tests::load_invalid ... ok
+test golike::tests::valid_utf8_runs ... ok
+test config::tests::round_trip ... ok
+test setup::tests::resolve_cases ... ok
+test search::tests::pattern_is_literal_and_accent_insensitive ... ok
+test relink::tests::rewrite_ambiguous_keeps_name_links ... ok
+test setup::tests::resolve_rejects_symlink_aliases_of_broad_folders ... ok
+test setup::tests::prepare_modes ... ok
+test relink::tests::run_rejects ... ok
+test relink::tests::run_case_only_rename ... ok
+test vault::tests::bad_names ... ok
+test vault::tests::create_never_overwrites ... ok
+test vault::tests::rejects_symlink_escape ... ok
+test vault::tests::mkdir_cases ... ok
+test vault::tests::move_cases ... ok
+test vault::tests::read_returns_per_byte_replacement_for_invalid_utf8 ... ok
+test vault::tests::save_creates_dirs_and_only_markdown ... ok
+test vault::tests::save_detects_conflict ... ok
+test vault::tests::saved_bmp_attachments_appear_in_the_tree ... ok
+test relink::tests::run_discovers_references_without_ripgrep ... ok
+test vault::tests::tree_hides_dotfiles_and_lists_known_extensions ... ok
+test vault::tests::save_image_cases ... ok
+test relink::tests::rewrite_cases ... ok
+test vault::tests::trash_cases ... ok
+test vault::tests::rejects_paths_outside_vault ... ok
+test vault::tests::stale_save_does_not_resurrect_moved_or_trashed_notes ... ok
+test vault::tests::save_preserves_existing_permissions ... ok
+test relink::tests::run_ambiguous ... ok
+test search::tests::files_preserves_newlines_in_imported_note_names ... ok
+test vault::tests::concurrent_saves_reject_stale_versions ... ok
+test vault::tests::trash_keeps_every_version_with_the_same_name ... ok
+test search::tests::backlinks_cases ... ok
+test search::tests::search_finds_notes ... ok
+test relink::tests::run_accounts_for_all_references_during_atomic_saves ... ok
+test relink::tests::run_updates_every_referencing_note ... ok
+test watch::tests::reports_external_changes_and_ignores_hidden ... ok
+
+test result: ok. 38 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.02s
+
+     Running unittests src/main.rs (.claude/worktrees/rust-gui/rust/target/debug/deps/quirenote_rs-2f9baaf5ba17f642)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/api.rs (.claude/worktrees/rust-gui/rust/target/debug/deps/api-814b32ffa5e44c41)
+
+running 5 tests
+test native_api_rejects_browser_routes_and_unsupported_methods ... ok
+test mutations_require_json ... ok
+test first_run_setup ... ok
+test net_http_behaviours ... ok
+test ranges_and_images ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+   Doc-tests quirenote
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+cargo test --offline --locked --manifest-path gui/Cargo.toml --target-dir .claude/worktrees/rust-gui/gui/target -j 1
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.72s
+     Running unittests src/main.rs (.claude/worktrees/rust-gui/gui/target/debug/deps/quirenote_gui-157db4e50fbac5cc)
+
+running 30 tests
+test api::tests::encodes_like_encode_uri_component ... ok
+test fonts::tests::cleans_names_like_the_web_app ... ok
+test fuzzy::tests::matches_in_order_ignoring_accents ... ok
+test editor::tests::typed_text_of_an_insert_session ... ok
+test epub::tests::resolves_hrefs_inside_the_zip ... ok
+test epub::tests::parses_cfis_from_foliate_and_from_here ... ok
+test highlight::tests::headings_marks_and_code ... ok
+test highlight::tests::multi_line_setext_headings ... ok
+test highlight::tests::job_text_is_the_buffer ... ok
+test links::tests::parses_page_alias_and_escapes ... ok
+test epub::tests::chapter_blocks_with_paths_ids_and_links ... ok
+test undo::tests::a_new_change_drops_the_redo_steps ... ok
+test undo::tests::undo_and_redo_walk_the_history ... ok
+test vim::tests::motions_and_deletes ... ok
+test links::tests::finds_link_under_column ... ok
+test vim::tests::repeat_and_case_and_forward_pairs ... ok
+test vim::tests::changes_and_insert ... ok
+test vim::tests::word_motions ... ok
+test links::tests::resolves_like_obsidian ... ok
+test editor::tests::toggles_tasks_and_marks_the_note_dirty ... ok
+test vim::tests::yank_put_join_case_undo ... ok
+test editor::tests::completes_links_keeping_alias_and_closing_brackets ... ok
+test markdown::tests::frontmatter_props_and_lines ... ok
+test markdown::tests::headings_skip_code_and_count_frontmatter ... ok
+test markdown::tests::page_links_get_a_label_and_urls_are_linked ... ok
+test markdown::tests::wikilinks_tasks_and_embeds ... ok
+test pdf::tests::page_width_is_fitted_when_sizes_arrive_after_the_first_frame ... ok
+test markdown::tests::raw_html_images_and_blocks ... ok
+test vim::tests::visual_and_search_and_ex ... ok
+test pdf::tests::a_page_selected_between_frames_is_reported_to_the_session ... ok
+
+test result: ok. 30 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+bash -n deploy/quirenote-app scripts/dev.sh

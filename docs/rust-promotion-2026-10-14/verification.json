@@ -1,0 +1,39 @@
+{
+  "source_commit": "b6f05f93ea72a9052423ad388a2183871faebd2b",
+  "backup_branch": "backup/go-svelte-2026-10-14",
+  "backup_commit": "bee0c18f2bcf968cd562f1cb98b5a4de9eea8633",
+  "checks": {
+    "make_check": true,
+    "rustfmt": true,
+    "clippy_warnings_as_errors": true,
+    "backend_unit_tests": 38,
+    "backend_api_tests": 5,
+    "gui_tests": 30,
+    "relink_concurrent_repetitions": 30,
+    "release_api_cli_checks": 6,
+    "native_flow_checks": 5,
+    "launcher_native_binary": true,
+    "desktop_entry": true,
+    "systemd_unit": true,
+    "git_diff_check": true
+  },
+  "binary_artifacts": {
+    "quirenote": {
+      "path": "bin/quirenote",
+      "bytes": 3399696,
+      "sha256": "a04b3a5d1e16862ec4e8d1743b15557327cba3d0747fbc2bbce065dfd7d6121c"
+    },
+    "quirenote-gui": {
+      "path": "bin/quirenote-gui",
+      "bytes": 16850576,
+      "sha256": "870bb58eb56b1bd8a1b5cab7cbd9309d80f1837c338a4967b7a644bbb9854f34"
+    }
+  },
+  "limitations": [
+    "UI geometry and EPUB reflow differ from the historical browser application",
+    "No complete feature parity claim or long-duration leak test",
+    "No new RAM campaign for the relink snapshot",
+    "System installation and remote publication were outside this local integration"
+  ],
+  "launcher_check_note": "The source launcher has mode 644; the successful check installed a private copy with mode 755, matching make install. A direct-execution attempt before applying that installation mode returned PermissionError."
+}

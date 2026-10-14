@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "executable": "bin/quirenote-gui",
+  "note": "Launcher.md",
+  "private_vault": true,
+  "installation_mode": "755 as in make install"
+}
