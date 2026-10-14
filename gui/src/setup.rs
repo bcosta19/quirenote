@@ -2,7 +2,7 @@
 
 use std::time::{Duration, Instant};
 
-use eframe::egui::{self, Align, Frame, Layout, Margin, RichText, Sense, Stroke, TextEdit, Ui, Vec2};
+use eframe::egui::{self, Align, Frame, Layout, Margin, Rect, RichText, Sense, Stroke, TextEdit, Ui, Vec2};
 
 use crate::api::{SetupDone, SetupStatus};
 use crate::fonts;
@@ -26,6 +26,8 @@ pub struct Setup {
     /// When to enter the app after a successful setup.
     pub enter_at: Option<Instant>,
     focus_existing: bool,
+    /// The card's height at the last frame, to center it.
+    card_h: f32,
 }
 
 pub enum Action {
@@ -46,6 +48,7 @@ impl Setup {
             done: None,
             enter_at: None,
             focus_existing: false,
+            card_h: 420.0,
         }
     }
 
@@ -136,12 +139,13 @@ impl Setup {
         let rect = ui.max_rect();
         ui.painter().rect_filled(rect, 0.0, p.bg);
         let w = 560.0f32.min(rect.width() - 48.0);
-        let card_h_guess = 420.0;
-        let top = ((rect.height() - card_h_guess) / 2.0).max(24.0);
-        ui.add_space(top);
-        ui.horizontal(|ui| {
-            ui.add_space(((rect.width() - w) / 2.0).max(24.0));
-            kit::dialog_frame(p, 28).corner_radius(12).show(ui, |ui| {
+        let top = ((rect.height() - self.card_h) / 2.0).max(24.0);
+        let left = ((rect.width() - w) / 2.0).max(24.0);
+        let card_rect = Rect::from_min_size(rect.min + Vec2::new(left, top), Vec2::new(w, rect.height()));
+        let mut child = ui.new_child(egui::UiBuilder::new().max_rect(card_rect).layout(Layout::top_down(Align::Min)));
+        {
+            let ui = &mut child;
+            let r = kit::dialog_frame(p, 28).corner_radius(12).show(ui, |ui| {
                 ui.set_width(w - 56.0);
                 ui.spacing_mut().item_spacing.y = 12.0;
                 ui.label(RichText::new("Welcome to Quirenote").font(fonts::font(fonts::Role::Editor, true, false, 30.0)).color(p.heading));
@@ -172,7 +176,8 @@ impl Setup {
                     ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
                         let label = if self.mode == Mode::New { "Create vault" } else { "Open folder" };
                         let enabled = !self.busy && self.status.allowed;
-                        if kit::primary(ui, label, false, enabled).clicked() || (submit_key && enabled) {
+                        let b = egui::Button::new(kit::text(label).color(p.panel)).fill(p.accent).stroke(Stroke::new(1.0, p.accent)).corner_radius(4).min_size(Vec2::new(0.0, 30.0));
+                        if ui.add_enabled(enabled, b).clicked() || (submit_key && enabled) {
                             let path = if self.mode == Mode::New { &self.new_path } else { &self.existing_path }.trim().to_string();
                             if path.is_empty() {
                                 self.error = "Type the folder path.".into();
@@ -193,7 +198,11 @@ impl Setup {
                     );
                 }
             });
-        });
+            if (r.response.rect.height() - self.card_h).abs() > 0.5 {
+                self.card_h = r.response.rect.height();
+                ui.ctx().request_repaint();
+            }
+        }
         action
     }
 }

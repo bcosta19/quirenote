@@ -154,6 +154,10 @@ impl Prompt {
                 if !self.input && !self.opened {
                     ok.request_focus();
                 }
+                if !self.input && ok.has_focus() {
+                    // The focused button's ring, as the browser draws it.
+                    ui.painter().rect_stroke(ok.rect.expand(1.5), 5, Stroke::new(1.5, p.text), egui::StrokeKind::Outside);
+                }
                 if ok.clicked() {
                     result = Some(Some(self.value.clone()));
                 }

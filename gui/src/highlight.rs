@@ -98,6 +98,59 @@ fn setext_level(next: Option<&str>) -> Option<usize> {
     }
 }
 
+fn list_or_quote(line: &str) -> bool {
+    let t = line.trim_start();
+    if t.starts_with('>') {
+        return true;
+    }
+    if t.starts_with(['-', '*', '+']) && (t.len() == 1 || t[1..].starts_with([' ', '\t'])) {
+        return true;
+    }
+    let d = t.chars().take_while(char::is_ascii_digit).count();
+    d > 0 && t[d..].starts_with(['.', ')'])
+}
+
+/// Setext headings: a paragraph (one or more lines) underlined by === or ---. Returns, per
+/// line, the heading level of paragraph lines and whether a line is an underline.
+fn setext_map(lines: &[&str], front_end: usize) -> (Vec<Option<usize>>, Vec<bool>) {
+    let n = lines.len();
+    let mut level = vec![None; n];
+    let mut under = vec![false; n];
+    let mut fence: Option<(char, usize)> = None;
+    let mut run_start: Option<usize> = None;
+    for i in front_end..n {
+        let line = lines[i];
+        if let Some((fc, k)) = fence {
+            if is_fence(line).is_some_and(|(c2, n2)| c2 == fc && n2 >= k && line.trim().chars().all(|x| x == fc)) {
+                fence = None;
+            }
+            continue;
+        }
+        if let Some(f) = is_fence(line) {
+            fence = Some(f);
+            run_start = None;
+            continue;
+        }
+        let blank = line.trim().is_empty();
+        if let (Some(start), Some(l)) = (run_start, setext_level(Some(line))) {
+            for slot in &mut level[start..i] {
+                *slot = Some(l);
+            }
+            under[i] = true;
+            run_start = None;
+            continue;
+        }
+        if blank || atx_level(line).is_some() || is_rule(line) {
+            run_start = None;
+        } else if run_start.is_none() {
+            if !list_or_quote(line) {
+                run_start = Some(i);
+            }
+        }
+    }
+    (level, under)
+}
+
 /// Highlights the whole note. `text` must be exactly the editor buffer.
 pub fn highlight(text: &str, c: &EditorColors, size: f32) -> Highlighted {
     let mut cx = Ctx { c, size, job: LayoutJob::default() };
@@ -106,8 +159,9 @@ pub fn highlight(text: &str, c: &EditorColors, size: f32) -> Highlighted {
     let mut fence: Option<(char, usize)> = None;
     // YAML frontmatter only at the very start: --- ... ---
     let mut front = lines.first().is_some_and(|l| l.trim_end() == "---") && lines.len() > 1 && lines[1..].iter().any(|l| l.trim_end() == "---");
+    let front_end = if front { lines[1..].iter().position(|l| l.trim_end() == "---").map_or(0, |p| p + 2) } else { 0 };
+    let (setext, underline) = setext_map(&lines, front_end);
     let mut char_pos = 0usize;
-    let mut para_open = false;
     for (i, line) in lines.iter().enumerate() {
         let last = i + 1 == lines.len();
         let len = line.chars().count();
@@ -133,7 +187,6 @@ pub fn highlight(text: &str, c: &EditorColors, size: f32) -> Highlighted {
             }
             code_lines.push(char_pos..char_pos + len);
             nl_span = mono;
-            para_open = false;
         } else if let Some(f) = is_fence(line) {
             fence = Some(f);
             let mono = Span { color: c.monospace, mono: true, ..base };
@@ -143,7 +196,6 @@ pub fn highlight(text: &str, c: &EditorColors, size: f32) -> Highlighted {
             cx.push(&line[marks_len..], Span { color: c.meta, ..mono });
             code_lines.push(char_pos..char_pos + len);
             nl_span = mono;
-            para_open = false;
         } else if let Some(level) = atx_level(line) {
             let hs = Span { color: c.heading, scale: heading_scale(level), bold: true, ..base };
             let t = line.trim_start();
@@ -152,22 +204,14 @@ pub fn highlight(text: &str, c: &EditorColors, size: f32) -> Highlighted {
             cx.push(&line[..hashes], Span { color: c.marks, ..hs });
             inline(&mut cx, &line[hashes..], hs);
             nl_span = hs;
-            para_open = false;
-        } else if !line.trim().is_empty() && !para_open && setext_level(lines.get(i + 1).copied()).is_some() && !is_rule(line) && !line.trim_start().starts_with('>') {
-            let level = setext_level(lines.get(i + 1).copied()).unwrap_or(1);
+        } else if let Some(level) = setext[i] {
             let hs = Span { color: c.heading, scale: heading_scale(level), bold: true, ..base };
             inline(&mut cx, line, hs);
             nl_span = hs;
-            para_open = true;
-        } else if para_open && setext_level(Some(line)).is_some() && i > 0 && !lines[i - 1].trim().is_empty() {
+        } else if underline[i] || is_rule(line) {
             cx.push(line, Span { color: c.marks, ..base });
-            para_open = false;
-        } else if is_rule(line) {
-            cx.push(line, Span { color: c.marks, ..base });
-            para_open = false;
         } else {
             block_line(&mut cx, line, base);
-            para_open = !line.trim().is_empty();
         }
         if !last {
             cx.push("\n", nl_span);
@@ -486,6 +530,13 @@ mod tests {
         for t in ["# H\n\n- [ ] a **b** `c` [[d]]\n```\ncode\n```\n> q *i*", "---\na: 1\n---\nx", "", "\n\n", "Título\n===\nç"] {
             assert_eq!(highlight(t, &PAPER.editor, 19.0).job.text, t);
         }
+    }
+
+    #[test]
+    fn multi_line_setext_headings() {
+        let h = highlight("XYZ---\nsource: x\ntags: y\n---\n\n- a\n---", &PAPER.editor, 19.0);
+        let heading: Vec<String> = h.job.sections.iter().filter(|s| s.format.color == PAPER.editor.heading).map(|s| h.job.text[s.byte_range.start.0..s.byte_range.end.0].to_string()).collect();
+        assert_eq!(heading.concat(), "XYZ---\nsource: x\ntags: y\n");
     }
 
     #[test]

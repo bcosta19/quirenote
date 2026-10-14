@@ -66,7 +66,7 @@ pub fn kbd(ui: &mut Ui, s: &str) {
         .stroke(Stroke::new(1.0, p.border))
         .corner_radius(3)
         .inner_margin(Margin::symmetric(5, 1))
-        .show(ui, |ui| ui.label(RichText::new(s).font(fonts::mono(12.0))));
+        .show(ui, |ui| ui.add(egui::Label::new(RichText::new(s).font(fonts::mono(12.0))).extend()));
 }
 
 /// The frame of dialogs and panels over the window (backdrop rgba(0,0,0,.25), 10px corners).
