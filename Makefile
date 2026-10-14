@@ -6,8 +6,11 @@ CARGO_JOBS ?= 1
 SERVER_TARGET_DIR ?= rust/target
 GUI_TARGET_DIR ?= gui/target
 PREFIX ?= $(HOME)/.local
+WAYLAND_ENV ?=
+SWAYMSG ?= swaymsg
+WAYLAND_RESULTS ?= .claude/wayland-liveness
 
-.PHONY: dev dev-api dev-gui build build-dev check fmt install clean
+.PHONY: dev dev-api dev-gui build build-dev check check-wayland fmt install clean
 
 build:
 	cargo build $(CARGO_FLAGS) --release --manifest-path rust/Cargo.toml --target-dir $(SERVER_TARGET_DIR) -j $(CARGO_JOBS)
@@ -38,6 +41,11 @@ check:
 	cargo test $(CARGO_FLAGS) --manifest-path rust/Cargo.toml --target-dir $(SERVER_TARGET_DIR) -j $(CARGO_JOBS)
 	cargo test $(CARGO_FLAGS) --manifest-path gui/Cargo.toml --target-dir $(GUI_TARGET_DIR) -j $(CARGO_JOBS)
 	bash -n deploy/quirenote-app scripts/dev.sh
+
+# Run separately from compilation, on a private Sway compositor with no_focus.
+check-wayland:
+	@test -n "$(WAYLAND_ENV)" || { echo "Set WAYLAND_ENV to a private compositor env.sh" >&2; exit 1; }
+	python3 -B scripts/verify-wayland-liveness.py --wayland-env "$(WAYLAND_ENV)" --swaymsg "$(SWAYMSG)" --out "$(WAYLAND_RESULTS)"
 
 fmt:
 	cargo fmt --manifest-path rust/Cargo.toml
