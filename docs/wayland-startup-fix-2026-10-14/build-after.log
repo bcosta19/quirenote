@@ -1,0 +1,7 @@
+cargo build --offline --locked --release --manifest-path rust/Cargo.toml --target-dir .claude/worktrees/rust-gui/rust/target -j 1
+    Finished `release` profile [optimized] target(s) in 0.16s
+cargo build --offline --locked --release --manifest-path gui/Cargo.toml --target-dir .claude/worktrees/rust-gui/gui/target -j 1
+   Compiling quirenote-gui v0.1.0 (/home/brspike/Projects/notas/gui)
+    Finished `release` profile [optimized] target(s) in 3m 04s
+install -Dm755 .claude/worktrees/rust-gui/rust/target/release/quirenote-rs bin/quirenote
+install -Dm755 .claude/worktrees/rust-gui/gui/target/release/quirenote-gui bin/quirenote-gui

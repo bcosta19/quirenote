@@ -1,0 +1,7 @@
+{
+  "hidden_workspace": 1,
+  "visible_workspace": 2,
+  "close_timeout_seconds": 2,
+  "passed": false,
+  "reason": "Hidden window did not process the Wayland close event"
+}

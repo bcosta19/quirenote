@@ -1,0 +1,25 @@
+{
+  "sidebar": true,
+  "notes": true,
+  "sidebar_w": 260.0,
+  "notes_pct": 42.0,
+  "theme": "light",
+  "fonts": {
+    "ui": "",
+    "editor": "",
+    "mono": ""
+  },
+  "recent": [],
+  "session": {
+    "note": "Check.md",
+    "doc": "Livros/livro.epub",
+    "page": 1,
+    "local": null
+  },
+  "pages": {
+    "Livros/livro.pdf": 4
+  },
+  "epub": {
+    "Livros/livro.epub": "epubcfi(/6/2!/4/2/2)"
+  }
+}

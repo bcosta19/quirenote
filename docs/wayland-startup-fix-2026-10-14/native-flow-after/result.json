@@ -1,0 +1,9 @@
+{
+  "passed": [
+    "Keyboard edit autosaved to the vault",
+    "A fresh window restored the selected note",
+    "An external replacement reached the editor and a subsequent edit preserved it",
+    "PDF page navigation persisted page 4",
+    "EPUB reading position loaded with the Markdown preview open"
+  ]
+}

@@ -1,0 +1,8 @@
+# Interface check
+
+ORIGINAL
+
+GUI-SAVE-MARKER
+SSE-MARKER
+
+AFTER-SSE-MARKER

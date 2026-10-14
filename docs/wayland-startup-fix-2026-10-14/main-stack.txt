@@ -1,0 +1,21 @@
+#0  0x00007ffff78a0952 in ?? () from /usr/lib/libc.so.6
+#1  0x00007ffff7911a57 in ppoll () from /usr/lib/libc.so.6
+#2  0x00007ffff5460a3e in ?? () from /usr/lib/libwayland-client.so.0
+#3  0x00007ffff5466652 in wl_display_dispatch_queue_timeout () from /usr/lib/libwayland-client.so.0
+#4  0x00007ffff5466740 in wl_display_dispatch_queue () from /usr/lib/libwayland-client.so.0
+#5  0x00007ffff53b23d1 in ?? () from /usr/lib/libEGL_mesa.so.0
+#6  0x00007ffff53ac3a6 in ?? () from /usr/lib/libEGL_mesa.so.0
+#7  0x00007ffff53a1cda in ?? () from /usr/lib/libEGL_mesa.so.0
+#8  0x00007ffff5395fe5 in ?? () from /usr/lib/libEGL_mesa.so.0
+#9  0x0000555555daf7ce in ?? ()
+#10 0x0000555555dc191f in ?? ()
+#11 0x0000555555d90442 in ?? ()
+#12 0x0000555555d6a445 in ?? ()
+#13 0x0000555555d78a30 in ?? ()
+#14 0x0000555555d5082b in ?? ()
+#15 0x0000555555a9fca8 in ?? ()
+#16 0x0000555555a339b3 in ?? ()
+#17 0x0000555555b61748 in ?? ()
+#18 0x00007ffff7827781 in ?? () from /usr/lib/libc.so.6
+#19 0x00007ffff78278b9 in __libc_start_main () from /usr/lib/libc.so.6
+#20 0x0000555555a0b115 in ?? ()
